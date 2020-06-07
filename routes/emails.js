@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
+Const EmailTemplate = require('email-templates').EmailTemplate
 const Email = require("../models/Email");
 const Campaign = require("../models/Campaign");
 const auth = require("../middleware/auth");
@@ -155,7 +156,7 @@ router.post("/", async (req, res) => {
       service: "gmail",
       auth: {
         user: "blackballedproductions@gmail.com",
-        pass: "QW12as34!@#$", // naturally, replace both with your real credentials or an application-specific password
+        pass: "", // naturally, replace both with your real credentials or an application-specific password
       },
     });
 

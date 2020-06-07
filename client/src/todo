@@ -1,6 +1,7 @@
-email code transpiler
-crud operation for email
-crud operation for list
-create mail object to send to nodemailer
-create way to line edit mailing list before sending 
+Finish Delete Functions
+Finish Update Functions 
+Develop Layout 
+Handlebars 
+Deploy to Heroku
+
 
