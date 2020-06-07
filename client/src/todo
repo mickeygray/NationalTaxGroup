@@ -1,0 +1,6 @@
+email code transpiler
+crud operation for email
+crud operation for list
+create mail object to send to nodemailer
+create way to line edit mailing list before sending 
+
