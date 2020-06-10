@@ -1,20 +1,24 @@
-<html>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>Taxation Appeals</title>
+    <title>Your Tax Lien</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="x-apple-disable-message-reformatting" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style type="text/css">
+        /* Google font import Lato */
         @import url("https://fonts.googleapis.com/css?family=Lato:400,700&display=swap");
 
-
+        /* Outlook link fix */
         #outlook a {
             padding: 0;
         }
 
+        /* Hotmail background & line height fixes */
         .ExternalClass {
             width: 100% !important;
         }
@@ -24,6 +28,7 @@
         .ExternalClass span,
         .ExternalClass font,
 
+        /* Image borders & formatting */
         img {
             outline: none;
             text-decoration: none;
@@ -34,20 +39,20 @@
             border: none;
         }
 
-
+        /* Re-style iPhone automatic links (eg. phone numbers) */
         .appleLinksGrey a {
             color: #919191 !important;
             text-decoration: none !important;
         }
 
-
+        /* Hotmail symbol fix for mobile devices */
         .ExternalClass img[class^="Emoji"] {
             width: 10px !important;
             height: 10px !important;
             display: inline !important;
         }
 
-
+        /* Button hover colour change */
         .CTA:hover {
             background-color: #5fdbc4 !important;
         }
@@ -115,15 +120,11 @@
    margin: 0;
    -webkit-text-size-adjust: none;
    -ms-text-size-adjust: 100%;
-   background-color:#FFDAB9;
+   background-color: #ffc0cb;
    font-family: 'Lato', sans-serif;
    font-size: 16px;
-   line-height: 24px;">
-
-    <div
-        style="display:none;font-size:1px;color:#333333;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
-        Appeal your tax liability
-    </div>
+   line-height: 24px;
+   color: #000000;">
     <!--[if mso]>
    <style type="text/css">
     body,
@@ -134,94 +135,47 @@
    </style>
   <![endif]-->
 
-
+    <div
+        style="display:none;font-size:1px;color:#333333;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
+        {{this.fullName}}, you are currently subject to investigation
+    </div>
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-
-
 
             <td align="center" width="600">
                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tbody>
-
                         <table>
                             <tbody>
                                 <tr>
-                                    <td>
-                                        <p style="width: 345px;">&zwnj;</p>
-                                    </td>
-
-                                    <td>
-                                        <p style="text-align: right;
-             margin-right: 75px;
-             padding: 0px;
-             margin-bottom: 0px;">
-                                            Taxation Appeals <br />
-
-                                            Citation Summary
-                                        </p>
-                                    </td>
+                                    <hr style="height: 6px; background-color: #000000;" />
+                                    <hr style="height: 3px; background-color: #000000;" />
                                 </tr>
-                            </tbody>
-                        </table>
-                        <table>
-                            <tbody>
                                 <tr>
-                                    <hr style="background-color: black; height: 1px; width: 75%;" />
-                                    <p style="text-align: left;
-            margin-left: 75px;
-            padding: 0px;
-            margin-bottom: 0px;
-            font-size: 0.7rem;">
-                                        <i>This is a summary of your Appeal Rights,</i>
-                                    </p>
-                                </tr>
-                            </tbody>
-                        </table>
-
-
-                        <table>
-                            <tbody>
-                                <tr>
-
-
-                                    <p style="font-weight: 600; font-size: 1rem;">
-                                        A Tax Lien Is Filed In Your Name At The County Clerk's office
-                                        {{test.firstName}}.
-                                    </p>
-                                    <p style="text-indent: 30px;
-            margin-left: 75px;
-            margin-right: 75px;
-            text-align: left;">
-
-                                    </p>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <h5 style="margin: auto; text-align: center;">
-                                        To Appeal Your ${{test.amount}} Judgement You Must
+                                    <h3 style="margin: 0rem;">Tax Lien Investigation</h3>
+                                    <h5 style="margin: 0rem;">
+                                        <i>Involuntary Lien Filed for {{this.amount}} </i>
                                     </h5>
-                                    <ul style="list-style: none;
-            text-align: left;
-
-            background-color: #f4f4f4;
-            width: 275px;">
-                                        <li>Be Tax Compliant (all years filed)</li>
-                                        <li>File for your due process rights</li>
-                                        <li>Provide a Financial Statement</li>
-                                        <li>Propose a settlement</li>
-                                    </ul>
-                                    <p style="text-indent: 30px;
-            margin-left: 75px;
-            margin-right: 75px;
-            text-align: left;
-            font-size: 1.2rem;
-            font-weight: 400;">
-                                        Failure to provide any of these documents correctly will disquialify
-                                        all appeals applicants.
+                                    <h5 style="margin: 0rem;">
+                                        <i>Immediate Action Recommended</i>
+                                    </h5>
+                                </tr>
+                                <tr>
+                                    <hr style="height: 3px; background-color: #000000;" />
+                                    <hr style="height: 6px; background-color: #000000;" />
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <h3 style="text-align: center; margin: 0rem; padding-bottom: 0rem;">
+                                        A Tax Lien Has Been Filed in Your Name.
+                                    </h3>
+                                </tr>
+                                <tr>
+                                    <p style="text-align: center;">
+                                        <i>Delinquent Taxes Can Warrant Further Investigation</i>
                                     </p>
                                 </tr>
                             </tbody>
@@ -230,16 +184,55 @@
                         <table>
                             <tbody>
                                 <tr>
-                                    <p style="text-indent: 30px;
-            margin-left: 75px;
-            margin-right: 75px;
-            text-align: left;">
-                                        If you need legal and financial assistance preparing your appeal, we are
-                                        avaialable to answer your questions. Please contact our office and we will
-                                        assist in resolving your tax matter.
+
+                                    <p style="padding-left: 10px;
+           padding-right: 10px;
+           text-indent: 20px;
+           text-align: left;">
+                                        The Internal Revenue Service or State Filed a lien in your name,
+                                        {{this.firstName}}. Your financial
+                                        records and assets are subject to investigation . Failure
+                                        to pay {{this.amount}} can lead to severe penalty. It is imperative that
+                                        you resolve the matter before
+                                        further action.
                                     </p>
-                                    <h3>1-800-000-0000</h3>
-                                    <br />
+                                </tr>
+                                <tr>
+                                    <p style="padding-left: 10px;
+           padding-right: 10px;
+           text-indent: 20px;
+           text-align: left;">
+                                        The investigation includes.
+                                    </p>
+                                    <ul style="text-align: left;">
+                                        <li>Review of all public record available on your lien.</li>
+                                        <li>
+                                            Direct contact with the Internal Revenue Service to disclose all tax
+                                            documents
+                                        </li>
+                                        <li>
+                                            An audit of your finances.
+                                        </li>
+                                    </ul>
+                                    <p style="padding-left: 10px;
+           padding-right: 10px;
+           text-indent: 20px;
+           text-align: left;">
+                                        The complete investigation is cost free and in most cases those who
+                                        follow our recommended resolution with the CPA's and attorneys we
+                                        assign them resolve their tax matters legally and completely eliminate their
+                                        debt.
+                                    </p>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <h3>1-800-000-0000</h3>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -248,11 +241,14 @@
                     </tbody>
                 </table>
             </td>
+            <!-- // MAIN CONTENT CELL -->
 
 
         </tr>
     </table>
 
+    <!-- FULL EMAIL // -->
 </body>
+
 
 </html>

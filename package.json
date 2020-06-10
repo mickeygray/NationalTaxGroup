@@ -40,6 +40,7 @@
     "nodemon": "^2.0.4",
     "pug": "^3.0.0",
     "salt": "^0.5.5",
+    "set-interval": "^2.0.4",
     "swig-email-templates": "^5.0.1"
   }
 }

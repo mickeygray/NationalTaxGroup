@@ -5,6 +5,7 @@ const emailSchema = new Schema({
   reactstring: String,
   title: String,
   html: String,
+  template: String,
   text: String,
   subject: String,
   from: String,
@@ -12,7 +13,6 @@ const emailSchema = new Schema({
   unsubscribes: { type: Number, default: 0 },
   campaignName: String,
   key: String,
-  pug: String,
 });
 
 module.exports = mongoose.model("email", emailSchema);

@@ -8,6 +8,7 @@ const auth = require("../middleware/auth");
 const fs = require("fs");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const SetInterval = require("set-interval");
 
 // @route    POST api/emails
 // @desc     Register user
@@ -153,46 +154,55 @@ router.delete("/campaigns/:id", auth, async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { title, html, text, subject, from, bcc, vars } = req.body;
-  let dingles;
-  dingles = setInterval(function () {
-    const test = vars[0];
-    vars.shift();
+  const { title, html, template, text, subject, from, bcc, vars } = req.body;
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "blackballedproductions@gmail.com",
-        pass: "QW12as34!@#$",
-      },
-    });
+  console.log(vars);
 
-    const options = {
-      viewEngine: {
-        extName: ".hbs",
-        partialsDir: path.join(__dirname, "views"),
-        layoutsDir: path.join(__dirname, "views"),
-        defaultLayout: false,
-      },
-      viewPath: "views",
-      extName: ".hbs",
-    };
+  SetInterval.start(
+    function () {
+      const test = vars[0];
 
-    transporter.use("compile", hbs(options));
+      vars.shift();
 
-    const mailer = {
-      from: "blackballedproductions@gmail.com",
-      to: test.email,
-      subject: "Liens",
-      template: "LienAppeals",
-      context: {
-        test: test,
-      },
-    };
-    transporter.sendMail(mailer);
-  }, 1000);
+      if (test != null) {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "bs@gmail.com",
+            pass: "",
+          },
+        });
 
-  clearInterval(dingles);
+        const options = {
+          viewEngine: {
+            extName: ".hbs",
+            partialsDir: path.join(__dirname, "views"),
+            layoutsDir: path.join(__dirname, "views"),
+            defaultLayout: false,
+          },
+          viewPath: "views",
+          extName: ".hbs",
+        };
+
+        transporter.use("compile", hbs(options));
+
+        const mailer = {
+          from: "blackballedproductions@gmail.com",
+          to: test.email,
+          subject: "Liens",
+          template: "LienFiled",
+          context: {
+            test: test,
+          },
+        };
+        transporter.sendMail(mailer);
+      } else {
+        SetInterval.clear("cleared");
+      }
+    },
+    1000,
+    "cleared"
+  );
 });
 
 module.exports = router;
