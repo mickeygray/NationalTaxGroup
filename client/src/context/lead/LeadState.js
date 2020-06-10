@@ -11,6 +11,9 @@ import {
   SET_MAILOBJECT,
   UPDATE_DB,
   DELETE_LEADS,
+  ADD_CONTACTED,
+  SET_DNCOBJECT,
+  MAKE_DNC,
 } from "../types";
 
 const LeadState = (props) => {
@@ -24,6 +27,7 @@ const LeadState = (props) => {
     mailObject: null,
     leads: [],
     lead: {},
+    dncArray: [],
   };
 
   const [state, dispatch] = useReducer(LeadReducer, initialState);
@@ -44,6 +48,21 @@ const LeadState = (props) => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const addContacted = async (mailList) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await axios.put(`/api/leads`, mailList, config);
+
+    dispatch({
+      type: ADD_CONTACTED,
+      payload: res.data,
+    });
   };
 
   const updateDb = async (selectedFile) => {
@@ -83,6 +102,39 @@ const LeadState = (props) => {
 
   const setList = () => {
     dispatch({ type: SET_LIST });
+  };
+
+  const setDNCObject = () => {
+    dispatch({ type: SET_DNCOBJECT });
+  };
+
+  const parseDNC = (mailList) => {
+    const dncArray = mailList.forEach((lead) => {
+      delete lead.highdollar;
+      delete lead.upsellable;
+      delete lead.contacts;
+      delete lead.converted;
+
+      delete lead.lexId;
+      delete lead.firstName;
+      delete lead.fullName;
+      delete lead.lastName;
+      delete lead.address;
+      delete lead.city;
+      delete lead.state;
+      delete lead.county;
+      delete lead.zip;
+      delete lead.dmDate;
+      delete lead.type;
+      delete lead.plaintiff;
+      delete lead.dmDate;
+    });
+    console.log(dncArray);
+
+    dispatch({
+      type: MAKE_DNC,
+      payload: dncArray,
+    });
   };
 
   const splitLead = (mailList) => {
@@ -145,6 +197,7 @@ const LeadState = (props) => {
         bcc: state.bcc,
         mailObject: state.mailObject,
         mailList: state.mailList,
+        dncArray: state.dncArray,
         deleteLeads,
         splitLead,
         setSelectedFile,
@@ -152,6 +205,9 @@ const LeadState = (props) => {
         parseDb,
         setList,
         updateDb,
+        addContacted,
+        parseDNC,
+        setDNCObject,
       }}>
       {props.children}
     </LeadContext.Provider>

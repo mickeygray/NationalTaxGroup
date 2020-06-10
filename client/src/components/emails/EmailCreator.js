@@ -1,6 +1,13 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import EmailContext from "../../context/email/emailContext";
-import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
+import parse from "html-react-parser";
+import {
+  LiveProvider,
+  LiveEditor,
+  LiveError,
+  LivePreview,
+  withLive,
+} from "react-live";
 import {
   Email,
   Item,
@@ -105,70 +112,77 @@ const EmailCreator = () => {
     key,
   } = email;
 
+  console.log(withLive());
+
   return (
     <Fragment>
-      <form action='post' onSubmit={onSubmit}>
-        <LiveProvider scope={scope}>
-          <LiveEditor />
-          <LiveError />
-          <LivePreview />
-        </LiveProvider>
+      <div className='grid-2'>
+        <div className='card'>
+          <form action='post' onSubmit={onSubmit}>
+            <LiveProvider scope={scope}>
+              <LiveEditor />
+              <LivePreview />
+            </LiveProvider>
 
-        <input
-          value={title}
-          placeholder='Title'
-          type='text'
-          name='title'
-          onChange={onChange}
-        />
+            <input
+              value={title}
+              placeholder='Title'
+              type='text'
+              name='title'
+              onChange={onChange}
+            />
 
-        <input
-          placeholder='Text'
-          type='text'
-          name='text'
-          onChange={onChange}
-          value={text}
-        />
-        <input
-          value={subject}
-          placeholder='Subject'
-          type='text'
-          name='subject'
-          onChange={onChange}
-        />
-        <input
-          placeholder='From'
-          type='text'
-          name='from'
-          onChange={onChange}
-          value={from}
-        />
-        <input
-          value={campaignName}
-          placeholder='Campaign Name'
-          type='text'
-          name='campaignName'
-          onChange={onChange}
-        />
+            <input
+              placeholder='Text'
+              type='text'
+              name='text'
+              onChange={onChange}
+              value={text}
+            />
+            <input
+              value={subject}
+              placeholder='Subject'
+              type='text'
+              name='subject'
+              onChange={onChange}
+            />
+            <input
+              placeholder='From'
+              type='text'
+              name='from'
+              onChange={onChange}
+              value={from}
+            />
+            <input
+              value={campaignName}
+              placeholder='Campaign Name'
+              type='text'
+              name='campaignName'
+              onChange={onChange}
+            />
 
-        <textarea
-          value={html}
-          placeholder='Html'
-          type='text'
-          name='html'
-          onChange={onChange}
-        />
-        <textarea
-          value={reactstring}
-          placeholder='reactstring'
-          type='text'
-          name='reactstring'
-          onChange={onChange}
-        />
-        <button className='btn btn-block' onSubmit={onSubmit}>
-          Create Email
-        </button>
-      </form>
+            <textarea
+              value={html}
+              placeholder='Html'
+              type='text'
+              name='html'
+              onChange={onChange}
+            />
+            <textarea
+              value={reactstring}
+              placeholder='reactstring'
+              type='text'
+              name='reactstring'
+              onChange={onChange}
+            />
+            <button className='btn btn-block' onSubmit={onSubmit}>
+              Create Email
+            </button>
+          </form>
+        </div>
+
+        <div className='card' withLive={withLive}></div>
+      </div>
     </Fragment>
   );
 };

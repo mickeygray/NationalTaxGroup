@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
-Const EmailTemplate = require('email-templates').EmailTemplate
-const Email = require("../models/Email");
+const Emails = require("../models/Emails");
+const hbs = require("nodemailer-express-handlebars");
 const Campaign = require("../models/Campaign");
 const auth = require("../middleware/auth");
+const fs = require("fs");
+const path = require("path");
+const exphbs = require("express-handlebars");
 
 // @route    POST api/emails
 // @desc     Register user
@@ -13,10 +16,16 @@ const auth = require("../middleware/auth");
 //create new email
 router.post("/templates", async (req, res) => {
   const { title, reactString, html, text, subject, from, key } = req.body;
-  const newEmail = new Email({
+
+  const pug = htmlPugConverter(html);
+
+  console.log(pug);
+
+  const newEmail = new Emails({
     title,
     reactString,
     html,
+    pug,
     text,
     subject,
     from,
@@ -40,7 +49,6 @@ router.post("/campaigns", async (req, res) => {
     campaignName,
   } = req.body;
 
-  console.log(req.body);
   const newCampaign = new Campaign({
     title,
     html,
@@ -62,7 +70,7 @@ router.post("/campaigns", async (req, res) => {
 router.get("/templates", async (req, res) => {
   try {
     const regex = new RegExp(`${req.query.q}`, "gi");
-    const emails = await Email.find({
+    const emails = await Emails.find({
       $or: [
         { title: regex },
         { subject: regex },
@@ -112,7 +120,7 @@ router.put("/campaigns/:id", auth, async (req, res) => {
 router.get("/campaigns", async (req, res) => {
   try {
     const regex = new RegExp(`${req.query.q}`, "gi");
-    const emails = await Email.find({
+    const campaigns = await Campaign.find({
       $or: [
         { title: regex },
         { subject: regex },
@@ -120,7 +128,7 @@ router.get("/campaigns", async (req, res) => {
         { campaignName: regex },
       ],
     });
-    res.json(emails);
+    res.json(campaigns);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -146,39 +154,45 @@ router.delete("/campaigns/:id", auth, async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { title, html, text, subject, from, bcc, vars } = req.body;
+  let dingles;
+  dingles = setInterval(function () {
+    const test = vars[0];
+    vars.shift();
 
-  ("use strict");
-
-  // async..await is not allowed in global scope, must use a wrapper
-  async function main() {
-    // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: "blackballedproductions@gmail.com",
-        pass: "", // naturally, replace both with your real credentials or an application-specific password
+        pass: "QW12as34!@#$",
       },
     });
 
-    const mailOptions = {
-      text: text,
-      title: title,
-      from: from,
-      bcc: bcc,
-      subject: subject,
-      html: html,
+    const options = {
+      viewEngine: {
+        extName: ".hbs",
+        partialsDir: path.join(__dirname, "views"),
+        layoutsDir: path.join(__dirname, "views"),
+        defaultLayout: false,
+      },
+      viewPath: "views",
+      extName: ".hbs",
     };
 
-    // send mail with defined transport object
-    let info = await transporter.sendMail(mailOptions);
+    transporter.use("compile", hbs(options));
 
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    const mailer = {
+      from: "blackballedproductions@gmail.com",
+      to: test.email,
+      subject: "Liens",
+      template: "LienAppeals",
+      context: {
+        test: test,
+      },
+    };
+    transporter.sendMail(mailer);
+  }, 1000);
 
-    res.send(console.log("....?"));
-  }
-
-  main().catch(console.error);
+  clearInterval(dingles);
 });
 
 module.exports = router;

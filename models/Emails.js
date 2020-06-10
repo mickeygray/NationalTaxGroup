@@ -12,6 +12,7 @@ const emailSchema = new Schema({
   unsubscribes: { type: Number, default: 0 },
   campaignName: String,
   key: String,
+  pug: String,
 });
 
 module.exports = mongoose.model("email", emailSchema);

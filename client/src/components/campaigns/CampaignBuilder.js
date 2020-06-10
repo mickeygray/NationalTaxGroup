@@ -10,7 +10,9 @@ const CampaignBuilder = () => {
 
   const { sendEmail, email, saveCampaign } = emailContext;
 
-  const { splitLead, mailObject, mailList } = leadContext;
+  const { splitLead, mailObject, mailList, addContacted } = leadContext;
+
+  console.log(mailList);
 
   useEffect(() => {
     if (mailObject != null) {
@@ -37,6 +39,7 @@ const CampaignBuilder = () => {
   });
 
   const onClick = (e) => {
+    addContacted(mailList);
     saveCampaign(campaign);
     sendEmail(campaign);
   };
@@ -74,9 +77,6 @@ const CampaignBuilder = () => {
             Send Email
           </button>
         </div>
-      </div>
-      <div>
-        <Campaigns />
       </div>
     </Fragment>
   );

@@ -26,3 +26,6 @@ export const SET_CAMPAIGN = "SET_CAMPAIGN";
 export const UPDATE_DB = "UPDATE_DB";
 export const DELETE_CAMPAIGN = "DELETE_CAMPAIGN";
 export const DELETE_LEADS = "DELETE_LEADS";
+export const ADD_CONTACTED = "ADD_CONTACTED";
+export const MAKE_DNC = "MAKE_DNC";
+export const SET_DNCOBJECT = "SET_DNCOBJECT";

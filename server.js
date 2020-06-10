@@ -8,9 +8,9 @@ const path = require("path");
 
 connectDB();
 
-app.engine("handlebars", exphbs());
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
-
+app.set("views", path.join(__dirname, "views"));
 //bodyparser
 
 app.use(express.json({ extended: false }));

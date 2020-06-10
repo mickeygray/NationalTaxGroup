@@ -5,13 +5,12 @@ import EmailCreator from "../emails/EmailCreator";
 import EmailLibrary from "../emails/EmailLibrary";
 import ListFilter from "../lists/ListFilter";
 import CampaignBuilder from "../campaigns/CampaignBuilder";
+import CampaignEditor from "../campaigns/CampaignEditor";
+import Campaigns from "../campaigns/Campaigns";
 const Home = () => {
   return (
     <div>
-      <div>
-        <Upload />
-      </div>
-
+      <h3 className='text-danger text-center'>E-Yore</h3>
       <div>
         <EmailCreator />
       </div>
@@ -20,12 +19,25 @@ const Home = () => {
         <ListFilter />
       </div>
 
-      <div>
-        <CampaignBuilder />
+      <div className='grid-2'>
+        <div>
+          {" "}
+          <CampaignBuilder />
+        </div>
+        <div>
+          <CampaignEditor />
+        </div>
       </div>
-
+      <div className='grid-2'>
+        <div>
+          <Campaigns />
+        </div>
+        <div>
+          <EmailLibrary />
+        </div>
+      </div>
       <div>
-        <EmailLibrary />
+        <Upload />
       </div>
     </div>
   );

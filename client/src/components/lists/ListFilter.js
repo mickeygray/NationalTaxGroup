@@ -4,7 +4,16 @@ import LeadContext from "../../context/lead/leadContext";
 const ListFilter = () => {
   const leadContext = useContext(LeadContext);
 
-  const { parseDb, mailList, setList, deleteLeads, leads } = leadContext;
+  const {
+    parseDb,
+    mailList,
+    setList,
+    deleteLeads,
+    leads,
+    parseDNC,
+    setDNCObject,
+    dncArray,
+  } = leadContext;
 
   let [listConditions, setListConditions] = useState({
     isDNC: false,
@@ -18,6 +27,12 @@ const ListFilter = () => {
     isHighDollar: false,
   });
 
+  useEffect(() => {
+    if (dncArray) {
+      setDNCObject(dncArray);
+    }
+  }, [dncArray, setDNCObject]);
+
   const onClick = (e) => {
     parseDb(listConditions);
     setList(mailList);
@@ -27,6 +42,11 @@ const ListFilter = () => {
     deleteLeads(leads);
   };
 
+  const listUpdate = (e) => {
+    parseDNC(mailList);
+  };
+
+  console.log(dncArray);
   return (
     <Fragment>
       <div className='card grid-4'>
@@ -216,6 +236,9 @@ const ListFilter = () => {
         </button>
         <button className='btn btn-block btn-danger' onClick={onClick}>
           Load List
+        </button>
+        <button className='btn btn-block btn-danger' onClick={listUpdate}>
+          Set Campaign Suppression
         </button>
       </div>
     </Fragment>

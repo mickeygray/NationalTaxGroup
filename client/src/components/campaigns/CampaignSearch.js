@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import EmailContext from "../../context/email/emailContext";
 
-const LibrarySearch = () => {
+const CampaignSearch = () => {
   const emailContext = useContext(EmailContext);
 
   const { searchCampaigns } = emailContext;
@@ -35,4 +35,4 @@ const LibrarySearch = () => {
   );
 };
 
-export default LibrarySearch;
+export default CampaignSearch;

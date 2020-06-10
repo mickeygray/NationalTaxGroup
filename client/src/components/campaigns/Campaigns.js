@@ -15,7 +15,7 @@ const Campaigns = () => {
     campaign,
     deleteCampaign,
   } = emailContext;
-  const { mailObject } = leadContext;
+  const { dncArray } = leadContext;
 
   const [search, setSearch] = useState("");
   useEffect(() => {
@@ -27,33 +27,14 @@ const Campaigns = () => {
 
   return (
     <Fragment>
-      <div className='grid-2'>
-        <div className='card'>
-          <button
-            className='btn btn-block btn-danger'
-            onClick={() => putEmail(email, campaign)}>
-            Update Campaign Email
-          </button>
-          <button
-            className='btn btn-block btn-success'
-            onClick={() => putList(mailObject, campaign)}>
-            Update Campaign List
-          </button>
-          <button
-            className='btn btn-block btn-black'
-            onClick={() => deleteCampaign(_id)}>
-            Delete Campaign
-          </button>
-        </div>
-        <div className='card'>
-          <CampaignSearch />
+      <div className='card'>
+        <CampaignSearch />
 
-          {search === "visible"
-            ? campaigns.map((campaign) => (
-                <CampaignItem key={campaign._id} campaign={campaign} />
-              ))
-            : ""}
-        </div>
+        {search === "visible"
+          ? campaigns.map((campaign) => (
+              <CampaignItem key={campaign._id} campaign={campaign} />
+            ))
+          : ""}
       </div>
     </Fragment>
   );

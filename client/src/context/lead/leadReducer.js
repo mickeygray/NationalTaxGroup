@@ -6,6 +6,10 @@ import {
   SET_MAILOBJECT,
   UPDATE_DB,
   DELETE_LEADS,
+  ADD_CONTACTED,
+  MAKE_DNC,
+  SPLIT_LEAD,
+  SET_DNCOBJECT,
 } from "../types";
 
 export default (state, action) => {
@@ -33,6 +37,17 @@ export default (state, action) => {
         ...state,
         selectedFile: action.payload,
       };
+    case MAKE_DNC:
+      return {
+        ...state,
+        dncArray: action.payload,
+      };
+
+    case SPLIT_LEAD:
+      return {
+        ...state,
+        mailObject: action.payload,
+      };
 
     case PARSE_LIST:
       return {
@@ -50,6 +65,12 @@ export default (state, action) => {
       return {
         ...state,
         mailObject: action.payload,
+      };
+
+    case SET_DNCOBJECT:
+      return {
+        ...state,
+        dncArray: action.payload,
       };
 
     default:

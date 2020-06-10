@@ -26,13 +26,20 @@ router.delete("/", auth, async (req, res) => {
 });
 
 router.put("/", auth, async (req, res) => {
-  try {
-    const leads = await Lead.updateMany(req.body);
-    res.json(leads);
-    console.log(leads);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("servererr");
+  //updates mail list on initial send
+  if (req.body[0].contacts === 0) {
+    const update = Lead.updateMany(
+      { contacts: { $eq: 0 } },
+      { $set: { contacts: 1 } }
+    );
+
+    res.json(update);
+    console.log(update);
+  }
+
+  // bulk DNC update
+  if (req.body[0].dnc === true) {
+    const update = Lead.updateMany({ dnc: false }, { $set: { dnc: true } });
   }
 });
 //Get Leads For Email List
@@ -47,6 +54,10 @@ router.get("/", auth, async (req, res) => {
     //new leads
     if (listConditions.isContacted === false) {
       const leads = await Lead.find({ contacts: { $eq: 0 } });
+      res.json(leads);
+    }
+    if (listConditions.isDNC === true) {
+      const leads = await Lead.find({ isDNC: true });
       res.json(leads);
     }
 
