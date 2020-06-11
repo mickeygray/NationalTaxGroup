@@ -18,15 +18,10 @@ const SetInterval = require("set-interval");
 router.post("/templates", async (req, res) => {
   const { title, reactString, html, text, subject, from, key } = req.body;
 
-  const pug = htmlPugConverter(html);
-
-  console.log(pug);
-
   const newEmail = new Emails({
     title,
     reactString,
     html,
-    pug,
     text,
     subject,
     from,
@@ -154,22 +149,26 @@ router.delete("/campaigns/:id", auth, async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { title, html, template, text, subject, from, bcc, vars } = req.body;
+  const { title, html, template, text, subject, from, list } = req.body;
 
-  console.log(vars);
+  /*
+  fs.writeFile("./views/template.hbs", html, (err) => {
+    if (err) throw err;
+    console.log("thefilehasbeensaved");
+  });
 
   SetInterval.start(
     function () {
-      const test = vars[0];
+      const lead = list[0];
 
       vars.shift();
 
-      if (test != null) {
+      if (lead != null) {
         const transporter = nodemailer.createTransport({
           service: "gmail",
           auth: {
-            user: "bs@gmail.com",
-            pass: "",
+            user: "blackballedproductions@gmail.com",
+            pass: "QW12as34!@#$",
           },
         });
 
@@ -188,11 +187,11 @@ router.post("/", async (req, res) => {
 
         const mailer = {
           from: "blackballedproductions@gmail.com",
-          to: test.email,
-          subject: "Liens",
-          template: "LienFiled",
+          to: lead.email,
+          subject: subject,
+          template: "template",
           context: {
-            test: test,
+            lead: lead,
           },
         };
         transporter.sendMail(mailer);
@@ -203,6 +202,8 @@ router.post("/", async (req, res) => {
     1000,
     "cleared"
   );
+
+  */
 });
 
 module.exports = router;

@@ -30,10 +30,11 @@ const Home = () => {
       </div>
       <div className='grid-2'>
         <div>
-          <Campaigns />
+          <EmailLibrary />
         </div>
         <div>
-          <EmailLibrary />
+          {" "}
+          <Campaigns />
         </div>
       </div>
       <div>

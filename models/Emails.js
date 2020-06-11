@@ -5,7 +5,6 @@ const emailSchema = new Schema({
   reactstring: String,
   title: String,
   html: String,
-  template: String,
   text: String,
   subject: String,
   from: String,

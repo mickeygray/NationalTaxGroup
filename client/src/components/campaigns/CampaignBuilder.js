@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, Fragment } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import EmailContext from "../../context/email/emailContext";
-import Campaigns from "./Campaigns";
 
 const CampaignBuilder = () => {
   const leadContext = useContext(LeadContext);
@@ -10,16 +9,9 @@ const CampaignBuilder = () => {
 
   const { sendEmail, email, saveCampaign } = emailContext;
 
-  const { splitLead, mailObject, mailList, addContacted } = leadContext;
+  const { setMailList, mailList, addContacted } = leadContext;
 
   console.log(mailList);
-
-  useEffect(() => {
-    if (mailObject != null) {
-      setList(mailObject);
-    }
-  });
-
   const [letter, setLetter] = useState({
     title: "",
     html: "",
@@ -34,10 +26,8 @@ const CampaignBuilder = () => {
   });
 
   const [list, setList] = useState({
-    bcc: [],
-    vars: [],
+    list: [],
   });
-
   const onClick = (e) => {
     addContacted(mailList);
     saveCampaign(campaign);
@@ -46,8 +36,6 @@ const CampaignBuilder = () => {
 
   const { title, html, text, subject, from, campaignName } = letter;
 
-  const { bcc, vars } = list;
-
   const campaign = {
     title,
     html,
@@ -55,17 +43,18 @@ const CampaignBuilder = () => {
     subject,
     from,
     campaignName,
-    bcc,
-    vars,
+    list,
   };
 
+  console.log(campaign);
   return (
     <Fragment>
-      <div className='grid-2'>
-        <div className='card grid-3'>
+      <div className='card'>
+        <h3>Send an Email</h3>
+        <div className=' grid-3'>
           <button
             className='btn btn-block btn-danger'
-            onClick={() => splitLead(mailList)}>
+            onClick={() => setList(mailList)}>
             Prepare Mail List
           </button>
           <button

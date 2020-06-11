@@ -96,11 +96,10 @@ const LeadState = (props) => {
       type: PARSE_LIST,
       payload: mailList,
     });
-
-    setList(mailList);
+    setMailList(mailList);
   };
 
-  const setList = () => {
+  const setMailList = () => {
     dispatch({ type: SET_LIST });
   };
 
@@ -114,7 +113,6 @@ const LeadState = (props) => {
       delete lead.upsellable;
       delete lead.contacts;
       delete lead.converted;
-
       delete lead.lexId;
       delete lead.firstName;
       delete lead.fullName;
@@ -135,38 +133,6 @@ const LeadState = (props) => {
       type: MAKE_DNC,
       payload: dncArray,
     });
-  };
-
-  const splitLead = (mailList) => {
-    let bcc = [];
-    let vars = [];
-
-    mailList.forEach((lead) => {
-      bcc.push(lead.email);
-
-      delete lead.highdollar;
-      delete lead.upsellable;
-      delete lead.contacts;
-      delete lead.converted;
-      delete lead.dnc;
-      delete lead._id;
-      delete lead.lexId;
-
-      vars.push(lead);
-    });
-
-    const mailObject = {
-      bcc,
-      vars,
-    };
-
-    console.log(mailObject);
-    dispatch({
-      type: SPLIT_LEAD,
-      payload: mailObject,
-    });
-
-    setMailObject(mailObject);
   };
 
   const setMailObject = (mailObject) => {
@@ -199,11 +165,10 @@ const LeadState = (props) => {
         mailList: state.mailList,
         dncArray: state.dncArray,
         deleteLeads,
-        splitLead,
         setSelectedFile,
         uploadFile,
         parseDb,
-        setList,
+        setMailList,
         updateDb,
         addContacted,
         parseDNC,

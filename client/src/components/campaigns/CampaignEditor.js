@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, Fragment } from "react";
 import EmailContext from "../../context/email/emailContext";
 import LeadContext from "../../context/lead/leadContext";
 
@@ -9,23 +9,28 @@ const CampaignEditor = () => {
   const { dncArray } = leadContext;
   const { _id } = campaign;
   return (
-    <div className='card'>
-      <button
-        className='btn btn-block btn-danger'
-        onClick={() => putEmail(email, campaign)}>
-        Update Campaign Email
-      </button>
-      <button
-        className='btn btn-block btn-success'
-        onClick={() => putList(dncArray, campaign)}>
-        Remove DNCS From Campaign
-      </button>
-      <button
-        className='btn btn-block btn-black'
-        onClick={() => deleteCampaign(_id)}>
-        Delete Campaign
-      </button>
-    </div>
+    <Fragment>
+      <div className='card'>
+        <h3>Edit Existing Campaign</h3>
+        <div className='grid-3'>
+          <button
+            className='btn btn-block btn-danger'
+            onClick={() => putEmail(email, campaign)}>
+            Update Email
+          </button>
+          <button
+            className='btn btn-block btn-success'
+            onClick={() => putList(dncArray, campaign)}>
+            Remove DNCS
+          </button>
+          <button
+            className='btn btn-block btn-black'
+            onClick={() => deleteCampaign(_id)}>
+            Delete Campaign
+          </button>
+        </div>
+      </div>
+    </Fragment>
   );
 };
 

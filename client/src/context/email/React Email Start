@@ -1,4 +1,4 @@
-    const testEmail2 = renderEmail(
+renderEmail(
       <Email title='Test Email' headCSS={headCss}>
         <Item>
           <Box>

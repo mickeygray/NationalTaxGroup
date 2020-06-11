@@ -35,7 +35,6 @@ const ListFilter = () => {
 
   const onClick = (e) => {
     parseDb(listConditions);
-    setList(mailList);
   };
 
   const onSubmit = (e) => {
@@ -235,7 +234,7 @@ const ListFilter = () => {
           Delete List
         </button>
         <button className='btn btn-block btn-danger' onClick={onClick}>
-          Load List
+          Set List Params
         </button>
         <button className='btn btn-block btn-danger' onClick={listUpdate}>
           Set Campaign Suppression

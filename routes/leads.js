@@ -24,7 +24,7 @@ router.delete("/", auth, async (req, res) => {
     }
   });
 });
-
+/*
 router.put("/", auth, async (req, res) => {
   //updates mail list on initial send
   if (req.body[0].contacts === 0) {
@@ -42,6 +42,7 @@ router.put("/", auth, async (req, res) => {
     const update = Lead.updateMany({ dnc: false }, { $set: { dnc: true } });
   }
 });
+*/
 //Get Leads For Email List
 
 router.get("/", auth, async (req, res) => {
@@ -80,7 +81,6 @@ router.get("/", auth, async (req, res) => {
     ) {
       const leads = await Lead.find({
         contacts: { $gte: 1 },
-
         converted: false,
         type: /Federal/,
       });
@@ -94,7 +94,6 @@ router.get("/", auth, async (req, res) => {
     ) {
       const leads = await Lead.find({
         contacts: { $gte: 1 },
-
         converted: false,
         type: /State/,
       });
@@ -109,7 +108,6 @@ router.get("/", auth, async (req, res) => {
     ) {
       const leads = await Lead.find({
         contacts: { $gte: 1 },
-
         converted: false,
         type: /Federal/,
         amount: { $gte: 25000 },
