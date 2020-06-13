@@ -111,6 +111,28 @@ const EmailState = (props) => {
     }
   };
 
+  const editTemplate = async (email) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.put(
+        `/api/emails/templates/${email._id}`,
+        email,
+        config
+      );
+      dispatch({
+        type: PUT_EMAIL,
+        payload: res.data,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const putList = async (mailList, campaign) => {
     const config = {
       headers: {

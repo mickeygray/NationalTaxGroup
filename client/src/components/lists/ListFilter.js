@@ -19,8 +19,6 @@ const ListFilter = () => {
     isOptedIn: false,
   });
 
-  const [list, setList] = useState([]);
-
   const onClick = (e) => {
     parseDb(listConditions);
   };

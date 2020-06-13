@@ -46,6 +46,7 @@ const CampaignBuilder = () => {
     setModalState(true);
   };
 
+  console.log(mailList);
   const { title, html, text, subject, from, campaignName } = letter;
 
   const campaign = {

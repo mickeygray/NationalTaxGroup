@@ -102,15 +102,17 @@ const LeadState = (props) => {
     const query = JSON.stringify(listConditions);
     const res = await axios.get(`/api/leads?q=${query}`, config);
 
+    const mailList = res.data;
     dispatch({
       type: PARSE_LIST,
-      payload: res.data,
+      payload: mailList,
     });
 
-    setMailList(res.data);
+    setMailList(mailList);
+    console.log(mailList);
   };
 
-  const setMailList = (e) => {
+  const setMailList = (mailList) => {
     dispatch({ type: SET_LIST });
   };
 

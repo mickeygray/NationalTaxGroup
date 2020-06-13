@@ -25,12 +25,12 @@ import {
   renderEmail,
 } from "react-html-email";
 import { v4 as uuidv4 } from "uuid";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import { UnControlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
+import "codemirror/mode/xml/xml";
+import "codemirror/mode/javascript/javascript";
 import EmailPreview from "./EmailPreview";
-require("codemirror/mode/xml/xml");
-require("codemirror/mode/javascript/javascript");
 
 const EmailCreator = () => {
   const emailContext = useContext(EmailContext);
@@ -124,7 +124,7 @@ const EmailCreator = () => {
   const keyVal = uuidv4();
 
   useEffect(() => {
-    setHeaders({
+    setEmail({
       reactstring: "",
       title: "",
       html: "",
@@ -134,21 +134,18 @@ const EmailCreator = () => {
       reactstring: "",
       key: keyVal,
     });
-    setHTML("");
   }, []);
 
-  const [headers, setHeaders] = useState({
+  const [email, setEmail] = useState({
     reactstring: "",
     title: "",
-
     text: "",
     subject: "",
     from: "",
     reactstring: "",
     key: keyVal,
+    html: "",
   });
-
-  const [html, setHTML] = useState("");
 
   const [showEmail, setEmailState] = useState(false);
 
@@ -157,14 +154,13 @@ const EmailCreator = () => {
   }, []);
 
   const onChange = (e) => {
-    setHTML({ ...html, [e.target.name]: e.target.value });
-    setHeaders({ ...headers, [e.target.name]: e.target.value });
+    setEmail({ ...email, [e.target.name]: e.target.value });
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     saveEmail(email);
-    setHeaders({
+    setEmail({
       reactstring: "",
       title: "",
       text: "",
@@ -172,8 +168,8 @@ const EmailCreator = () => {
       from: "",
       reactstring: "",
       key: keyVal,
+      html: "",
     });
-    setHTML("");
   };
 
   const [preview, setPreview] = useState(false);
@@ -195,9 +191,7 @@ const EmailCreator = () => {
     }
   };
 
-  const { title, text, subject, from, reactstring, key } = headers;
-
-  const email = { title, text, subject, from, reactstring, key, html };
+  const { title, text, subject, from, reactstring, key, html } = email;
   return (
     <div>
       <div>
@@ -228,9 +222,10 @@ const EmailCreator = () => {
               </div>
             </div>
           </LiveProvider>
-          <form action='post' onSubmit={onSubmit}>
-            <div className='grid-2'>
-              <div className='card'>
+
+          <div className='grid-2'>
+            <div className='card'>
+              <form action='post' onSubmit={onSubmit}>
                 <input
                   value={title}
                   placeholder='Title'
@@ -261,30 +256,36 @@ const EmailCreator = () => {
                   value={from}
                 />
 
-                <textarea
+                <input
+                  type='text'
                   value={reactstring}
                   placeholder='reactstring'
                   type='text'
                   name='reactstring'
                   onChange={onChange}
                 />
-              </div>
-              <div className='card'>
-                <CodeMirror
+
+                <input
+                  type='text'
                   value={html}
+                  placeholder='html'
+                  type='text'
+                  name='html'
                   onChange={onChange}
-                  options={{
-                    mode: "xml",
-                    theme: "material",
-                    lineNumbers: true,
-                  }}
-                  onBeforeChange={(editor, data, value) => {
-                    setHTML(html);
-                  }}
                 />
-              </div>
+              </form>
             </div>
-          </form>
+
+            <div className='card'>
+              <CodeMirror
+                options={{
+                  mode: "xml",
+                  theme: "material",
+                  lineNumbers: true,
+                }}
+              />
+            </div>
+          </div>
         </div>
       ) : (
         <Fragment>

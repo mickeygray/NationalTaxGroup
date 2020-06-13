@@ -16,7 +16,7 @@ const EmailItem = ({ email }) => {
     setEmailState((prevState) => !prevState);
   }, []);
 
-  const { setTemplate, deleteTemplate } = emailContext;
+  const { setTemplate, deleteTemplate, editTemplate } = emailContext;
 
   const { title, subject, html, _id } = email;
 
@@ -41,6 +41,7 @@ const EmailItem = ({ email }) => {
         </div>
         <span style={{ float: "right" }}>
           {" "}
+          <button onClick={() => editTemplate(email)}>Edit</button>
           <button onClick={() => deleteTemplate(_id)}>X</button>
         </span>
       </div>
