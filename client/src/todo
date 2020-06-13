@@ -1,7 +1,5 @@
-Finish Delete Functions
-Finish Update Functions 
-Develop Layout 
-Handlebars 
-Deploy to Heroku
+update to client 
+update client status
+put email in email editor
 
-
+Filter List Opt in status after pull use this mechanism to direct to email server

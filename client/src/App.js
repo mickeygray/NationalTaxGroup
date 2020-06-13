@@ -9,6 +9,7 @@ import AuthState from "./context/auth/AuthState";
 import "./App.css";
 import LeadState from "./context/lead/LeadState";
 import EmailState from "./context/email/EmailState";
+import TakeMeOffTheList from "./components/pages/TakeMeOffTheList";
 
 const App = () => {
   return (
@@ -23,6 +24,11 @@ const App = () => {
                   <PrivateRoute exact path='/' component={Home} />
                   <Route exact path='/register' component={Register} />
                   <Route exact path='/login' component={Login} />
+                  <Route
+                    exact
+                    path='/takemeoffthelist'
+                    component={TakeMeOffTheList}
+                  />
                 </Switch>
               </div>
             </Fragment>

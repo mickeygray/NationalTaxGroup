@@ -23,7 +23,6 @@ const Campaigns = () => {
   }, [searchCampaigns]);
 
   const { _id } = campaign;
-  console.log(campaign);
 
   return (
     <Fragment>

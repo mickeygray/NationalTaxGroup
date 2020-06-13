@@ -5,9 +5,8 @@ import LeadContext from "../../context/lead/leadContext";
 const CampaignEditor = () => {
   const emailContext = useContext(EmailContext);
   const leadContext = useContext(LeadContext);
-  const { putEmail, putList, email, campaign, deleteCampaign } = emailContext;
-  const { dncArray } = leadContext;
-  const { _id } = campaign;
+  const { putEmail, putList, email, campaign } = emailContext;
+  const { mailList, updateLead } = leadContext;
   return (
     <Fragment>
       <div className='card'>
@@ -20,13 +19,13 @@ const CampaignEditor = () => {
           </button>
           <button
             className='btn btn-block btn-success'
-            onClick={() => putList(dncArray, campaign)}>
+            onClick={() => putList(mailList, campaign)}>
             Remove DNCS
           </button>
           <button
             className='btn btn-block btn-black'
-            onClick={() => deleteCampaign(_id)}>
-            Delete Campaign
+            onClick={() => updateLead(campaign)}>
+            Opt In Leads
           </button>
         </div>
       </div>

@@ -1,6 +1,13 @@
-import React, { useState, useContext, useEffect, Fragment } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  Fragment,
+  useCallback,
+} from "react";
 import LeadContext from "../../context/lead/leadContext";
 import EmailContext from "../../context/email/emailContext";
+import CampaignModal from "../emails/CampaignModal";
 
 const CampaignBuilder = () => {
   const leadContext = useContext(LeadContext);
@@ -9,9 +16,8 @@ const CampaignBuilder = () => {
 
   const { sendEmail, email, saveCampaign } = emailContext;
 
-  const { setMailList, mailList, addContacted } = leadContext;
+  const { mailList } = leadContext;
 
-  console.log(mailList);
   const [letter, setLetter] = useState({
     title: "",
     html: "",
@@ -28,10 +34,16 @@ const CampaignBuilder = () => {
   const [list, setList] = useState({
     list: [],
   });
+
+  const toggleVisibility = useCallback(() => {
+    setModalState((prevState) => !prevState);
+  }, []);
+
+  const [showModal, setModalState] = useState(false);
+
   const onClick = (e) => {
-    addContacted(mailList);
-    saveCampaign(campaign);
     sendEmail(campaign);
+    setModalState(true);
   };
 
   const { title, html, text, subject, from, campaignName } = letter;
@@ -46,16 +58,18 @@ const CampaignBuilder = () => {
     list,
   };
 
-  console.log(campaign);
   return (
     <Fragment>
+      {showModal && (
+        <CampaignModal {...campaign} toggleVisibility={toggleVisibility} />
+      )}
       <div className='card'>
         <h3>Send an Email</h3>
         <div className=' grid-3'>
           <button
             className='btn btn-block btn-danger'
             onClick={() => setList(mailList)}>
-            Prepare Mail List
+            Prepare List
           </button>
           <button
             className='btn btn-block btn-secondary'

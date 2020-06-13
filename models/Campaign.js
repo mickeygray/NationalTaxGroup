@@ -8,8 +8,7 @@ const campaignSchema = new Schema({
   subject: String,
   from: String,
   campaignName: String,
-  to: [String],
-  vars: [],
+  list: [],
 });
 
 module.exports = mongoose.model("campaign", campaignSchema);

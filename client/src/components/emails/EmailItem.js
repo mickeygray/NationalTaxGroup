@@ -16,9 +16,9 @@ const EmailItem = ({ email }) => {
     setEmailState((prevState) => !prevState);
   }, []);
 
-  const { setTemplate } = emailContext;
+  const { setTemplate, deleteTemplate } = emailContext;
 
-  const { title, subject, html } = email;
+  const { title, subject, html, _id } = email;
 
   const onClick = (e) => {
     setTemplate(email);
@@ -39,6 +39,10 @@ const EmailItem = ({ email }) => {
             <Modal {...email} toggleVisibility={toggleVisibility} />
           )}
         </div>
+        <span style={{ float: "right" }}>
+          {" "}
+          <button onClick={() => deleteTemplate(_id)}>X</button>
+        </span>
       </div>
     </Fragment>
   );

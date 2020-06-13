@@ -10,7 +10,6 @@ const emailSchema = new Schema({
   from: String,
   clicks: { type: Number, default: 0 },
   unsubscribes: { type: Number, default: 0 },
-  campaignName: String,
   key: String,
 });
 

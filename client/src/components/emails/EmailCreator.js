@@ -25,8 +25,12 @@ import {
   renderEmail,
 } from "react-html-email";
 import { v4 as uuidv4 } from "uuid";
-
+import { Controlled as CodeMirror } from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material.css";
 import EmailPreview from "./EmailPreview";
+require("codemirror/mode/xml/xml");
+require("codemirror/mode/javascript/javascript");
 
 const EmailCreator = () => {
   const emailContext = useContext(EmailContext);
@@ -120,30 +124,31 @@ const EmailCreator = () => {
   const keyVal = uuidv4();
 
   useEffect(() => {
-    setEmail({
+    setHeaders({
       reactstring: "",
       title: "",
       html: "",
       text: "",
       subject: "",
       from: "",
-      campaignName: "",
       reactstring: "",
       key: keyVal,
     });
+    setHTML("");
   }, []);
 
-  const [email, setEmail] = useState({
+  const [headers, setHeaders] = useState({
     reactstring: "",
     title: "",
-    html: "",
+
     text: "",
     subject: "",
     from: "",
-    campaignName: "",
     reactstring: "",
     key: keyVal,
   });
+
+  const [html, setHTML] = useState("");
 
   const [showEmail, setEmailState] = useState(false);
 
@@ -152,23 +157,23 @@ const EmailCreator = () => {
   }, []);
 
   const onChange = (e) => {
-    setEmail({ ...email, [e.target.name]: e.target.value });
+    setHTML({ ...html, [e.target.name]: e.target.value });
+    setHeaders({ ...headers, [e.target.name]: e.target.value });
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     saveEmail(email);
-    setEmail({
+    setHeaders({
       reactstring: "",
       title: "",
-      html: "",
       text: "",
       subject: "",
       from: "",
-      campaignName: "",
       reactstring: "",
       key: keyVal,
     });
+    setHTML("");
   };
 
   const [preview, setPreview] = useState(false);
@@ -190,103 +195,103 @@ const EmailCreator = () => {
     }
   };
 
-  const {
-    title,
-    html,
-    text,
-    subject,
-    from,
-    campaignName,
-    reactstring,
-    key,
-  } = email;
+  const { title, text, subject, from, reactstring, key } = headers;
 
-  console.log(withLive());
-
+  const email = { title, text, subject, from, reactstring, key, html };
   return (
-    <Fragment>
+    <div>
+      <div>
+        <h3>
+          Write React HTML to Render an email template, call varFields in /{} to
+          render a variable field, currently available css injections include:
+          buttonStyle, paragraphStyle, rectangleStyle, squareStyle{" "}
+        </h3>
+      </div>
       {!preview ? (
-        <div className='card'>
-          <form action='post' onSubmit={onSubmit}>
-            <LiveProvider
-              code={
-                "renderEmail(<Email headCSS={headCSS}><Item></Item></Email>)"
-              }
-              scope={scope}>
-              <div className='grid-2'>
-                <div className='card'>
-                  <LiveEditor />
-                </div>
-                <div
-                  className='card'
-                  style={{
-                    width: "500px",
-                    maxHeight: "400px",
-                    overflow: "scroll",
-                  }}>
-                  {" "}
-                  <LivePreview />
-                </div>
+        <div>
+          <LiveProvider
+            code={"renderEmail(<Email headCSS={headCSS}><Item></Item></Email>)"}
+            scope={scope}>
+            <div className='grid-2'>
+              <div className='card'>
+                <LiveEditor />
               </div>
-            </LiveProvider>
+              <div
+                className='card'
+                style={{
+                  width: "500px",
+                  maxHeight: "400px",
+                  overflow: "scroll",
+                }}>
+                {" "}
+                <LivePreview />
+              </div>
+            </div>
+          </LiveProvider>
+          <form action='post' onSubmit={onSubmit}>
+            <div className='grid-2'>
+              <div className='card'>
+                <input
+                  value={title}
+                  placeholder='Title'
+                  type='text'
+                  name='title'
+                  onChange={onChange}
+                />
 
-            <input
-              value={title}
-              placeholder='Title'
-              type='text'
-              name='title'
-              onChange={onChange}
-            />
+                <input
+                  placeholder='Text'
+                  type='text'
+                  name='text'
+                  onChange={onChange}
+                  value={text}
+                />
+                <input
+                  value={subject}
+                  placeholder='Subject'
+                  type='text'
+                  name='subject'
+                  onChange={onChange}
+                />
+                <input
+                  placeholder='From'
+                  type='text'
+                  name='from'
+                  onChange={onChange}
+                  value={from}
+                />
 
-            <input
-              placeholder='Text'
-              type='text'
-              name='text'
-              onChange={onChange}
-              value={text}
-            />
-            <input
-              value={subject}
-              placeholder='Subject'
-              type='text'
-              name='subject'
-              onChange={onChange}
-            />
-            <input
-              placeholder='From'
-              type='text'
-              name='from'
-              onChange={onChange}
-              value={from}
-            />
-            <input
-              value={campaignName}
-              placeholder='Campaign Name'
-              type='text'
-              name='campaignName'
-              onChange={onChange}
-            />
-
-            <textarea
-              value={html}
-              placeholder='Html'
-              type='text'
-              name='html'
-              onChange={onChange}
-            />
-            <textarea
-              value={reactstring}
-              placeholder='reactstring'
-              type='text'
-              name='reactstring'
-              onChange={onChange}
-            />
+                <textarea
+                  value={reactstring}
+                  placeholder='reactstring'
+                  type='text'
+                  name='reactstring'
+                  onChange={onChange}
+                />
+              </div>
+              <div className='card'>
+                <CodeMirror
+                  value={html}
+                  onChange={onChange}
+                  options={{
+                    mode: "xml",
+                    theme: "material",
+                    lineNumbers: true,
+                  }}
+                  onBeforeChange={(editor, data, value) => {
+                    setHTML(html);
+                  }}
+                />
+              </div>
+            </div>
           </form>
         </div>
       ) : (
-        <div className='card'>
-          <EmailPreview {...email} />
-        </div>
+        <Fragment>
+          <div className='card'>
+            <EmailPreview {...email} />
+          </div>
+        </Fragment>
       )}
 
       <br />
@@ -299,7 +304,7 @@ const EmailCreator = () => {
           Preview Email
         </button>
       </div>
-    </Fragment>
+    </div>
   );
 };
 

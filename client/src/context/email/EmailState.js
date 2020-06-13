@@ -13,6 +13,7 @@ import {
   PUT_LIST,
   SET_CAMPAIGN,
   DELETE_CAMPAIGN,
+  DELETE_TEMPLATE,
 } from "../types";
 
 const EmailState = (props) => {
@@ -31,6 +32,7 @@ const EmailState = (props) => {
   };
 
   const setCampaign = (campaign) => {
+    console.log(campaign);
     dispatch({ type: SET_CAMPAIGN, payload: campaign });
   };
 
@@ -40,8 +42,6 @@ const EmailState = (props) => {
         "Content-Type": "application/json",
       },
     };
-
-    console.log(campaign);
     const res = await axios.post(`/api/emails/campaigns`, campaign, config);
     dispatch({ type: POST_CAMPAIGN, payload: res.data });
   };
@@ -69,6 +69,19 @@ const EmailState = (props) => {
     }
   };
 
+  const deleteTemplate = async (_id) => {
+    try {
+      await axios.delete(`/api/emails/templates/${_id}`);
+
+      dispatch({
+        type: DELETE_TEMPLATE,
+        payload: _id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const searchEmails = async (text) => {
     const res = await axios.get(`/api/emails/templates?q=${text}`);
 
@@ -84,8 +97,9 @@ const EmailState = (props) => {
 
     try {
       const res = await axios.put(
-        `/api/campaigns/${campaign._id}`,
+        `/api/emails/campaigns/${campaign._id}`,
         email,
+        campaign,
         config
       );
       dispatch({
@@ -97,7 +111,7 @@ const EmailState = (props) => {
     }
   };
 
-  const putList = async (mailObject, campaign) => {
+  const putList = async (mailList, campaign) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -106,8 +120,9 @@ const EmailState = (props) => {
 
     try {
       const res = await axios.put(
-        `/api/emails/campaigns/${campaign._id}`,
-        mailObject,
+        `/api/emails/campaigns/${campaign._id}/list`,
+        mailList,
+        campaign,
         config
       );
 
@@ -150,6 +165,7 @@ const EmailState = (props) => {
         putList,
         setCampaign,
         deleteCampaign,
+        deleteTemplate,
         campaigns: state.campaigns,
         campaign: state.campaign,
         emailLibrary: state.emailLibrary,

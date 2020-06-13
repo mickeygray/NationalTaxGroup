@@ -17,27 +17,57 @@ const CampaignItem = ({ campaign }) => {
     setEmailState((prevState) => !prevState);
   }, []);
 
-  const { setCampaign } = emailContext;
+  const { setCampaign, deleteCampaign } = emailContext;
 
-  const { title, html } = campaign;
+  const { campaignName, _id } = campaign;
+
+  useEffect(() => {
+    if (showEmail === true) {
+      setModalStyle({
+        width: "600px",
+        height: "800px",
+      });
+    } else if (showEmail === false) {
+      setModalStyle({
+        width: "30px",
+        height: "10px",
+      });
+    }
+  }, [showEmail]);
 
   const onClick = (e) => {
     setCampaign(campaign);
   };
 
+  const [modalStyle, setModalStyle] = useState({
+    width: "30px",
+    height: "10px",
+  });
+
   return (
     <Fragment>
-      <div className='card grid-2'>
+      <div className='card grid-3'>
         <div>
-          <button onClick={onClick}>{title}</button>
+          <button className='btn btn-sm btn-primary' onClick={onClick}>
+            {campaignName}
+          </button>
         </div>
-        <div>
-          <button onClick={toggleVisibility}> show email</button>
+        <div style={modalStyle}>
+          <button
+            className='btn btn-sm btn-secondary'
+            onClick={toggleVisibility}>
+            {" "}
+            Show email
+          </button>
 
           {showEmail && (
             <Modal {...campaign} toggleVisibility={toggleVisibility} />
           )}
         </div>
+        <span style={{ float: "right" }}>
+          {" "}
+          <button onClick={() => deleteCampaign(_id)}>X</button>
+        </span>
       </div>
     </Fragment>
   );

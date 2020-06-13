@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Lead = require("../models/Lead");
 const auth = require("../middleware/auth");
+const mongoose = require("mongoose");
 
 //Add Leads to Mongo
 
@@ -16,33 +17,85 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.delete("/", auth, async (req, res) => {
-  Lead.deleteMany({ isDNC: true }, function (err, result) {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(result);
+  Lead.deleteMany({ dnc: true })
+    .then(function () {
+      console.log("Data deleted"); // Success
+    })
+    .catch(function (error) {
+      console.log(error); // Failure
+    });
+});
+
+router.put("/:id/dnc", auth, async (req, res) => {
+  console.log(req.body);
+
+  const { name, address, lexid, email } = req.body;
+  try {
+    if (lexid != null) {
+      const lead = await Lead.findOneAndUpdate(
+        { lexid: lexid },
+        { dnc: true },
+        {
+          new: true,
+          upsert: true, // Make this update into an upsert
+        }
+      );
+      res.json(lead);
+    } else if (name != null && address != null) {
+      const leadName = new RegExp(`${name}`, "gi");
+      const leadAddress = new RegExp(`${address}`, "gi");
+      const lead = await Lead.findOneAndUpdate(
+        {
+          $and: [{ fullName: leadName }, { address: leadAddress }],
+        },
+        { dnc: true },
+        {
+          new: true,
+          upsert: true, // Make this update into an upsert
+        }
+      );
+      res.json(lead);
+    } else if (email != null) {
+      const leadEmail = new RegExp(`${email}`, "gi");
+      const lead = await Lead.findOneAndUpdate(
+        { email: email },
+        { dnc: true },
+        {
+          new: true,
+          upsert: true, // Make this update into an upsert
+        }
+      );
+      console.log(lead);
+      res.json(lead);
     }
-  });
+  } catch (err) {
+    console.error(er.message);
+    res.status(500).send("Server Error");
+  }
 });
-/*
+
 router.put("/", auth, async (req, res) => {
-  //updates mail list on initial send
-  if (req.body[0].contacts === 0) {
-    const update = Lead.updateMany(
-      { contacts: { $eq: 0 } },
-      { $set: { contacts: 1 } }
-    );
+  const list = req.body.list;
 
-    res.json(update);
-    console.log(update);
+  var vals = [];
+  for (var item of list) {
+    vals.push(item._id);
   }
 
-  // bulk DNC update
-  if (req.body[0].dnc === true) {
-    const update = Lead.updateMany({ dnc: false }, { $set: { dnc: true } });
-  }
+  const objectIdArray = vals.map((s) => mongoose.Types.ObjectId(s));
+
+  await Lead.updateMany(
+    {
+      "_id": { "$in": objectIdArray },
+    },
+    { "$set": { "optedin": true } },
+    (err, doc) => {
+      if (err) console.log(err);
+      console.log(doc);
+    }
+  );
 });
-*/
+
 //Get Leads For Email List
 
 router.get("/", auth, async (req, res) => {
@@ -54,112 +107,55 @@ router.get("/", auth, async (req, res) => {
   try {
     //new leads
     if (listConditions.isContacted === false) {
-      const leads = await Lead.find({ contacts: { $eq: 0 } });
+      const leads = await Lead.find({ contacted: false });
+
       res.json(leads);
-    }
-    if (listConditions.isDNC === true) {
-      const leads = await Lead.find({ isDNC: true });
+
+      const list = await Lead.updateMany(
+        { contacted: false },
+        { contacted: true }
+      );
+    } else if (listConditions.isDNC === true) {
+      const leads = await Lead.find({ dnc: true });
       res.json(leads);
     }
 
     //all leads
     else if (
-      listConditions.isContacted === true &&
+      listConditions.isOptedIn === true &&
       listConditions.isClient === false
     ) {
       const leads = await Lead.find({
-        contacts: { $gte: 1 },
         converted: false,
       });
       res.json(leads);
 
       //all federal
-    } else if (
-      listConditions.isContacted === true &&
-      listConditions.isClient === false &&
-      listConditions.isFederal === true
-    ) {
-      const leads = await Lead.find({
-        contacts: { $gte: 1 },
-        converted: false,
-        type: /Federal/,
-      });
+    } else if (listConditions.isFederal === true) {
+      const leads = await Lead.find({ type: "Federal Tax Lien" });
       res.json(leads);
 
       //all state
-    } else if (
-      listConditions.isContacted === true &&
-      listConditions.isClient === false &&
-      listConditions.isState === true
-    ) {
+    } else if (listConditions.isState === true) {
       const leads = await Lead.find({
-        contacts: { $gte: 1 },
-        converted: false,
-        type: /State/,
+        type: "State Tax Lien",
       });
+
       res.json(leads);
 
       //all federal above 25000
-    } else if (
-      listConditions.isContacted === true &&
-      listConditions.isClient === false &&
-      listConditions.isFederal === true &&
-      listConditions.isAbove25000 === true
-    ) {
+    } else if (listConditions.isAbove25000 === true) {
       const leads = await Lead.find({
-        contacts: { $gte: 1 },
-        converted: false,
-        type: /Federal/,
         amount: { $gte: 25000 },
       });
       res.json(leads);
 
       //all federal below 25000
-    } else if (
-      listConditions.isContacted === true &&
-      listConditions.isClient === false &&
-      listConditions.isFederal === true &&
-      listConditions.isBelow25000 === true
-    ) {
+    } else if (listConditions.isBelow25000 === true) {
       const leads = await Lead.find({
-        contacts: { $gte: 1 },
-        converted: false,
-        type: /Federal/,
         amount: { $lte: 25000 },
       });
       res.json(leads);
-    }
-    //all state above 25000
-    else if (
-      listConditions.isContacted === true &&
-      listConditions.isClient === false &&
-      listConditions.isState === true &&
-      listConditions.isAbove25000 === true
-    ) {
-      const leads = await Lead.find({
-        contacts: { $gte: 1 },
-        converted: false,
-        type: /State/,
-        amount: { $gte: 25000 },
-      });
-      res.json(leads);
-
-      //all state below 25000
-    } else if (
-      listConditions.isContacted === true &&
-      listConditions.isClient === false &&
-      listConditions.isState === true &&
-      listConditions.isBelow25000 === true
-    ) {
-      const leads = await Lead.find({
-        contacts: { $gte: 1 },
-        converted: false,
-        type: /State/,
-        amount: { $lte: 25000 },
-      });
-      res.json(leads);
-
-      //all clients
     } else if (listConditions.isClient === true) {
       const leads = await Lead.find({
         converted: true,
@@ -167,25 +163,15 @@ router.get("/", auth, async (req, res) => {
       res.json(leads);
 
       //all upsellable clients
-    } else if (
-      listConditions.isClient === true &&
-      listConditions.isUpsellable === true
-    ) {
+    } else if (listConditions.isUpsellable === true) {
       const leads = await Lead.find({
-        converted: true,
         upsellable: true,
       });
       res.json(leads);
 
       //been mailed and interacted all leads federal
-    } else if (
-      listConditions.isClient === true &&
-      listConditions.isUpsellable === true &&
-      listConditions.isHighDollar === true
-    ) {
+    } else if (listConditions.isHighDollar === true) {
       const leads = await Lead.find({
-        converted: true,
-        upsellable: true,
         highdollar: true,
       });
       res.json(leads);
@@ -197,7 +183,5 @@ router.get("/", auth, async (req, res) => {
 });
 
 //Update contact status
-
-router.put("/", (req, res) => {});
 
 module.exports = router;

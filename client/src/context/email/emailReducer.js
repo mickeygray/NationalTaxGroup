@@ -8,6 +8,8 @@ import {
   PUT_EMAIL,
   SET_CAMPAIGN,
   DELETE_CAMPAIGN,
+  DELETE_TEMPLATE,
+  PUT_LIST,
 } from "../types";
 
 export default (state, action) => {
@@ -35,8 +37,15 @@ export default (state, action) => {
           (campaign) => campaign._id !== action.payload
         ),
       };
+    case DELETE_TEMPLATE:
+      return {
+        ...state,
+        emailLibrary: state.emailLibrary.filter(
+          (email) => email._id !== action.payload
+        ),
+      };
 
-    case PUT_EMAIL:
+    case PUT_LIST:
       return {
         ...state,
         campaign: action.payload,

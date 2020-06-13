@@ -4,9 +4,9 @@ import {
   PARSE_LIST,
   SET_LIST,
   SET_MAILOBJECT,
-  UPDATE_DB,
+  UPDATE_CLIENT,
+  UPDATE_LEAD,
   DELETE_LEADS,
-  ADD_CONTACTED,
   MAKE_DNC,
   SPLIT_LEAD,
   SET_DNCOBJECT,
@@ -26,11 +26,17 @@ export default (state, action) => {
         leads: state.leads.filter((lead) => lead._id !== action.payload),
       };
 
-    case UPDATE_DB:
+    case UPDATE_CLIENT:
       return {
         ...state,
         selectedFile: action.payload,
         loaded: 0,
+      };
+
+    case UPDATE_LEAD:
+      return {
+        ...state,
+        campaign: action.payload,
       };
     case SET_FILE:
       return {
@@ -58,19 +64,7 @@ export default (state, action) => {
     case SET_LIST:
       return {
         ...state,
-        list: action.payload,
-      };
-
-    case SET_MAILOBJECT:
-      return {
-        ...state,
-        mailObject: action.payload,
-      };
-
-    case SET_DNCOBJECT:
-      return {
-        ...state,
-        dncArray: action.payload,
+        mailList: action.payload,
       };
 
     default:

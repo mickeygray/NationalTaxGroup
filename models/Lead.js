@@ -11,7 +11,7 @@ const leadSchema = new Schema({
   zip: String,
   county: String,
   type: String,
-  amount: String,
+  amount: Number,
   email: String,
   lienDate: Date,
   dmDate: Date,
@@ -19,9 +19,10 @@ const leadSchema = new Schema({
   plaintiff: String,
   highdollar: { type: Boolean, default: false },
   upsellable: { type: Boolean, default: false },
-  contacts: { type: Number, default: 0 },
+  contacted: { type: Boolean, default: false },
+  optedin: { type: Boolean, default: false },
   converted: { type: Boolean, default: false },
   dnc: { type: Boolean, default: false },
 });
 
-module.exports = mongoose.model("lead", leadSchema);
+module.exports = mongoose.model("leads", leadSchema);

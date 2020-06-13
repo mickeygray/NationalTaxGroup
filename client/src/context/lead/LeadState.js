@@ -7,13 +7,10 @@ import {
   SET_FILE,
   SET_LIST,
   PARSE_LIST,
-  SPLIT_LEAD,
-  SET_MAILOBJECT,
-  UPDATE_DB,
+  UPDATE_LEAD,
   DELETE_LEADS,
-  ADD_CONTACTED,
-  SET_DNCOBJECT,
   MAKE_DNC,
+  UPDATE_CLIENT,
 } from "../types";
 
 const LeadState = (props) => {
@@ -39,7 +36,7 @@ const LeadState = (props) => {
 
   const deleteLeads = async (leads) => {
     try {
-      await axios.delete(`/api/leads`, leads);
+      await axios.delete(`/api/leads/`, leads);
 
       dispatch({
         type: DELETE_LEADS,
@@ -50,32 +47,47 @@ const LeadState = (props) => {
     }
   };
 
-  const addContacted = async (mailList) => {
+  const updateClient = async (selectedFile) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    const res = await axios.put(`/api/leads`, mailList, config);
+    const res = await axios.put(`/api/leads/`, selectedFile, config);
 
     dispatch({
-      type: ADD_CONTACTED,
+      type: UPDATE_CLIENT,
       payload: res.data,
     });
   };
 
-  const updateDb = async (selectedFile) => {
+  const updateLead = async (campaign) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    const res = await axios.put(`/api/leads`, selectedFile, config);
+    const res = await axios.put(`/api/leads/`, campaign, config);
 
     dispatch({
-      type: UPDATE_DB,
+      type: UPDATE_LEAD,
+      payload: res.data,
+    });
+  };
+
+  const makeDNC = async (lead) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await axios.put(`/api/leads/${lead._id}/dnc`, lead, config);
+
+    dispatch({
+      type: MAKE_DNC,
       payload: res.data,
     });
   };
@@ -90,53 +102,16 @@ const LeadState = (props) => {
     const query = JSON.stringify(listConditions);
     const res = await axios.get(`/api/leads?q=${query}`, config);
 
-    const mailList = res.data;
-
     dispatch({
       type: PARSE_LIST,
-      payload: mailList,
+      payload: res.data,
     });
-    setMailList(mailList);
+
+    setMailList(res.data);
   };
 
-  const setMailList = () => {
+  const setMailList = (e) => {
     dispatch({ type: SET_LIST });
-  };
-
-  const setDNCObject = () => {
-    dispatch({ type: SET_DNCOBJECT });
-  };
-
-  const parseDNC = (mailList) => {
-    const dncArray = mailList.forEach((lead) => {
-      delete lead.highdollar;
-      delete lead.upsellable;
-      delete lead.contacts;
-      delete lead.converted;
-      delete lead.lexId;
-      delete lead.firstName;
-      delete lead.fullName;
-      delete lead.lastName;
-      delete lead.address;
-      delete lead.city;
-      delete lead.state;
-      delete lead.county;
-      delete lead.zip;
-      delete lead.dmDate;
-      delete lead.type;
-      delete lead.plaintiff;
-      delete lead.dmDate;
-    });
-    console.log(dncArray);
-
-    dispatch({
-      type: MAKE_DNC,
-      payload: dncArray,
-    });
-  };
-
-  const setMailObject = (mailObject) => {
-    dispatch({ type: SET_MAILOBJECT, payload: mailObject });
   };
 
   const uploadFile = async (selectedFile) => {
@@ -169,10 +144,9 @@ const LeadState = (props) => {
         uploadFile,
         parseDb,
         setMailList,
-        updateDb,
-        addContacted,
-        parseDNC,
-        setDNCObject,
+        updateLead,
+        updateClient,
+        makeDNC,
       }}>
       {props.children}
     </LeadContext.Provider>

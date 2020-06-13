@@ -4,16 +4,7 @@ import LeadContext from "../../context/lead/leadContext";
 const ListFilter = () => {
   const leadContext = useContext(LeadContext);
 
-  const {
-    parseDb,
-    mailList,
-    setList,
-    deleteLeads,
-    leads,
-    parseDNC,
-    setDNCObject,
-    dncArray,
-  } = leadContext;
+  const { parseDb, mailList, deleteLeads, setMailList } = leadContext;
 
   let [listConditions, setListConditions] = useState({
     isDNC: false,
@@ -25,219 +16,145 @@ const ListFilter = () => {
     isBelow25000: false,
     isUpsellable: false,
     isHighDollar: false,
+    isOptedIn: false,
   });
 
-  useEffect(() => {
-    if (dncArray) {
-      setDNCObject(dncArray);
-    }
-  }, [dncArray, setDNCObject]);
+  const [list, setList] = useState([]);
 
   const onClick = (e) => {
     parseDb(listConditions);
   };
 
   const onSubmit = (e) => {
-    deleteLeads(leads);
+    deleteLeads(mailList);
   };
 
-  const listUpdate = (e) => {
-    parseDNC(mailList);
-  };
-
-  console.log(dncArray);
   return (
     <Fragment>
       <div className='card grid-4'>
         <div>
-          <ul>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isDNC: true,
-                  })
-                }>
-                Pull DNCS
-              </button>
-            </li>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: false,
-                  })
-                }>
-                Non Contacted
-              </button>
-            </li>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: true,
-                    isClient: false,
-                  })
-                }>
-                All Leads
-              </button>
-            </li>
-          </ul>
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isDNC: true,
+              })
+            }>
+            Pull DNCS
+          </button>
+          <br />
+          <br />
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isContacted: false,
+              })
+            }>
+            Non Contacted
+          </button>
+          <br />
+          <br />
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isClient: false,
+              })
+            }>
+            All Leads
+          </button>
         </div>
         <div>
-          <ul>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: true,
-                    isClient: false,
-                    isFederal: true,
-                  })
-                }>
-                Federal Leads
-              </button>
-            </li>
-            <li className='py-1'>
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: true,
-                    isClient: false,
-                    isFederal: true,
-                    isBelow25000: true,
-                  })
-                }>
-                Federal $10000
-              </button>
-            </li>
-            <li className='py-1'>
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: true,
-                    isClient: false,
-                    isFederal: true,
-                    isAbove25000: true,
-                  })
-                }>
-                Federal $25000
-              </button>
-            </li>
-          </ul>
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isFederal: true,
+              })
+            }>
+            Federal Leads
+          </button>
+          <br />
+          <br />
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isState: true,
+              })
+            }>
+            State Leads
+          </button>
+          <br />
+          <br />
+          <button className='btn btn-sm btn-danger'>White Hat</button>
         </div>
         <div>
-          <ul>
-            {" "}
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: true,
-                    isClient: false,
-                    isState: true,
-                  })
-                }>
-                State Leads
-              </button>
-            </li>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: true,
-                    isClient: false,
-                    isState: true,
-                    isBelow25000: true,
-                  })
-                }>
-                State $5000
-              </button>
-            </li>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isContacted: true,
-                    isClient: false,
-                    isState: true,
-                    isAbove25000: true,
-                  })
-                }>
-                State $25000
-              </button>
-            </li>
-          </ul>
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isBelow25000: true,
+              })
+            }>
+            Less Than $25000 in Debt
+          </button>
+          <br />
+          <br />
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isAbove25000: true,
+              })
+            }>
+            $25000 or More In Debt
+          </button>
+          <br />
+          <br />
+          <button className='btn btn-sm btn-danger'>Black Hat</button>
         </div>
-
         <div>
-          <ul>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isClient: true,
-                  })
-                }>
-                All Clients
-              </button>
-            </li>
-            <li className='py-1'>
-              {" "}
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isClient: true,
-                    isUpsellable: true,
-                  })
-                }>
-                All Upsellable Clients
-              </button>
-            </li>
-            <li className='py-1'>
-              <button
-                className='btn btn-sm btn-danger'
-                onClick={() =>
-                  setListConditions({
-                    isClient: true,
-                    isUpsellable: true,
-                    isHighDollar: true,
-                  })
-                }>
-                All High Dollar Clients
-              </button>
-            </li>
-          </ul>
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isClient: true,
+              })
+            }>
+            All Clients
+          </button>
+          <br />
+          <br />
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isUpsellable: true,
+              })
+            }>
+            All Upsellable Clients
+          </button>
+          <br />
+          <br />
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setListConditions({
+                isHighDollar: true,
+              })
+            }>
+            All High Dollar Clients
+          </button>
         </div>
       </div>
-      <div className='grid-3'>
+      <div className='grid-2'>
         <button className='btn btn-block btn-danger' onClick={onSubmit}>
-          Delete List
+          Delete DNCS
         </button>
-        <button className='btn btn-block btn-danger' onClick={onClick}>
-          Set List Params
-        </button>
-        <button className='btn btn-block btn-danger' onClick={listUpdate}>
-          Set Campaign Suppression
+        <button className='btn btn-block btn-success' onClick={onClick}>
+          Load List
         </button>
       </div>
     </Fragment>

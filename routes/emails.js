@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
-const Emails = require("../models/Emails");
+const Email = require("../models/Email");
 const hbs = require("nodemailer-express-handlebars");
 const Campaign = require("../models/Campaign");
 const auth = require("../middleware/auth");
@@ -18,7 +18,7 @@ const SetInterval = require("set-interval");
 router.post("/templates", async (req, res) => {
   const { title, reactString, html, text, subject, from, key } = req.body;
 
-  const newEmail = new Emails({
+  const newEmail = new Email({
     title,
     reactString,
     html,
@@ -34,16 +34,7 @@ router.post("/templates", async (req, res) => {
 });
 
 router.post("/campaigns", async (req, res) => {
-  const {
-    title,
-    html,
-    text,
-    subject,
-    from,
-    bcc,
-    vars,
-    campaignName,
-  } = req.body;
+  const { title, html, text, subject, from, list, campaignName } = req.body;
 
   const newCampaign = new Campaign({
     title,
@@ -51,8 +42,7 @@ router.post("/campaigns", async (req, res) => {
     text,
     subject,
     from,
-    bcc,
-    vars,
+    list,
     campaignName,
   });
 
@@ -66,7 +56,7 @@ router.post("/campaigns", async (req, res) => {
 router.get("/templates", async (req, res) => {
   try {
     const regex = new RegExp(`${req.query.q}`, "gi");
-    const emails = await Emails.find({
+    const emails = await Email.find({
       $or: [
         { title: regex },
         { subject: regex },
@@ -81,36 +71,38 @@ router.get("/templates", async (req, res) => {
   }
 });
 
+router.put("/campaigns/:id/list", auth, async (req, res) => {
+  const toRemove = req.body;
+
+  let campaign = await Campaign.findById(req.params.id);
+
+  const newList = campaign.list.filter(
+    (ar) => !toRemove.find((rm) => rm._id === ar._id)
+  );
+
+  campaign = await Campaign.findByIdAndUpdate(req.params.id, { list: newList });
+
+  res.json(campaign);
+});
+
 router.put("/campaigns/:id", auth, async (req, res) => {
-  const { html, title, text, subject, from, bcc, vars } = req.body;
-  //  Build contact object
+  const { title, html, text, subject, from } = req.body;
+
   const campaignFields = {};
+
   if (title) campaignFields.title = title;
   if (html) campaignFields.html = html;
-  if (text) campaignFields.phone = text;
-  if (subject) campaignFields.subject = subject;
-  if (from) campaignFields.from = from;
-  if (bcc) campaignFields.bcc = bcc;
-  if (vars) campaignFields.vars = vars;
-  try {
-    let campaign = await Campaign.findById(req.params.id);
+  if (text) campaignFields.text = text;
+  if (subject) campaignFields.title = title;
+  if (from) campaignFields.title = title;
 
-    if (!campaign) return res.status(404).json({ msg: "Campaign not found" });
+  const campaign = await Campaign.findByIdAndUpdate(
+    req.params.id,
+    { $set: campaignFields },
+    { new: true }
+  );
 
-    // Make sure user owns contact
-
-    campaign = await Campaign.findByIdAndUpdate(
-      req.params.id,
-      { $set: campaignFields },
-      { new: true }
-    );
-
-    res.json(campaign);
-    res.send(console.log("NIGGERS"));
-  } catch (err) {
-    console.error(er.message);
-    res.status(500).send("Server Error");
-  }
+  res.json(campaign);
 });
 
 router.get("/campaigns", async (req, res) => {
@@ -137,9 +129,22 @@ router.delete("/campaigns/:id", auth, async (req, res) => {
 
     if (!campaign) return res.status(404).json({ msg: "Contact not found" });
 
-    // Make sure user owns contact
-
     await Campaign.findByIdAndRemove(req.params.id);
+
+    res.json({ msg: "Campaign removed" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.delete("/templates/:id", auth, async (req, res) => {
+  try {
+    let email = await Email.findById(req.params.id);
+
+    if (!email) return res.status(404).json({ msg: "Contact not found" });
+
+    await Email.findByIdAndRemove(req.params.id);
 
     res.json({ msg: "Campaign removed" });
   } catch (err) {
@@ -150,25 +155,26 @@ router.delete("/campaigns/:id", auth, async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { title, html, template, text, subject, from, list } = req.body;
-
   /*
   fs.writeFile("./views/template.hbs", html, (err) => {
     if (err) throw err;
     console.log("thefilehasbeensaved");
   });
 
+  console.log(list);
+
   SetInterval.start(
     function () {
       const lead = list[0];
 
-      vars.shift();
+      list.shift();
 
       if (lead != null) {
         const transporter = nodemailer.createTransport({
           service: "gmail",
           auth: {
             user: "blackballedproductions@gmail.com",
-            pass: "QW12as34!@#$",
+            pass: "",
           },
         });
 
@@ -202,7 +208,6 @@ router.post("/", async (req, res) => {
     1000,
     "cleared"
   );
-
   */
 });
 
