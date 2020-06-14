@@ -11,34 +11,37 @@ const Home = () => {
   return (
     <div>
       <h3 className='text-danger text-center'>E-Yore</h3>
-      <div>
-        <EmailCreator />
-      </div>
+      <div className='container'>
+        <div>
+          <EmailCreator />
+        </div>
 
-      <div>
-        <ListFilter />
-      </div>
+        <div>
+          <ListFilter />
+        </div>
 
-      <div className='grid-2'>
-        <div>
-          {" "}
-          <CampaignBuilder />
+        <div className='grid-2'>
+          <div>
+            {" "}
+            <CampaignBuilder />
+          </div>
+          <div>
+            <CampaignEditor />
+          </div>
         </div>
-        <div>
-          <CampaignEditor />
+        <div className='grid-2'>
+          <div>
+            <EmailLibrary />
+          </div>
+          <div>
+            {" "}
+            <Campaigns />
+          </div>
         </div>
-      </div>
-      <div className='grid-2'>
+
         <div>
-          <EmailLibrary />
+          <Upload />
         </div>
-        <div>
-          {" "}
-          <Campaigns />
-        </div>
-      </div>
-      <div>
-        <Upload />
       </div>
     </div>
   );

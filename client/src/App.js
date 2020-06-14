@@ -19,18 +19,17 @@ const App = () => {
           <Router>
             <Fragment>
               <Navbar />
-              <div className='container'>
-                <Switch>
-                  <PrivateRoute exact path='/' component={Home} />
-                  <Route exact path='/register' component={Register} />
-                  <Route exact path='/login' component={Login} />
-                  <Route
-                    exact
-                    path='/takemeoffthelist'
-                    component={TakeMeOffTheList}
-                  />
-                </Switch>
-              </div>
+
+              <Switch>
+                <PrivateRoute exact path='/' component={Home} />
+                <Route exact path='/register' component={Register} />
+                <Route exact path='/login' component={Login} />
+                <Route
+                  exact
+                  path='/takemeoffthelist'
+                  component={TakeMeOffTheList}
+                />
+              </Switch>
             </Fragment>
           </Router>
         </EmailState>

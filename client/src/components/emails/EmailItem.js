@@ -24,6 +24,25 @@ const EmailItem = ({ email }) => {
     setTemplate(email);
   };
 
+  useEffect(() => {
+    if (showEmail === true) {
+      setModalStyle({
+        width: "600px",
+        height: "800px",
+      });
+    } else if (showEmail === false) {
+      setModalStyle({
+        width: "30px",
+        height: "10px",
+      });
+    }
+  }, [showEmail]);
+
+  const [modalStyle, setModalStyle] = useState({
+    width: "30px",
+    height: "10px",
+  });
+
   return (
     <Fragment>
       <div className='card grid-2'>
@@ -33,11 +52,13 @@ const EmailItem = ({ email }) => {
           </button>
         </div>
         <div>
-          <button onClick={toggleVisibility}> show email</button>
+          <div style={modalStyle}>
+            <button onClick={toggleVisibility}> show email</button>
 
-          {showEmail && (
-            <Modal {...email} toggleVisibility={toggleVisibility} />
-          )}
+            {showEmail && (
+              <Modal {...email} toggleVisibility={toggleVisibility} />
+            )}
+          </div>
           <span style={{ float: "right" }}>
             {" "}
             <button onClick={() => deleteTemplate(_id)}>X</button>

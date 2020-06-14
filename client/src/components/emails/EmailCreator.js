@@ -25,11 +25,11 @@ import {
   renderEmail,
 } from "react-html-email";
 import { v4 as uuidv4 } from "uuid";
-import { UnControlled as CodeMirror } from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/xml/xml";
-import "codemirror/mode/javascript/javascript";
+import Editor from "react-simple-code-editor";
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-markup";
 import EmailPreview from "./EmailPreview";
 
 const EmailCreator = () => {
@@ -38,7 +38,7 @@ const EmailCreator = () => {
   const { saveEmail, editTemplate, email, setTemplate } = emailContext;
 
   const headCSS = `#outlook a{padding:0}.ExternalClass{width:100%!important}.ExternalClass,.ExternalClass font,.ExternalClass p,.ExternalClass span,img{outline:0;text-decoration:none;-ms-interpolation-mode:bicubic}a img{border:none}.appleLinksGrey a{color:#919191!important;text-decoration:none!important}.ExternalClass img[class^=Emoji]{width:10px!important;height:10px!important;display:inline!important}.CTA:hover{background-color:#5fdbc4!important}@media screen and (max-width:640px){.mobilefullwidth{width:100%!important;height:auto!important}.logo{padding-left:30px!important;padding-right:30px!important}.h1{font-size:36px!important;line-height:48px!important;padding-right:30px!important;padding-left:30px!important;padding-top:30px!important}.h2{font-size:18px!important;line-height:27px!important;padding-right:30px!important;padding-left:30px!important}.p{font-size:16px!important;line-height:28px!important;padding-left:30px!important;padding-right:30px!important;padding-bottom:30px!important}.CTA_wrap{padding-left:30px!important;padding-right:30px!important;padding-bottom:30px!important}.footer{padding-left:30px!important;padding-right:30px!important}.number_wrap{padding-left:30px!important;padding-right:30px!important}.unsubscribe{padding-left:30px!important;padding-right:30px!important}}`;
-
+  const [code, setCode] = useState("");
   const varFields = {
     firstName: "{{lead.firstName}}",
     lastName: "{{lead.lastName}}",
@@ -163,9 +163,7 @@ const EmailCreator = () => {
     setLetter({ ...letter, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-
+  const onClick = (e) => {
     saveEmail(letter);
     setLetter({
       reactstring: "",
@@ -179,9 +177,7 @@ const EmailCreator = () => {
     });
   };
 
-  const onSubmit2 = (e) => {
-    e.preventDefault();
-
+  const onClick2 = (e) => {
     editTemplate(email);
     setLetter({
       reactstring: "",
@@ -212,7 +208,7 @@ const EmailCreator = () => {
   const [preview, setPreview] = useState(false);
   const [showCode, setShowCode] = useState(false);
 
-  const onClick = (e) => {
+  const onClick3 = (e) => {
     if (preview === true) {
       setPreview(false);
     } else if (preview === false) {
@@ -255,7 +251,7 @@ const EmailCreator = () => {
 
           <div className='grid-2'>
             <div className='card'>
-              <form action='post' onSubmit={onSubmit}>
+              <form>
                 <input
                   value={title}
                   placeholder='Title'
@@ -294,25 +290,23 @@ const EmailCreator = () => {
                   name='reactstring'
                   onChange={onChange}
                 />
-
-                <input
-                  type='text'
-                  value={html}
-                  placeholder='html'
-                  type='text'
-                  name='html'
-                  onChange={onChange}
-                />
               </form>
             </div>
 
-            <div className='card'>
-              <CodeMirror
-                options={{
-                  mode: "xml",
-                  theme: "material",
-                  lineNumbers: true,
-                }}
+            <div
+              className='card'
+              style={{
+                maxWidth: "800px",
+                maxHeight: "800px",
+                overflow: "scroll",
+              }}>
+              <Editor
+                withLive={withLive}
+                value={html}
+                name='html'
+                onValueChange={(html) => setLetter({ ...html, html: html })}
+                highlight={(html) => highlight(html, languages.markup)}
+                padding={10}
               />
             </div>
           </div>
@@ -327,15 +321,19 @@ const EmailCreator = () => {
       <br />
       <div className='grid-3'>
         {email != null ? (
-          <button className='btn btn-block btn-danger' onClick={onSubmit2}>
+          <button
+            className='btn btn-block btn-danger'
+            onClick={() => editTemplate(letter)}>
             Update Email
           </button>
         ) : (
-          <button className='btn btn-block btn-danger' onClick={onSubmit}>
+          <button
+            className='btn btn-block btn-danger'
+            onClick={() => saveEmail(letter)}>
             Create Email
           </button>
         )}
-        <button className='btn btn-block btn-success' onClick={onClick}>
+        <button className='btn btn-block btn-success' onClick={onClick3}>
           Preview Email
         </button>
 
