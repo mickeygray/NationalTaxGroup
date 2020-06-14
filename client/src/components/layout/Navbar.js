@@ -1,4 +1,5 @@
 import React, { Fragment, useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import logo from "../../images/logo.png";
 import { Link } from "react-router-dom";
 import AuthContext from "../../context/auth/authContext";
@@ -17,6 +18,10 @@ const Navbar = ({ title, icon }) => {
     logout();
   };
 
+  let location = useLocation();
+
+  console.log(location.pathname);
+
   const authLinks = (
     <Fragment>
       <li>Hello {user && user.name}</li>
@@ -25,11 +30,6 @@ const Navbar = ({ title, icon }) => {
           <span className='hide-sm'>Logout</span>
         </a>
       </li>
-    </Fragment>
-  );
-
-  const guestLinks = (
-    <Fragment>
       <li>
         <Link to='/register'>Register</Link>
       </li>
@@ -46,7 +46,7 @@ const Navbar = ({ title, icon }) => {
           <img src={logo} alt='' style={{ width: "50px", height: "50px" }} />
         </Link>
       </h1>
-      <ul>{isAuthenticated ? authLinks : guestLinks}</ul>
+      <ul>{location.pathname === `/takemeoffthelist` ? "" : authLinks}</ul>
     </div>
   );
 };
