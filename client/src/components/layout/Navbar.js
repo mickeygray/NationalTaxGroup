@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect } from "react";
-import logo from "../../images/logo.jpg";
+import logo from "../../images/logo.png";
 import { Link } from "react-router-dom";
 import AuthContext from "../../context/auth/authContext";
 
