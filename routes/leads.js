@@ -17,7 +17,7 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.delete("/", auth, async (req, res) => {
-  Lead.deleteMany({ dnc: true })
+  Lead.deleteMany({ status: "dnc" })
     .then(function () {
       console.log("Data deleted"); // Success
     })
@@ -34,7 +34,7 @@ router.put("/:id/dnc", auth, async (req, res) => {
     if (lexid != null) {
       const lead = await Lead.findOneAndUpdate(
         { lexid: lexid },
-        { dnc: true },
+        { status: "dnc" },
         {
           new: true,
           upsert: true, // Make this update into an upsert
@@ -48,7 +48,7 @@ router.put("/:id/dnc", auth, async (req, res) => {
         {
           $and: [{ fullName: leadName }, { address: leadAddress }],
         },
-        { dnc: true },
+        { status: "dnc" },
         {
           new: true,
           upsert: true, // Make this update into an upsert
@@ -59,7 +59,7 @@ router.put("/:id/dnc", auth, async (req, res) => {
       const leadEmail = new RegExp(`${email}`, "gi");
       const lead = await Lead.findOneAndUpdate(
         { email: email },
-        { dnc: true },
+        { status: "dnc" },
         {
           new: true,
           upsert: true, // Make this update into an upsert
@@ -88,7 +88,7 @@ router.put("/", auth, async (req, res) => {
     {
       "_id": { "$in": objectIdArray },
     },
-    { "$set": { "optedin": true } },
+    { "$set": { "status": "optedin" } },
     (err, doc) => {
       if (err) console.log(err);
       console.log(doc);
@@ -99,83 +99,20 @@ router.put("/", auth, async (req, res) => {
 //Get Leads For Email List
 
 router.get("/", auth, async (req, res) => {
-  const listConditions = JSON.parse(req.query.q);
+  const query = JSON.parse(req.query.q);
 
-  console.log(listConditions);
-  let requestString = {};
+  const leads = await Lead.find(query);
+  res.json(leads);
+
+  if ((query.status = "new")) {
+    const update = await Lead.updateMany(
+      { status: "new" },
+      { status: "contacted" }
+    );
+    res.json(update);
+  }
 
   try {
-    //new leads
-    if (listConditions.isContacted === false) {
-      const leads = await Lead.find({ contacted: false });
-
-      res.json(leads);
-
-      const list = await Lead.updateMany(
-        { contacted: false },
-        { contacted: true }
-      );
-    } else if (listConditions.isDNC === true) {
-      const leads = await Lead.find({ dnc: true });
-      res.json(leads);
-    }
-
-    //all leads
-    else if (
-      listConditions.isOptedIn === true &&
-      listConditions.isClient === false
-    ) {
-      const leads = await Lead.find({
-        converted: false,
-      });
-      res.json(leads);
-
-      //all federal
-    } else if (listConditions.isFederal === true) {
-      const leads = await Lead.find({ type: "Federal Tax Lien" });
-      res.json(leads);
-
-      //all state
-    } else if (listConditions.isState === true) {
-      const leads = await Lead.find({
-        type: "State Tax Lien",
-      });
-
-      res.json(leads);
-
-      //all federal above 25000
-    } else if (listConditions.isAbove25000 === true) {
-      const leads = await Lead.find({
-        amount: { $gte: 25000 },
-      });
-      res.json(leads);
-
-      //all federal below 25000
-    } else if (listConditions.isBelow25000 === true) {
-      const leads = await Lead.find({
-        amount: { $lte: 25000 },
-      });
-      res.json(leads);
-    } else if (listConditions.isClient === true) {
-      const leads = await Lead.find({
-        converted: true,
-      });
-      res.json(leads);
-
-      //all upsellable clients
-    } else if (listConditions.isUpsellable === true) {
-      const leads = await Lead.find({
-        upsellable: true,
-      });
-      res.json(leads);
-
-      //been mailed and interacted all leads federal
-    } else if (listConditions.isHighDollar === true) {
-      const leads = await Lead.find({
-        highdollar: true,
-      });
-      res.json(leads);
-    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

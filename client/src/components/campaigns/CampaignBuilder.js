@@ -18,17 +18,18 @@ const CampaignBuilder = () => {
 
   const { mailList } = leadContext;
 
+  useEffect(() => {
+    if (mailList != null) {
+      setList(mailList);
+    }
+  }, [mailList]);
+
   const [letter, setLetter] = useState({
     title: "",
     html: "",
     text: "",
     subject: "",
     from: "",
-    campaignName: "",
-    clicks: 0,
-    unsubscribes: 0,
-    key: "",
-    reactstring: "",
   });
 
   const [list, setList] = useState({
@@ -45,19 +46,7 @@ const CampaignBuilder = () => {
     sendEmail(campaign);
     setModalState(true);
   };
-
-  console.log(mailList);
-  const { title, html, text, subject, from, campaignName } = letter;
-
-  const campaign = {
-    title,
-    html,
-    text,
-    subject,
-    from,
-    campaignName,
-    list,
-  };
+  const campaign = { letter, list };
 
   return (
     <Fragment>

@@ -15,12 +15,7 @@
     "plaintiff": "Internal Revenue Service",
     "dmDate": "12/19/2018",
     "lexId": "My93369590",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Cristy",
@@ -38,12 +33,7 @@
     "plaintiff": "State Of Georgia",
     "dmDate": "12/26/2018",
     "lexId": "My93624026",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "K",
@@ -61,12 +51,7 @@
     "plaintiff": "Internal Revenue Service",
     "dmDate": "12/26/2018",
     "lexId": "My93611808",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Tonya",
@@ -84,12 +69,7 @@
     "plaintiff": "State Of Georgia",
     "dmDate": "12/10/2018",
     "lexId": "My92774624",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Robin",
@@ -107,12 +87,7 @@
     "plaintiff": "State Of Maryland",
     "dmDate": "12/19/2018",
     "lexId": "My93367147",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Richard",
@@ -130,12 +105,7 @@
     "plaintiff": "State Of Dist Of Columbia",
     "dmDate": "12/19/2018",
     "lexId": "My93359944",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Jon",
@@ -153,12 +123,7 @@
     "plaintiff": "State Of Ohio",
     "dmDate": "12/26/2018",
     "lexId": "My93691003",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "George",
@@ -176,12 +141,7 @@
     "plaintiff": "State Of Wisconsin",
     "dmDate": "12/18/2018",
     "lexId": "My93350188",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Thomas",
@@ -199,12 +159,7 @@
     "plaintiff": "State Of Maine",
     "dmDate": "12/12/2018",
     "lexId": "My93021463",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Cheryl",
@@ -222,12 +177,7 @@
     "plaintiff": "State Of Georgia",
     "dmDate": "12/26/2018",
     "lexId": "My93675251",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Michael",
@@ -245,12 +195,7 @@
     "plaintiff": "State Of Maryland",
     "dmDate": "12/19/2018",
     "lexId": "My93367352",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Podres",
@@ -268,12 +213,7 @@
     "plaintiff": "State Of Dist Of Columbia",
     "dmDate": "12/19/2018",
     "lexId": "My93360010",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Aaron",
@@ -291,12 +231,7 @@
     "plaintiff": "Internal Revenue Service",
     "dmDate": "12/12/2018",
     "lexId": "My92990735",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Rachel",
@@ -314,12 +249,7 @@
     "plaintiff": "State Of New York",
     "dmDate": "12/12/2018",
     "lexId": "My92924523",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "David",
@@ -337,12 +267,7 @@
     "plaintiff": "State Of Georgia",
     "dmDate": "12/14/2018",
     "lexId": "My93087044",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Thomas",
@@ -360,12 +285,7 @@
     "plaintiff": "State Of Pennsylvania",
     "dmDate": "12/12/2018",
     "lexId": "My93019974",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Gary",
@@ -383,12 +303,7 @@
     "plaintiff": "State Of Maryland",
     "dmDate": "12/26/2018",
     "lexId": "My93669572",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Leonardo",
@@ -406,12 +321,7 @@
     "plaintiff": "State Of New York",
     "dmDate": "12/12/2018",
     "lexId": "My92925284",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Remundo",
@@ -429,12 +339,7 @@
     "plaintiff": "State Of Maryland",
     "dmDate": "12/26/2018",
     "lexId": "My93669001",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Harvey",
@@ -452,12 +357,7 @@
     "plantiff": "State Of Dist Of Columbia",
     "dmDate": "12/18/2018",
     "lexId": "My93265653",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Jacqueline",
@@ -475,12 +375,7 @@
     "plaintiff": "State Of Maryland",
     "dmDate": "12/11/2018",
     "lexId": "My92898724",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Jimmy",
@@ -498,12 +393,7 @@
     "plaintiff": "State Of Georgia",
     "dmDate": "12/11/2018",
     "lexId": "My92908811",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Reginald",
@@ -521,12 +411,7 @@
     "plaintiff": "State Of Maryland",
     "dmDate": "12/10/2018",
     "lexId": "My92797168",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "E",
@@ -544,12 +429,7 @@
     "plaintiff": "State Of California",
     "dmDate": "12/18/2018",
     "lexId": "My93338244",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Charles",
@@ -567,12 +447,7 @@
     "plaintiff": "State Of Alabama",
     "dmDate": "12/10/2018",
     "lexId": "My92802583",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Rebecca",
@@ -590,12 +465,7 @@
     "plaintiff": "State Of West Virginia",
     "dmDate": "12/26/2018",
     "lexId": "My93642577",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Joseph",
@@ -613,12 +483,7 @@
     "plaintiff": "State Of Pennsylvania",
     "dmDate": "12/11/2018",
     "lexId": "My92880821",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Charlene",
@@ -636,12 +501,7 @@
     "plaintiff": "Internal Revenue Service",
     "dmDate": "12/18/2018",
     "lexId": "My93259200",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   },
   {
     "firstName": "Rodney",
@@ -659,11 +519,6 @@
     "plaintiff": "State Of Michigan",
     "dmDate": "12/13/2018",
     "lexId": "My93065397",
-    "dnc": false,
-    "contacted": false,
-    "converted": false,
-    "upsellable": false,
-    "highdollar": false,
-    "optedin": false
+    "status": "new"
   }
 ]

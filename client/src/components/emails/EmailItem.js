@@ -38,12 +38,11 @@ const EmailItem = ({ email }) => {
           {showEmail && (
             <Modal {...email} toggleVisibility={toggleVisibility} />
           )}
+          <span style={{ float: "right" }}>
+            {" "}
+            <button onClick={() => deleteTemplate(_id)}>X</button>
+          </span>
         </div>
-        <span style={{ float: "right" }}>
-          {" "}
-          <button onClick={() => editTemplate(email)}>Edit</button>
-          <button onClick={() => deleteTemplate(_id)}>X</button>
-        </span>
       </div>
     </Fragment>
   );

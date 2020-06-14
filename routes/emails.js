@@ -9,6 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const exphbs = require("express-handlebars");
 const SetInterval = require("set-interval");
+const key = require("../key.json");
 
 // @route    POST api/emails
 // @desc     Register user
@@ -105,6 +106,26 @@ router.put("/campaigns/:id", auth, async (req, res) => {
   res.json(campaign);
 });
 
+router.put("/template/:id", auth, async (req, res) => {
+  const { title, html, text, subject, from } = req.body;
+
+  const campaignFields = {};
+
+  if (title) campaignFields.title = title;
+  if (html) campaignFields.html = html;
+  if (text) campaignFields.text = text;
+  if (subject) campaignFields.title = title;
+  if (from) campaignFields.title = title;
+
+  const email = await Email.findByIdAndUpdate(
+    req.params.id,
+    { $set: campaignFields },
+    { new: true }
+  );
+
+  res.json(email);
+});
+
 router.get("/campaigns", async (req, res) => {
   try {
     const regex = new RegExp(`${req.query.q}`, "gi");
@@ -154,14 +175,37 @@ router.delete("/templates/:id", auth, async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { title, html, template, text, subject, from, list } = req.body;
+  const { letter, list } = req.body;
   /*
-  fs.writeFile("./views/template.hbs", html, (err) => {
+  fs.writeFile("./views/template.hbs", letter.html, (err) => {
     if (err) throw err;
     console.log("thefilehasbeensaved");
   });
 
-  console.log(list);
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      type: "OAuth2",
+      user: "lienunit@nattaxgroup.com",
+      serviceClient: key.client_id,
+      privateKey: key.private_key,
+    },
+  });
+
+  const options = {
+    viewEngine: {
+      extName: ".hbs",
+      partialsDir: path.join(__dirname, "views"),
+      layoutsDir: path.join(__dirname, "views"),
+      defaultLayout: false,
+    },
+    viewPath: "views",
+    extName: ".hbs",
+  };
+
+  transporter.use("compile", hbs(options));
 
   SetInterval.start(
     function () {
@@ -170,31 +214,11 @@ router.post("/", async (req, res) => {
       list.shift();
 
       if (lead != null) {
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: "blackballedproductions@gmail.com",
-            pass: "",
-          },
-        });
-
-        const options = {
-          viewEngine: {
-            extName: ".hbs",
-            partialsDir: path.join(__dirname, "views"),
-            layoutsDir: path.join(__dirname, "views"),
-            defaultLayout: false,
-          },
-          viewPath: "views",
-          extName: ".hbs",
-        };
-
-        transporter.use("compile", hbs(options));
-
         const mailer = {
-          from: "blackballedproductions@gmail.com",
+          title: letter.title,
+          from: letter.from,
           to: lead.email,
-          subject: subject,
+          subject: letter.subject,
           template: "template",
           context: {
             lead: lead,
@@ -208,6 +232,7 @@ router.post("/", async (req, res) => {
     1000,
     "cleared"
   );
+
   */
 });
 

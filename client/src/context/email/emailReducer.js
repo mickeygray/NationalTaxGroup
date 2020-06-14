@@ -10,6 +10,7 @@ import {
   DELETE_CAMPAIGN,
   DELETE_TEMPLATE,
   PUT_LIST,
+  SET_TEMPLATESTATE,
 } from "../types";
 
 export default (state, action) => {
@@ -29,6 +30,12 @@ export default (state, action) => {
       return {
         ...state,
         campaign: action.payload,
+      };
+
+    case SET_TEMPLATESTATE:
+      return {
+        ...state,
+        template: action.payload,
       };
     case DELETE_CAMPAIGN:
       return {

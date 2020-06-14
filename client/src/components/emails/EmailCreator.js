@@ -35,7 +35,7 @@ import EmailPreview from "./EmailPreview";
 const EmailCreator = () => {
   const emailContext = useContext(EmailContext);
 
-  const { saveEmail } = emailContext;
+  const { saveEmail, editTemplate, email, setTemplate } = emailContext;
 
   const headCSS = `#outlook a{padding:0}.ExternalClass{width:100%!important}.ExternalClass,.ExternalClass font,.ExternalClass p,.ExternalClass span,img{outline:0;text-decoration:none;-ms-interpolation-mode:bicubic}a img{border:none}.appleLinksGrey a{color:#919191!important;text-decoration:none!important}.ExternalClass img[class^=Emoji]{width:10px!important;height:10px!important;display:inline!important}.CTA:hover{background-color:#5fdbc4!important}@media screen and (max-width:640px){.mobilefullwidth{width:100%!important;height:auto!important}.logo{padding-left:30px!important;padding-right:30px!important}.h1{font-size:36px!important;line-height:48px!important;padding-right:30px!important;padding-left:30px!important;padding-top:30px!important}.h2{font-size:18px!important;line-height:27px!important;padding-right:30px!important;padding-left:30px!important}.p{font-size:16px!important;line-height:28px!important;padding-left:30px!important;padding-right:30px!important;padding-bottom:30px!important}.CTA_wrap{padding-left:30px!important;padding-right:30px!important;padding-bottom:30px!important}.footer{padding-left:30px!important;padding-right:30px!important}.number_wrap{padding-left:30px!important;padding-right:30px!important}.unsubscribe{padding-left:30px!important;padding-right:30px!important}}`;
 
@@ -124,7 +124,7 @@ const EmailCreator = () => {
   const keyVal = uuidv4();
 
   useEffect(() => {
-    setEmail({
+    setLetter({
       reactstring: "",
       title: "",
       html: "",
@@ -136,7 +136,13 @@ const EmailCreator = () => {
     });
   }, []);
 
-  const [email, setEmail] = useState({
+  useEffect(() => {
+    if (email != null) {
+      setLetter(email);
+    }
+  }, [email, emailContext]);
+
+  const [letter, setLetter] = useState({
     reactstring: "",
     title: "",
     text: "",
@@ -154,13 +160,14 @@ const EmailCreator = () => {
   }, []);
 
   const onChange = (e) => {
-    setEmail({ ...email, [e.target.name]: e.target.value });
+    setLetter({ ...letter, [e.target.name]: e.target.value });
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    saveEmail(email);
-    setEmail({
+
+    editTemplate(email);
+    setLetter({
       reactstring: "",
       title: "",
       text: "",
@@ -170,6 +177,36 @@ const EmailCreator = () => {
       key: keyVal,
       html: "",
     });
+  };
+
+  const onSubmit2 = (e) => {
+    e.preventDefault();
+
+    editTemplate(email);
+    setLetter({
+      reactstring: "",
+      title: "",
+      text: "",
+      subject: "",
+      from: "",
+      reactstring: "",
+      key: keyVal,
+      html: "",
+    });
+  };
+
+  const clearAll = () => {
+    setLetter({
+      reactstring: "",
+      title: "",
+      text: "",
+      subject: "",
+      from: "",
+      reactstring: "",
+      key: keyVal,
+      html: "",
+    });
+    setTemplate(null);
   };
 
   const [preview, setPreview] = useState(false);
@@ -183,15 +220,8 @@ const EmailCreator = () => {
     }
   };
 
-  const onClick2 = (e) => {
-    if (showCode === true) {
-      setShowCode(false);
-    } else if (showCode === false) {
-      setShowCode(true);
-    }
-  };
+  const { title, text, subject, from, reactstring, key, html } = letter;
 
-  const { title, text, subject, from, reactstring, key, html } = email;
   return (
     <div>
       <div>
@@ -294,15 +324,23 @@ const EmailCreator = () => {
           </div>
         </Fragment>
       )}
-
       <br />
-      <div className='grid-2'>
-        <button className='btn btn-block btn-danger' onClick={onSubmit}>
-          Create Email
-        </button>
-
+      <div className='grid-3'>
+        {email != null ? (
+          <button className='btn btn-block btn-danger' onClick={onSubmit2}>
+            Update Email
+          </button>
+        ) : (
+          <button className='btn btn-block btn-danger' onClick={onSubmit}>
+            Create Email
+          </button>
+        )}
         <button className='btn btn-block btn-success' onClick={onClick}>
           Preview Email
+        </button>
+
+        <button className='btn btn-block btn-secondary' onClick={clearAll}>
+          Clear Email
         </button>
       </div>
     </div>

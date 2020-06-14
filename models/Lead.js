@@ -17,12 +17,7 @@ const leadSchema = new Schema({
   dmDate: Date,
   lexId: String,
   plaintiff: String,
-  highdollar: { type: Boolean, default: false },
-  upsellable: { type: Boolean, default: false },
-  contacted: { type: Boolean, default: false },
-  optedin: { type: Boolean, default: false },
-  converted: { type: Boolean, default: false },
-  dnc: { type: Boolean, default: false },
+  status: String,
 });
 
 module.exports = mongoose.model("leads", leadSchema);

@@ -6,25 +6,34 @@ const ListFilter = () => {
 
   const { parseDb, mailList, deleteLeads, setMailList } = leadContext;
 
-  let [listConditions, setListConditions] = useState({
-    isDNC: false,
-    isContacted: false,
-    isClient: false,
-    isFederal: false,
-    isState: false,
-    isAbove25000: false,
-    isBelow25000: false,
-    isUpsellable: false,
-    isHighDollar: false,
-    isOptedIn: false,
+  const onSubmit = (e) => {
+    deleteLeads(mailList);
+  };
+
+  const leadStatus = new Map([
+    ["contacted", "contacted"],
+    ["new", "new"],
+    ["dnc", "dnc"],
+    ["optedin", "optedin"],
+    ["converted", "converted"],
+    ["upsellable", "upsellable"],
+    ["highdollar", "highdollar"],
+  ]);
+
+  const setLeadStatus = (leadStatus) => {
+    setQuery({
+      status: leadStatus,
+    });
+  };
+
+  const [query, setQuery] = useState({
+    status: "",
+    type: "",
+    amount: {},
   });
 
   const onClick = (e) => {
-    parseDb(listConditions);
-  };
-
-  const onSubmit = (e) => {
-    deleteLeads(mailList);
+    parseDb(query);
   };
 
   return (
@@ -34,8 +43,8 @@ const ListFilter = () => {
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isDNC: true,
+              setQuery({
+                status: "dnc",
               })
             }>
             Pull DNCS
@@ -45,8 +54,8 @@ const ListFilter = () => {
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isContacted: false,
+              setQuery({
+                status: "new",
               })
             }>
             Non Contacted
@@ -56,8 +65,8 @@ const ListFilter = () => {
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isClient: false,
+              setQuery({
+                status: "optedin",
               })
             }>
             All Leads
@@ -67,8 +76,9 @@ const ListFilter = () => {
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isFederal: true,
+              setQuery({
+                status: "optedin",
+                type: "Federal Tax Lien",
               })
             }>
             Federal Leads
@@ -78,47 +88,73 @@ const ListFilter = () => {
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isState: true,
+              setQuery({
+                status: "optedin",
+                type: "Federal Tax Lien",
+                amount: { "$lte": 25000 },
               })
             }>
-            State Leads
+            Federal Tax Less Than 25000
           </button>
           <br />
           <br />
-          <button className='btn btn-sm btn-danger'>White Hat</button>
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setQuery({
+                status: "optedin",
+                type: "Federal Tax Lien",
+                amount: { "$gte": 25000 },
+              })
+            }>
+            Federal Tax More than 25000
+          </button>
         </div>
         <div>
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isBelow25000: true,
+              setQuery({
+                status: "optedin",
+                type: "State Tax Lien",
               })
             }>
-            Less Than $25000 in Debt
+            State Tax
           </button>
           <br />
           <br />
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isAbove25000: true,
+              setQuery({
+                status: "optedin",
+                type: "State Tax Lien",
+                amount: { "$lte": 25000 },
               })
             }>
-            $25000 or More In Debt
+            State Tax Below 25000
           </button>
           <br />
           <br />
-          <button className='btn btn-sm btn-danger'>Black Hat</button>
+          <button
+            className='btn btn-sm btn-danger'
+            onClick={() =>
+              setLeadStatus("optedin") &&
+              setQuery({
+                status: "optedin",
+                type: "State Tax Lien",
+                amount: { "$gte": 25000 },
+              })
+            }>
+            State Tax Above 25000
+          </button>
         </div>
         <div>
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isClient: true,
+              setQuery({
+                status: "converted",
               })
             }>
             All Clients
@@ -128,8 +164,8 @@ const ListFilter = () => {
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isUpsellable: true,
+              setQuery({
+                status: "upsellable",
               })
             }>
             All Upsellable Clients
@@ -139,8 +175,8 @@ const ListFilter = () => {
           <button
             className='btn btn-sm btn-danger'
             onClick={() =>
-              setListConditions({
-                isHighDollar: true,
+              setQuery({
+                status: "highdollar",
               })
             }>
             All High Dollar Clients

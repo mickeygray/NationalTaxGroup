@@ -19,7 +19,7 @@ import {
 const EmailState = (props) => {
   const initialState = {
     emailLibrary: [],
-    email: {},
+    email: null,
     campaign: {},
     campaigns: [],
     mailObject: {},
@@ -46,13 +46,13 @@ const EmailState = (props) => {
     dispatch({ type: POST_CAMPAIGN, payload: res.data });
   };
 
-  const saveEmail = async (email) => {
+  const saveEmail = async (letter) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    const res = await axios.post(`/api/emails/templates`, email, config);
+    const res = await axios.post(`/api/emails/templates`, letter, config);
     dispatch({ type: POST_EMAIL, payload: res.data });
   };
 
@@ -117,7 +117,7 @@ const EmailState = (props) => {
         "Content-Type": "application/json",
       },
     };
-
+    console.log(email);
     try {
       const res = await axios.put(
         `/api/emails/templates/${email._id}`,
@@ -185,6 +185,7 @@ const EmailState = (props) => {
         searchCampaigns,
         putEmail,
         putList,
+        editTemplate,
         setCampaign,
         deleteCampaign,
         deleteTemplate,

@@ -92,28 +92,22 @@ const LeadState = (props) => {
     });
   };
 
-  const parseDb = async (listConditions) => {
+  const parseDb = async (query) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    const query = JSON.stringify(listConditions);
-    const res = await axios.get(`/api/leads?q=${query}`, config);
+    const queryString = JSON.stringify(query);
+    const res = await axios.get(`/api/leads?q=${queryString}`, config);
 
     const mailList = res.data;
+
     dispatch({
       type: PARSE_LIST,
       payload: mailList,
     });
-
-    setMailList(mailList);
-    console.log(mailList);
-  };
-
-  const setMailList = (mailList) => {
-    dispatch({ type: SET_LIST });
   };
 
   const uploadFile = async (selectedFile) => {
@@ -145,7 +139,7 @@ const LeadState = (props) => {
         setSelectedFile,
         uploadFile,
         parseDb,
-        setMailList,
+
         updateLead,
         updateClient,
         makeDNC,
