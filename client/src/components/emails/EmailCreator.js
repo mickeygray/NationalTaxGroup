@@ -166,7 +166,7 @@ const EmailCreator = () => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    editTemplate(email);
+    saveEmail(letter);
     setLetter({
       reactstring: "",
       title: "",
