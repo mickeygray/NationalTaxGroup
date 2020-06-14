@@ -176,7 +176,7 @@ router.delete("/templates/:id", auth, async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { letter, list } = req.body;
-  /*
+
   fs.writeFile("./views/template.hbs", letter.html, (err) => {
     if (err) throw err;
     console.log("thefilehasbeensaved");
@@ -232,8 +232,6 @@ router.post("/", async (req, res) => {
     1000,
     "cleared"
   );
-
-  */
 });
 
 module.exports = router;
