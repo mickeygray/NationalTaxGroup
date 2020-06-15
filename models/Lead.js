@@ -26,6 +26,9 @@ const leadSchema = new Schema({
   income: String,
   creditscore: String,
   phone: String,
+  problem: String,
+  company: String,
+  paid: String,
 });
 
 module.exports = mongoose.model("leads", leadSchema);

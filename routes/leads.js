@@ -20,7 +20,33 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.post("/forms", async (req, res) => {
-  console.log(req.body);
+  const {
+    status,
+    years,
+    employed,
+    income,
+    creditscore,
+    phone,
+    problem,
+    company,
+    paid,
+  } = req.body;
+
+  const newLead = new Lead({
+    status,
+    years,
+    employed,
+    income,
+    creditscore,
+    phone,
+    problem,
+    company,
+    paid,
+  });
+
+  const lead = await newLead.save();
+
+  res.json(lead);
 });
 
 router.delete("/", auth, async (req, res) => {

@@ -70,7 +70,9 @@ const LeadState = (props) => {
       },
     };
 
-    console.log(form);
+    form.forEach(function (element) {
+      element.status = "new";
+    });
 
     const res = await axios.post(`/api/leads/forms`, form, config);
 
