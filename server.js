@@ -13,9 +13,11 @@ app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 //bodyparser
 
-app.use(express.json({ extended: false }));
+app.use(bodyParser.json({ limit: "10mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.raw({ type: "application/vnd.custom-type" }));
 app.use(bodyParser.text({ type: "text/html" }));
+
 app.use(express.static(__dirname + "/public"));
 
 app.use("/api/users", require("./routes/users"));

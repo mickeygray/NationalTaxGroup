@@ -36,160 +36,120 @@ const ListFilter = () => {
     parseDb(query);
   };
 
+  console.log(query);
+
   return (
     <Fragment>
-      <div className='card grid-4'>
+      <h3>Filter the Mail List</h3>
+      <div className='card grid-2'>
         <div>
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "dnc",
-              })
-            }>
-            Pull DNCS
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "new",
-              })
-            }>
-            Non Contacted
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "optedin",
-              })
-            }>
-            All Leads
-          </button>
+          <ul>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "dnc",
+                  })
+                }>
+                Pull DNCS
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "new",
+                  })
+                }>
+                Non Contacted
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "contacted",
+                  })
+                }>
+                All Contacted Leads
+              </button>
+            </li>
+            <li className='py-1'>
+              <button className='btn btn-sm btn-danger py-2' onClick={onSubmit}>
+                Delete DNCS
+              </button>
+            </li>
+            <li className='py-1'>
+              <button className='btn btn-sm btn-success' onClick={onClick}>
+                Load List
+              </button>
+            </li>
+          </ul>
         </div>
         <div>
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "optedin",
-                type: "Federal Tax Lien",
-              })
-            }>
-            Federal Leads
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "optedin",
-                type: "Federal Tax Lien",
-                amount: { "$lte": 25000 },
-              })
-            }>
-            Federal Tax Less Than 25000
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "optedin",
-                type: "Federal Tax Lien",
-                amount: { "$gte": 25000 },
-              })
-            }>
-            Federal Tax More than 25000
-          </button>
+          <ul>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "optedin",
+                    type: "Federal Tax Lien",
+                  })
+                }>
+                Federal Leads
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "optedin",
+                    type: "State Tax Lien",
+                  })
+                }>
+                State Tax
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "converted",
+                  })
+                }>
+                All Clients
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "upsellable",
+                  })
+                }>
+                All Upsellable Clients
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "highdollar",
+                  })
+                }>
+                All High Dollar Clients
+              </button>
+            </li>
+          </ul>
         </div>
-        <div>
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "optedin",
-                type: "State Tax Lien",
-              })
-            }>
-            State Tax
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "optedin",
-                type: "State Tax Lien",
-                amount: { "$lte": 25000 },
-              })
-            }>
-            State Tax Below 25000
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setLeadStatus("optedin") &&
-              setQuery({
-                status: "optedin",
-                type: "State Tax Lien",
-                amount: { "$gte": 25000 },
-              })
-            }>
-            State Tax Above 25000
-          </button>
-        </div>
-        <div>
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "converted",
-              })
-            }>
-            All Clients
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "upsellable",
-              })
-            }>
-            All Upsellable Clients
-          </button>
-          <br />
-          <br />
-          <button
-            className='btn btn-sm btn-danger'
-            onClick={() =>
-              setQuery({
-                status: "highdollar",
-              })
-            }>
-            All High Dollar Clients
-          </button>
-        </div>
-      </div>
-      <div className='grid-2'>
-        <button className='btn btn-block btn-danger' onClick={onSubmit}>
-          Delete DNCS
-        </button>
-        <button className='btn btn-block btn-success' onClick={onClick}>
-          Load List
-        </button>
       </div>
     </Fragment>
   );

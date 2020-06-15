@@ -15,9 +15,15 @@ const Home = () => {
         <div>
           <EmailCreator />
         </div>
-
-        <div>
-          <ListFilter />
+        <br />
+        <br />
+        <div className='grid-2'>
+          <div>
+            <ListFilter />
+          </div>
+          <div className='card' style={{ width: "400px", height: "400px" }}>
+            Callrail
+          </div>
         </div>
 
         <div className='grid-2'>

@@ -24,10 +24,22 @@ const Campaigns = () => {
 
   const { _id } = campaign;
 
+  const clearAll = () => {
+    setSearch("");
+  };
+
   return (
     <Fragment>
       <div className='card'>
         <CampaignSearch />
+        <button
+          type='submit'
+          value='clear'
+          onClick={() => clearAll()}
+          className='btn btn-light btn-block'>
+          {" "}
+          Clear Search
+        </button>
 
         {search === "visible"
           ? campaigns.map((campaign) => (

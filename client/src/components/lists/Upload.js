@@ -1,42 +1,75 @@
 import React, { useContext } from "react";
 import LeadContext from "../../context/lead/leadContext";
+import CSVReader from "react-csv-reader";
 
 const Upload = () => {
   const leadContext = useContext(LeadContext);
 
-  const { setSelectedFile, uploadFile, updateDb } = leadContext;
+  const { uploadFile } = leadContext;
 
-  let selectedFile;
-
-  const onChange = (e) => {
-    selectedFile = e.target.files[0];
+  const papaparseOptions = {
+    header: true,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    transformHeader: (header) => toCamelCaseString(header),
   };
 
-  const onClick = (e) => {
-    setSelectedFile(selectedFile);
-    uploadFile(selectedFile);
-  };
+  function convertToString(input) {
+    if (input) {
+      if (typeof input === "string") {
+        return input;
+      }
 
-  const onSubmit = (e) => {
-    setSelectedFile(selectedFile);
-    updateDb(selectedFile);
-  };
+      return String(input);
+    }
+    return "";
+  }
 
+  // convert string to words
+  function toWords(input) {
+    input = convertToString(input);
+
+    var regex = /[A-Z\xC0-\xD6\xD8-\xDE]?[a-z\xDF-\xF6\xF8-\xFF]+|[A-Z\xC0-\xD6\xD8-\xDE]+(?![a-z\xDF-\xF6\xF8-\xFF])|\d+/g;
+
+    return input.match(regex);
+  }
+
+  // convert the input array to camel case
+  function toCamelCase(inputArray) {
+    let result = "";
+
+    for (let i = 0, len = inputArray.length; i < len; i++) {
+      let currentStr = inputArray[i];
+
+      let tempStr = currentStr.toLowerCase();
+
+      if (i != 0) {
+        // convert first letter to upper case (the word is in lowercase)
+        tempStr = tempStr.substr(0, 1).toUpperCase() + tempStr.substr(1);
+      }
+
+      result += tempStr;
+    }
+
+    return result;
+  }
+
+  // this function call all other functions
+
+  function toCamelCaseString(header) {
+    let words = toWords(header);
+
+    return toCamelCase(words);
+  }
   return (
     <div>
-      <input type='file' name='file' onChange={onChange} />
-      <button
-        type='submit'
-        className='btn btn-light text-danger'
-        onClick={onClick}>
-        Add New Leads
-      </button>
-      <button
-        type='submit'
-        className='btn btn-light text-danger'
-        onClick={onSubmit}>
-        Update Existing Leads
-      </button>
+      <CSVReader
+        label='Upload Leads'
+        parserOptions={papaparseOptions}
+        onFileLoaded={(data, fileInfo) => uploadFile(data)}
+        inpuId='leads'
+        inputStyle={{ color: "red" }}
+      />
     </div>
   );
 };

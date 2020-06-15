@@ -12,10 +12,22 @@ const EmailLibrary = () => {
     setSearch("visible");
   }, [searchEmails]);
 
+  const clearAll = () => {
+    setSearch("");
+  };
   return (
     <Fragment>
-      <LibrarySearch />
-
+      <div className='card'>
+        <LibrarySearch />
+        <button
+          type='submit'
+          value='clear'
+          onClick={() => clearAll()}
+          className='btn btn-light btn-block'>
+          {" "}
+          Clear Search
+        </button>
+      </div>
       {search === "visible"
         ? emailLibrary.map((email) => (
             <EmailItem key={email.key} email={email} />

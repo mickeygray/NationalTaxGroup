@@ -10,7 +10,7 @@ const PlanCards = () => {
         Our Resolution Process
       </h3>
       <div className='grid-3 m-2 ' style={{ height: "100%", width: "80%" }}>
-        <div className='card bg-light'>
+        <div className='card offercard bg-light'>
           <h2>
             {" "}
             <span className='text-primary' style={{ fontSize: "2rem" }}>
@@ -55,7 +55,7 @@ const PlanCards = () => {
             Expert Tax Relief
           </a>
         </div>
-        <div className='card bg-dark'>
+        <div className='card offercard bg-dark'>
           {" "}
           <h2>
             {" "}
@@ -102,7 +102,7 @@ const PlanCards = () => {
           </a>
           <br />
         </div>
-        <div className='card bg-light'>
+        <div className='card offercard bg-light'>
           {" "}
           <h2>
             {" "}

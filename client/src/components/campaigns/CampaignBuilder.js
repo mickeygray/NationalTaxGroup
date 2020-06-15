@@ -48,6 +48,12 @@ const CampaignBuilder = () => {
   };
   const campaign = { letter, list };
 
+  const clearAll = () => {
+    setList([]);
+    setLetter({ title: "", html: "", text: "", subject: "", from: "" });
+  };
+  console.log(campaign);
+
   return (
     <Fragment>
       {showModal && (
@@ -57,12 +63,12 @@ const CampaignBuilder = () => {
         <h3>Send an Email</h3>
         <div className=' grid-3'>
           <button
-            className='btn btn-block btn-danger'
-            onClick={() => setList(mailList)}>
-            Prepare List
+            className='btn btn-block btn-secondary'
+            onClick={() => clearAll()}>
+            Clear Email
           </button>
           <button
-            className='btn btn-block btn-secondary'
+            className='btn btn-block btn-danger'
             onClick={() => setLetter(email)}>
             Prepare Email
           </button>

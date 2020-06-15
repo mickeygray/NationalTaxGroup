@@ -118,24 +118,27 @@ const LeadState = (props) => {
     };
 
     const queryString = JSON.stringify(query);
-    const res = await axios.get(`/api/leads?q=${queryString}`, config);
+    const res = await axios.get(`/api/leads?q=${queryString}`, query, config);
 
     const mailList = res.data;
 
+    console.log(mailList);
     dispatch({
       type: PARSE_LIST,
       payload: mailList,
     });
   };
 
-  const uploadFile = async (selectedFile) => {
+  const uploadFile = async (data) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-
-    const res = await axios.post(`/api/leads`, selectedFile, config);
+    data.forEach(function (element) {
+      element.status = "new";
+    });
+    const res = await axios.post(`/api/leads`, data, config);
 
     dispatch({
       type: UPLOAD_FILE,

@@ -45,14 +45,16 @@ const EmailCreator = () => {
     fullName: "{{lead.fullName}}",
     address: "{{lead.address}}",
     city: "{{lead.city}}",
-    state: "{{lead.state}}",
-    zip: "{{lead.zip}}",
+    st: "{{lead.st}}",
+    zip4: "{{lead.zip4}}",
     county: "{{lead.county}}",
     type: "{{lead.type}}",
     plaintiff: "{{lead.plaintiff}}",
-    amount: "{{lead.amount}}",
-    dmDate: "{{lead.dmDate}}",
+    taxAmount: "{{lead.taxAmount}}",
+    noticeDate: "{{lead.noticeDate}}",
     lienDate: "{{lead.lienDate}}",
+    lienDate: "{{lead.lienDate}}",
+    pinCode: "{{lead.pinCode}}",
   };
 
   const paragraphStyle = {

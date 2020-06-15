@@ -588,7 +588,7 @@ img {
   border: #ccc solid 1px;
 }
 
-.card:hover {
+.offercard:hover {
   background: #fffe71;
   color: #333;
 }

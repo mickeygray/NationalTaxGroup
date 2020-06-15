@@ -1,8 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState, Fragment, useContext } from "react";
+import { useLocation, Link } from "react-router-dom";
 import logo from "../../images/logo.png";
+import AuthContext from "../../context/auth/authContext";
 
 const Navbar = () => {
+  const authContext = useContext(AuthContext);
+
+  useEffect(() => {
+    loadUser();
+    // eslint-disable-next-line
+  }, []);
+
+  const { isAuthenticated, logout, user, loadUser } = authContext;
+
   const [style, setStyle] = useState({});
 
   const position = window.pageYOffset;
@@ -15,6 +25,10 @@ const Navbar = () => {
       backgroundColor: "none",
     });
   }, []);
+
+  const onLogout = () => {
+    logout();
+  };
 
   const location = useLocation();
   useEffect(() => {
@@ -35,6 +49,28 @@ const Navbar = () => {
     });
   };
 
+  const guestLinks = (
+    <Fragment>
+      <li>
+        <Link to='/login'>Login</Link>
+      </li>
+      <li>
+        <Link to='/register'>Register</Link>
+      </li>
+    </Fragment>
+  );
+
+  const authLinks = (
+    <Fragment>
+      <li>
+        <a href='#!' onClick={onLogout}>
+          <i className='fa fa-sign-out' />{" "}
+          <span className='hide-sm'>Logout</span>
+        </a>
+      </li>
+    </Fragment>
+  );
+
   return (
     <div className='navgrid' onScroll={onScroll} style={style}>
       <div className='container'>
@@ -52,6 +88,14 @@ const Navbar = () => {
           </a>
           National Tax Group
         </p>
+      </div>
+      <div>
+        <br />
+        {location === "/" ? (
+          <ul>{isAuthenticated ? authLinks : guestLinks}</ul>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

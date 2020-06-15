@@ -3,10 +3,11 @@ const router = express.Router();
 const Lead = require("../models/Lead");
 const auth = require("../middleware/auth");
 const mongoose = require("mongoose");
+const csv = require("csvtojson");
 
 //Add Leads to Mongo
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   console.log(req.body);
 
   try {

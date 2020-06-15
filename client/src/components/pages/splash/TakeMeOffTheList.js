@@ -10,7 +10,7 @@ const TakeMeOffTheList = () => {
     fullName: "",
     address: "",
     email: "",
-    lexId: "",
+    pinCode: "",
   });
 
   const onChange = (e) => {
@@ -20,16 +20,16 @@ const TakeMeOffTheList = () => {
     });
   };
 
-  const { fullName, address, lexId, email } = field;
+  const { fullName, address, pinCode, email } = field;
 
-  const lead = { fullName, address, lexId, email };
+  const lead = { fullName, address, pinCode, email };
 
   const clearLead = () => {
     setField({
       fullName: "",
       address: "",
       email: "",
-      lexId: "",
+      pinCode: "",
     });
   };
 
@@ -89,8 +89,8 @@ const TakeMeOffTheList = () => {
         <input
           type='text'
           placeholder='Pin Code'
-          name='lexId'
-          value={lexId}
+          name='pinCode'
+          value={pinCode}
           onChange={onChange}
         />
 
