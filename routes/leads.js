@@ -6,7 +6,9 @@ const mongoose = require("mongoose");
 
 //Add Leads to Mongo
 
-router.post("/", auth, async (req, res) => {
+router.post("/", async (req, res) => {
+  console.log(req.body);
+
   try {
     const leads = await Lead.insertMany(req.body);
     res.json(leads);
@@ -14,6 +16,10 @@ router.post("/", auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send("servererr");
   }
+});
+
+router.post("/forms", async (req, res) => {
+  console.log(req.body);
 });
 
 router.delete("/", auth, async (req, res) => {

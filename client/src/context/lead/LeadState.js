@@ -11,6 +11,7 @@ import {
   DELETE_LEADS,
   MAKE_DNC,
   UPDATE_CLIENT,
+  SUBMIT_LEAD,
 } from "../types";
 
 const LeadState = (props) => {
@@ -58,6 +59,23 @@ const LeadState = (props) => {
 
     dispatch({
       type: UPDATE_CLIENT,
+      payload: res.data,
+    });
+  };
+
+  const submitLead = async (form) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    console.log(form);
+
+    const res = await axios.post(`/api/leads/forms`, form, config);
+
+    dispatch({
+      type: SUBMIT_LEAD,
       payload: res.data,
     });
   };
@@ -139,7 +157,7 @@ const LeadState = (props) => {
         setSelectedFile,
         uploadFile,
         parseDb,
-
+        submitLead,
         updateLead,
         updateClient,
         makeDNC,

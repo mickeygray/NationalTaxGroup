@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, Fragment } from "react";
-import LeadContext from "../../context/lead/leadContext";
+import LeadContext from "../../../context/lead/leadContext";
 
 const TakeMeOffTheList = () => {
   const leadContext = useContext(LeadContext);

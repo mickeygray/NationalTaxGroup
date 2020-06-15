@@ -1,52 +1,58 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import logo from "../../images/logo.png";
-import { Link } from "react-router-dom";
-import AuthContext from "../../context/auth/authContext";
 
-const Navbar = ({ title, icon }) => {
-  const authContext = useContext(AuthContext);
+const Navbar = () => {
+  const [style, setStyle] = useState({});
 
-  const { isAuthenticated, logout, user, loadUser } = authContext;
-
+  const position = window.pageYOffset;
+  const onClick = () => {
+    window.scrollTo(0, 0);
+  };
   useEffect(() => {
-    loadUser();
-    // eslint-disable-next-line
+    window.addEventListener("scroll", onScroll);
+    setStyle({
+      backgroundColor: "none",
+    });
   }, []);
 
-  const onLogout = () => {
-    logout();
+  const location = useLocation();
+  useEffect(() => {
+    if (position === 0) {
+      setStyle({
+        backgroundColor: "rgba(52, 52, 52, 0.1)",
+        zIndex: "999999999999999",
+      });
+    }
+  }, [position, setStyle]);
+
+  const onScroll = () => {
+    setStyle({
+      position: "sticky",
+      top: "0",
+      background: "black",
+      zIndex: "999999999999999",
+    });
   };
 
-  let location = useLocation();
-
-  console.log(location.pathname);
-
-  const authLinks = (
-    <Fragment>
-      <li>Hello {user && user.name}</li>
-      <li>
-        <a onClick={onLogout} href='#!'>
-          <span className='hide-sm'>Logout</span>
-        </a>
-      </li>
-      <li>
-        <Link to='/register'>Register</Link>
-      </li>
-      <li>
-        <Link to='/login'>Login</Link>
-      </li>
-    </Fragment>
-  );
-
   return (
-    <div className='navbar bg-primary'>
-      <h1>
-        <Link to='/'>
-          <img src={logo} alt='' style={{ width: "50px", height: "50px" }} />
-        </Link>
-      </h1>
-      <ul>{location.pathname === `/takemeoffthelist` ? "" : authLinks}</ul>
+    <div className='navgrid' onScroll={onScroll} style={style}>
+      <div className='container'>
+        <p className='text-primary'>
+          <a href='#' onClick={onClick}>
+            <img
+              src={logo}
+              style={{
+                width: "60px",
+                height: "60px",
+                borderRadius: "10px",
+                opacity: "50%",
+              }}
+            />
+          </a>
+          National Tax Group
+        </p>
+      </div>
     </div>
   );
 };

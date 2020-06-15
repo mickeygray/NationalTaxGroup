@@ -35,6 +35,7 @@
     "nodemailer": "^6.4.8",
     "nodemailer-express-handlebars": "^4.0.0",
     "nodemon": "^2.0.4",
+    "pure-react-carousel": "^1.27.1",
     "salt": "^0.5.5",
     "set-interval": "^2.0.4"
   }

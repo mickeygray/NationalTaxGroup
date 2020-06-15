@@ -3,13 +3,11 @@ import {
   SET_FILE,
   PARSE_LIST,
   SET_LIST,
-  SET_MAILOBJECT,
   UPDATE_CLIENT,
   UPDATE_LEAD,
   DELETE_LEADS,
   MAKE_DNC,
-  SPLIT_LEAD,
-  SET_DNCOBJECT,
+  SUBMIT_LEAD,
 } from "../types";
 
 export default (state, action) => {
@@ -38,6 +36,12 @@ export default (state, action) => {
         ...state,
         campaign: action.payload,
       };
+
+    case SUBMIT_LEAD:
+      return {
+        ...state,
+        lead: action.payload,
+      };
     case SET_FILE:
       return {
         ...state,
@@ -47,12 +51,6 @@ export default (state, action) => {
       return {
         ...state,
         dncArray: action.payload,
-      };
-
-    case SPLIT_LEAD:
-      return {
-        ...state,
-        mailObject: action.payload,
       };
 
     case PARSE_LIST:

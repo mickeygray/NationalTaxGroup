@@ -290,6 +290,15 @@ const EmailCreator = () => {
                   name='reactstring'
                   onChange={onChange}
                 />
+
+                <input
+                  type='text'
+                  value={html}
+                  placeholder='html'
+                  type='text'
+                  name='html'
+                  onChange={onChange}
+                />
               </form>
             </div>
 

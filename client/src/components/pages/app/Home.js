@@ -1,12 +1,12 @@
 import React from "react";
-import Upload from "../lists/Upload";
+import Upload from "../../lists/Upload";
 
-import EmailCreator from "../emails/EmailCreator";
-import EmailLibrary from "../emails/EmailLibrary";
-import ListFilter from "../lists/ListFilter";
-import CampaignBuilder from "../campaigns/CampaignBuilder";
-import CampaignEditor from "../campaigns/CampaignEditor";
-import Campaigns from "../campaigns/Campaigns";
+import EmailCreator from "../../emails/EmailCreator";
+import EmailLibrary from "../../emails/EmailLibrary";
+import ListFilter from "../../lists/ListFilter";
+import CampaignBuilder from "../../campaigns/CampaignBuilder";
+import CampaignEditor from "../../campaigns/CampaignEditor";
+import Campaigns from "../../campaigns/Campaigns";
 const Home = () => {
   return (
     <div>

@@ -18,6 +18,11 @@ const leadSchema = new Schema({
   lexId: String,
   plaintiff: String,
   status: String,
+  years: String,
+  employed: String,
+  income: String,
+  creditscore: String,
+  phone: String,
 });
 
 module.exports = mongoose.model("leads", leadSchema);

@@ -30,5 +30,4 @@ export const DELETE_TEMPLATE = "DELETE_TEMPLATE";
 export const DELETE_LEADS = "DELETE_LEADS";
 export const ADD_CONTACTED = "ADD_CONTACTED";
 export const MAKE_DNC = "MAKE_DNC";
-export const SET_DNCOBJECT = "SET_DNCOBJECT";
-export const SET_TEMPLATESTATE = "SET_TEMPLATESTATE";
+export const SUBMIT_LEAD = "SUBMIT_LEAD";
