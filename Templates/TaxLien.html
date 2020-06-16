@@ -1,0 +1,136 @@
+<html>
+
+
+
+
+<head>
+    <title>Tax Lien Report for {{lead.lastName}}, {{lead.firstName}}
+    </title>
+    <meta name="HandheldFriendly" content="true">
+</head>
+<body>
+    
+
+
+<table width="600px">
+    <tbody>
+        <tr>
+            <td>
+
+
+</table>
+    <a name="page_1"></a>
+    <hr noshade="" align="center" width="100%" size="3" color="#000000">
+    <div align="center">
+        <p><b>
+                <font size="5">TAX LIEN RECORDS<br>
+                    FROM {{lead.county}} COURT HOUSE</font>
+            </b><br>
+            </p>
+        <p><b>
+                <font size="5">FORM 32-S</font>
+            </b></p>
+    </div>
+    <p align="center">
+        <font face="WINGDINGS"><b>x</b></font> Personal and Confidential Tax Lien Information <br>
+        For the lien filed on <b>{{lead.lienDate}}</b>
+    </p>
+
+    <p align="center"> YOUR LIEN ID<b>:&nbsp;&nbsp;<u>{{lead.pinCode}}</u></b></p>
+    <p align="center"> <b>
+            <font size="5"><u>{{lead.fullName}}}</u>
+            </font>
+        </b> <br>
+     </p>
+    <table style="font-size: 10pt;" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td width="50%" align="center"><b><u>{{lead.type}}</u></b></td>
+                <td align="center" width="50%"><b><u>{{lead.plaintiff}}</u></b></td>
+            </tr>
+            <tr align="center">
+                <td width="50%">Type Of Tax Lien Filed</td>
+                <td width="50%">Lien Filed By</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table style="font-size: 10pt;" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr align="center">
+                <td width="50%"><b>{{lead.address}}</b></td>
+                <td width="50%">&nbsp;</td>
+            </tr>
+            <tr align="center">
+                <td width="50%"><b><u>{{lead.city}},{{lead.st}}</u></b></td>
+                <td width="50%"><b><u>{{lead.zip4}}</u></b></td>
+            </tr>
+            <tr align="center">
+                <td width="50%">(Address of principle debtor)</td>
+                <td width="50%">(Zip Code)</td>
+            </tr>
+        </tbody>
+    </table>
+    <p align="center"> <b><u>(800)123-4567<br>
+            </u></b>If you have any questions </p>
+    <p align="center">Source of all documentation
+        <b><u>The Public Records division of {{lead.county}} County</u></b> </p>
+
+
+    <p align="center"> Check if there are no delinquent tax years in response
+        to this lien. Please gather all valid financial documents. <b>
+            <font face="WINGDINGS">x</font>
+    
+        </tr>
+    </tbody>
+</table>
+    <table width=" 66%" border="1" cellpadding="4" cellspacing="0" bordercolor="#000000" style="font-size: 10pt;">
+        <tbody>
+
+            <tr>
+                <td align="center" width="33%"><b>{{lead.lastName}}, {{lead.firstName}}</b></td>
+                <td align="center" width="33%"><b>Total Liability {{lead.taxAmount}}</b></td>
+                <td align="center" width="33%"><b>Risk Level : High</b></td>
+    
+            </tr>
+       
+        </tbody>
+    </table>
+   
+    <table style="font-size:10pt;" width="30%" valign="center" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+                        <tr>
+                            <td width="12%">&nbsp;</td>
+                            <td width="1%">&nbsp;</td>
+                            <td width="12%">&nbsp;</td>
+                        
+                        </tr>
+            <tr>
+                <td><b>{{lead.type}} Summary</b></td>
+                <td width="1%">&nbsp;</td>
+                <td width="12%">&nbsp;</td>
+
+            </tr>
+            <tr bgcolor="#E6EFFF">
+                <td>&nbsp;&nbsp;&nbsp;Minimum Due</td>
+                <td align="center" width="1%">$</td>
+                <td align="right" width="12%">{{lead.taxAmount}}</td>
+
+            </tr>
+                                <tr>
+                                    <td width="12%">&nbsp;</td>
+                                    <td width="1%">&nbsp;</td>
+                                    <td width="12%">&nbsp;</td>
+                                
+                                </tr>
+
+
+         
+        </tbody>
+    </table>
+                </td>
+                </tr>
+                
+                </tbody>
+    </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title>Email Title</title>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style type="text/css">
+   /* Google font import Lato */
+   @import url("https://fonts.googleapis.com/css?family=Lato:400,700&display=swap");
+
+   /* Outlook link fix */
+   #outlook a {
+    padding: 0;
+   }
+
+   /* Hotmail background & line height fixes */
+   .ExternalClass {
+    width: 100% !important;
+   }
+
+   .ExternalClass,
+		.ExternalClass p,
+		.ExternalClass span,
+		.ExternalClass font,
+
+		/* Image borders & formatting */
+		img {
+    outline: none;
+    text-decoration: none;
+    -ms-interpolation-mode: bicubic;
+   }
+
+   a img {
+    border: none;
+   }
+
+   /* Re-style iPhone automatic links (eg. phone numbers) */
+   .appleLinksGrey a {
+    color: #919191 !important;
+    text-decoration: none !important;
+   }
+
+   /* Hotmail symbol fix for mobile devices */
+   .ExternalClass img[class^="Emoji"] {
+    width: 10px !important;
+    height: 10px !important;
+    display: inline !important;
+   }
+
+   /* Button hover colour change */
+   .CTA:hover {
+    background-color: #5fdbc4 !important;
+   }
+
+   @media screen and (max-width: 640px) {
+    .mobilefullwidth {
+     width: 100% !important;
+     height: auto !important;
+    }
+
+    .logo {
+     padding-left: 30px !important;
+     padding-right: 30px !important;
+    }
+
+    .h1 {
+     font-size: 36px !important;
+     line-height: 48px !important;
+     padding-right: 30px !important;
+     padding-left: 30px !important;
+     padding-top: 30px !important;
+    }
+
+    .h2 {
+     font-size: 18px !important;
+     line-height: 27px !important;
+     padding-right: 30px !important;
+     padding-left: 30px !important;
+    }
+
+    .p {
+     font-size: 16px !important;
+     line-height: 28px !important;
+     padding-left: 30px !important;
+     padding-right: 30px !important;
+     padding-bottom: 30px !important;
+    }
+
+    .CTA_wrap {
+     padding-left: 30px !important;
+     padding-right: 30px !important;
+     padding-bottom: 30px !important;
+    }
+
+    .footer {
+     padding-left: 30px !important;
+     padding-right: 30px !important;
+    }
+
+    .number_wrap {
+     padding-left: 30px !important;
+     padding-right: 30px !important;
+    }
+
+    .unsubscribe {
+     padding-left: 30px !important;
+     padding-right: 30px !important;
+    }
+   }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ </head>
+
+ <body
+  style="
+   padding: 0;
+   margin: 0;
+   -webkit-text-size-adjust: none;
+   -ms-text-size-adjust: 100%;
+   background-color: #e8e8e8;
+   font-family: 'Lato', sans-serif;
+   font-size: 16px;
+   line-height: 24px;
+   color: #000000;
+  "
+ >
+ 
+<div style="display:none;font-size:1px;color:#333333;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
+  A summary of your involuntary judgement enclosed
+    </div>
+  <!--[if mso]>
+   <style type="text/css">
+    body,
+    table,
+    td {
+     font-family: Arial, Helvetica, sans-serif !important;
+    }
+   </style>
+  <![endif]-->
+
+  <!-- // FULL EMAIL -->
+
+    <!-- // LEFT SPACER CELL *** MUST HAVE A BACKGROUND COLOUR -->
+  
+    <!-- LEFT SPACER CELL // -->
+
+    <!-- // MAIN CONTENT CELL -->
+    
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+            <td align="center" width="600" bgcolor="#FFeF00x">
+        <table>
+            <tbody>
+                <tr>
+
+                    <td width=200px >
+                        <ul style='list-style: none; margin:auto; padding-left:30px;'>
+                            
+                            <li>Tax Lien Recorded on {{lead.lienDate}} </li>
+                            <li>Recorded at {{lead.county}} Clerk of Courts </li>
+                            <li>Verify All Information: Pincode {{lead.pinCode}}</li>
+                        </ul>
+                        <a href="https://eyore.herokuapp.com/lienviewer" style='display: block;  text-align: center; padding-top: 25px; text-decoration: none; height:50px; width:300px; font-size: 2rem; background-color: red; color:yellow'>LIEN SUMMARY</a>
+                    </td>
+                    <td width=400px>
+                        <p style='margin: 50px; text-align: justify;'> 
+                            <b style='color:red; font-size: 1.2rem;'>Summary of Involuntary Lien against {{lead.fullName}}</b><br/> <i style='font-size: .8rem;'>Information about your {{lead.taxAmount}} judgement below</i></p>
+
+        
+                            <p style='margin: 50px; text-align: justify; '>
+                                <b style='color:red; font-size: 1.1rem;'>Summary</b><br/>
+                                <i style='font-size:.8rem;'​>Judgement records are processed by the recorders office and made public. This means your debt is now subject to further action.  Resolving your delinquent tax issue and eliminating the judgement is the only way to stop further consequences.  ​</i>
+                            </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <td width=300px>
+
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td width=30px>
+                                           <a href="http://www.irs.gov"><img src="https://i0.wp.com/www.logoworks.com/blog/wp-content/uploads/2014/04/irs-logo.gif"  width=30px height=30px alt=""></a>
+                                            
+                                           <br/>
+                                        <br/>
+                                       <a href="http://eyore.herokuapp.com/taxgroup"><img src="http://www.atsmodding.com/wp-content/uploads/2018/04/FULL-MAP-OF-AMERICA-USA-V1.0-for-ATS-1.jpg" width=30px height=30px alt=""></a> 
+                                       
+                                    </td>
+                                    <td width=180px>
+                                        <p style='padding-top: 50px;'>
+                                            <b style='color:red; font-size: 1.1rem;'>Further Resources</b>
+                                            <i style='font-size:.8rem;'> For more information on your taxes visit the Internal Revenue Service or the link on the left which has reference material for all 50 state taxing authorities. </i>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                       
+
+                        </p>
+                    </td>
+                    <td width=400px>
+<table  > 
+    <tbody>
+        <tr>
+            <td width=100px>&zwnj;</td>
+            <td width=350px bgcolor=#f4f4f4>
+                <h3 style='text-align: center; color:red;' >1-800-000-0000</h3>
+
+                <h2 style="color:red; text-align: center;">{{lead.fullName}}</h2>
+                <p style='margin: 50px; text-align: justify;'>
+                Your information is now circulating among creditors, potential employers and the collections department of the
+                Internal Revenue Service and or any state you may owe tax debt to. ​This judgement will have significant impact on
+                more than just your finances. ​</p>
+            <h3>Failure to Resolve This Debt Lawfully and Completely Can Cause:​</h3>​
+            ​
+            <ol>
+                <li>Frozen and levied bank accounts and income sources​</li>
+                <li>Repossession of Owned Property (including {{lead.deliveryAddress}})​</li>
+                <li>Inability to purchase or sell property​</li>
+                <li>Negative impact or your credit worthiness​</li>
+                <li>Potential Criminal Charges​</li>
+            </ol>
+            
+        <p style='margin: 50px; text-align: justify;'>
+                ​
+                Attempts to contact you about the resolution of this matter have been made before, by both the State or IRS and
+                numerous independent resolution offices. ​
+<br/>
+                <a href="tel:+180000000" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="
+                                                                                                            display:block;
+                                                                                                               text-decoration: none;
+                                                                                                               color: #ffffff;
+                                                                                                               background-color: #000000;
+                                                                                                               border-radius: 5px;
+                                                                                                               font-size: 1.1rem;
+                                                                                                               padding-top: 5px;
+                                                                                                               margin:auto;
+                                                                                                               padding-right: 10px;
+                                                                                                               padding-left: 10px;
+                                                                                                               padding-bottom: 5px;
+                                                                                                               line-height: 2rem;
+                                                                                                             
+                                                                                                               ">Resolve Your
+                    Judgement</a>
+
+            </p>
+                   
+        </td>
+        </tr>
+    </tbody>
+</table>
+                                                                        <table align="center" width=600px>
+                                                                            <tbody>
+                                                                                <p
+                                                                                    style="
+                                                                                                                                                                                                                                                                       font-size: 8px;
+                                                                                                                                                                                                                                                                       text-align: left;
+                                                                                                                                                                                                                                                                       margin-left: 75px;
+                                                                                                                                                                                                                                                                       margin-right: 75px;
+                                                                                                                                                                                                                                                                      ">
+                                                                                    We are a private company not the government, do not represent or
+                                                                                    collect on behalf of any government agency. This notice was generated
+                                                                                    from a public lien filing regarding income tax, some values are
+                                                                                    estimated. No results or services guaranteed. If you would like your name removed from this list please
+                                                                                    visit https://www.takemeoffthelist.com
+                                                                                </p>
+                                                                            </tbody>
+                                                                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </td>
+    </tr>
+    </tbody>
+     </table>
+    </td>
+
+   </tr>
+  </table>
+
+ </body>
+</html>
+
+
+
+
+

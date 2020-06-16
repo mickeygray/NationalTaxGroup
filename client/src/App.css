@@ -476,6 +476,13 @@ img {
   grid-template-columns: 1fr 3fr;
 }
 
+.formfiller {
+  height: 12pt;
+  width: 22pt;
+  border: 1pt solid;
+  background-color: #dcfffa;
+}
+
 .contactcopy {
   grid-area: copy;
   display: grid;

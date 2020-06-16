@@ -15,6 +15,7 @@ import TaxGroup from "./components/pages/website/pages/TaxGroup";
 import FileAComplaint from "./components/pages/splash/FileAComplaint";
 import LienViewer from "./components/pages/website/pages/LienViewer";
 import IGetYourMoneyBack from "./components/pages/website/pages/IGetYourMoneyBack";
+import Free1040Filler from "./components/pages/website/pages/Free1040Filler";
 const App = () => {
   return (
     <AuthState>
@@ -31,6 +32,11 @@ const App = () => {
                 <Route exact path='/freshstart' component={FreshStart} />
                 <Route exact path='/lienviewer' component={LienViewer} />
                 <Route exact path='/taxgroup' component={TaxGroup} />
+                <Route
+                  exact
+                  path='/free1040filler'
+                  component={Free1040Filler}
+                />
                 <Route
                   exact
                   path='/igetyourmoneyback'
