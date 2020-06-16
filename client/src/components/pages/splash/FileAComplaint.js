@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect, useContext } from "react";
 import hero2 from "../../../images/hero2.png";
 import LeadContext from "../../../context/lead/leadContext";
 import Footer from "../website/layout/Footer";
+import { Link } from "react-router-dom";
 
 const FileAComplaint = () => {
   const leadContext = useContext(LeadContext);
@@ -84,12 +85,12 @@ const FileAComplaint = () => {
                 lawsuit and tax case for free
               </h5>
 
-              <button
-                onClick={onClick}
+              <Link
+                to='/igetyourmoneyback'
                 className='btn btn-primary btn-block'
                 style={{ height: "50px" }}>
                 Speak To A Lawyer
-              </button>
+              </Link>
             </div>
             <div>
               <form onSubmit={onSubmit}>

@@ -215,6 +215,31 @@ img {
   grid-template-columns: 2fr 1fr;
 }
 
+.grid-strategy {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: repeat(2 1fr);
+  grid-template-areas:
+    "copy"
+    "overlay";
+}
+
+.strategy-text {
+  grid-area: copy;
+  display: grid;
+  grid-row-start: 1;
+  grid-column-start: 2;
+}
+
+.strategy-img {
+  grid-area: overlay;
+  display: grid;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
 .grid-home {
   display: grid;
   grid-gap: 3rem;
@@ -454,7 +479,8 @@ img {
 .contactcopy {
   grid-area: copy;
   display: grid;
-  grid-row-start: 2;
+  grid-row-start: 1;
+  grid-row-end: 4;
   grid-column-start: 2;
   grid-column-end: 4;
   z-index: 2;
