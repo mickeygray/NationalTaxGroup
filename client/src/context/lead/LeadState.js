@@ -12,6 +12,7 @@ import {
   MAKE_DNC,
   UPDATE_CLIENT,
   SUBMIT_LEAD,
+  GET_LIEN,
 } from "../types";
 
 const LeadState = (props) => {
@@ -70,10 +71,6 @@ const LeadState = (props) => {
       },
     };
 
-    form.forEach(function (element) {
-      element.status = "new";
-    });
-
     const res = await axios.post(`/api/leads/forms`, form, config);
 
     dispatch({
@@ -131,6 +128,25 @@ const LeadState = (props) => {
     });
   };
 
+  const getLead = async (lead) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await axios.get(
+      `/api/leads/:id/pinCode?q=${lead.pinCode},${lead.email}`,
+      lead,
+      config
+    );
+
+    dispatch({
+      type: GET_LIEN,
+      payload: res.data,
+    });
+  };
+
   const uploadFile = async (data) => {
     const config = {
       headers: {
@@ -162,6 +178,7 @@ const LeadState = (props) => {
         setSelectedFile,
         uploadFile,
         parseDb,
+        getLead,
         submitLead,
         updateLead,
         updateClient,

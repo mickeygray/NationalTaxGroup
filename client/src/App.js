@@ -11,9 +11,9 @@ import LeadState from "./context/lead/LeadState";
 import EmailState from "./context/email/EmailState";
 import TakeMeOffTheList from "./components/pages/splash/TakeMeOffTheList";
 import FreshStart from "./components/pages/splash/FreshStart";
-import TaxGroup from "./components/pages/website/TaxGroup/pages/TaxGroup";
+import TaxGroup from "./components/pages/website/pages/TaxGroup";
 import FileAComplaint from "./components/pages/splash/FileAComplaint";
-
+import LienViewer from "./components/pages/website/pages/LienViewer";
 const App = () => {
   return (
     <AuthState>
@@ -28,6 +28,7 @@ const App = () => {
                 <Route exact path='/register' component={Register} />
                 <Route exact path='/login' component={Login} />
                 <Route exact path='/freshstart' component={FreshStart} />
+                <Route exact path='/lienviewer' component={LienViewer} />
                 <Route exact path='/taxgroup' component={TaxGroup} />
                 <Route
                   exact

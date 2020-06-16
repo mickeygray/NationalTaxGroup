@@ -1,9 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const Lead = require("../models/Lead");
+const PDF = require("../models/PDF");
 const auth = require("../middleware/auth");
 const mongoose = require("mongoose");
 const csv = require("csvtojson");
+const fs = require("fs");
+const path = require("path");
+const puppeteer = require("puppeteer");
+const handlebars = require("handlebars");
+const key = require("../key.json");
+const nodemailer = require("nodemailer");
+const Email = require("../models/Email");
+const hbs = require("nodemailer-express-handlebars");
 
 //Add Leads to Mongo
 
@@ -20,7 +29,10 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.post("/forms", async (req, res) => {
+  console.log(req.body);
   const {
+    fullName,
+    email,
     status,
     years,
     employed,
@@ -33,6 +45,8 @@ router.post("/forms", async (req, res) => {
   } = req.body;
 
   const newLead = new Lead({
+    fullName,
+    email,
     status,
     years,
     employed,
@@ -127,6 +141,73 @@ router.put("/", auth, async (req, res) => {
       console.log(doc);
     }
   );
+});
+
+router.get(`/:id/pinCode`, async (req, res) => {
+  const string = req.query.q;
+
+  const leadData = string.split(",");
+
+  const mongooseToObj = (doc) => {
+    if (doc == null) {
+      return null;
+    }
+    return doc.toObject();
+  };
+
+  const lead = mongooseToObj(
+    await Lead.findOne({
+      "pinCode": leadData[0],
+    })
+  );
+
+  console.log(lead);
+
+  const doc = await PDF.findOne({ "title": "TaxLien" });
+
+  fs.writeFile("./pdfs/template.hbs", doc.html, (err) => {
+    if (err) throw err;
+    console.log("thefilehasbeensaved");
+  });
+
+  if (lead != null) {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        type: "OAuth2",
+        user: "lienunit@nattaxgroup.com",
+        serviceClient: key.client_id,
+        privateKey: key.private_key,
+      },
+    });
+
+    const options = {
+      viewEngine: {
+        extName: ".hbs",
+        partialsDir: path.join(__dirname, "pdfs"),
+        layoutsDir: path.join(__dirname, "pdfs"),
+        defaultLayout: false,
+      },
+      viewPath: "pdfs",
+      extName: ".hbs",
+    };
+
+    transporter.use("compile", hbs(options));
+
+    const mailer = {
+      title: "Your Tax Lien",
+      from: "Tax Group",
+      to: leadData[1],
+      subject: "Your Tax Lien",
+      template: "template",
+      context: {
+        lead: lead,
+      },
+    };
+    transporter.sendMail(mailer);
+  }
 });
 
 //Get Leads For Email List

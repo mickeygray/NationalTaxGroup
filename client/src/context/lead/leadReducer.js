@@ -8,6 +8,7 @@ import {
   DELETE_LEADS,
   MAKE_DNC,
   SUBMIT_LEAD,
+  GET_LIEN,
 } from "../types";
 
 export default (state, action) => {
@@ -35,6 +36,12 @@ export default (state, action) => {
       return {
         ...state,
         campaign: action.payload,
+      };
+
+    case GET_LIEN:
+      return {
+        ...state,
+        lien: action.payload,
       };
 
     case SUBMIT_LEAD:

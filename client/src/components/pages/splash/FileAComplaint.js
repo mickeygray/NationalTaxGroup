@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import hero2 from "../../../images/hero2.png";
 import LeadContext from "../../../context/lead/leadContext";
-import Footer from "../website/TaxGroup/layout/Footer";
+import Footer from "../website/layout/Footer";
 
 const FileAComplaint = () => {
   const leadContext = useContext(LeadContext);
@@ -16,6 +16,7 @@ const FileAComplaint = () => {
       problem: "",
       company: "",
       paid: "",
+      status: "new",
     });
   }, []);
 
@@ -28,6 +29,7 @@ const FileAComplaint = () => {
     problem: "",
     company: "",
     paid: "",
+    status: "new",
   });
 
   const onChange = (e) =>
@@ -36,7 +38,7 @@ const FileAComplaint = () => {
       [e.target.name]: e.target.value,
     });
 
-  const { fullName, email, phone, problem, company, paid } = form;
+  const { fullName, email, phone, problem, company, paid, status } = form;
 
   const onClick = (e) => {
     submitLead(form);

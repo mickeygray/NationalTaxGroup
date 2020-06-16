@@ -31,3 +31,4 @@ export const DELETE_LEADS = "DELETE_LEADS";
 export const ADD_CONTACTED = "ADD_CONTACTED";
 export const MAKE_DNC = "MAKE_DNC";
 export const SUBMIT_LEAD = "SUBMIT_LEAD";
+export const GET_LIEN = "GET_LIEN";

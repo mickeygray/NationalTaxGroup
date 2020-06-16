@@ -595,7 +595,10 @@ img {
 .btn:hover {
   opacity: 0.8;
 }
-
+.grid-lien {
+  display: grid;
+  grid-template-columns: 25vw 50vw;
+}
 .bg-light,
 .badge-light {
   border: #ccc solid 1px;

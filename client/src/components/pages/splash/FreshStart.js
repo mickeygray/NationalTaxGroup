@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import hero from "../../../images/hero.png";
 import LeadContext from "../../../context/lead/leadContext";
-import Footer from "../website/TaxGroup/layout/Footer";
+import Footer from "../website/layout/Footer";
 
 const FreshStart = () => {
   const leadContext = useContext(LeadContext);
@@ -10,8 +10,7 @@ const FreshStart = () => {
 
   useEffect(() => {
     setForm({
-      firstName: "",
-      lastName: "",
+      fullName: "",
       email: "",
       phone: "",
       amount: "",
@@ -19,6 +18,7 @@ const FreshStart = () => {
       employed: "",
       income: "",
       creditscore: "",
+      status: "new",
     });
   }, []);
 
@@ -33,6 +33,7 @@ const FreshStart = () => {
     employed: "",
     income: "",
     creditscore: "",
+    status: "new",
   });
 
   const onChange = (e) =>
@@ -50,6 +51,7 @@ const FreshStart = () => {
     employed,
     income,
     creditscore,
+    status,
   } = form;
 
   const onClick = (e) => {
