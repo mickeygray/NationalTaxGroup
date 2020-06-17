@@ -11,7 +11,7 @@ node_modules/
 # production
 /build
 
-/client/node_modules
+client/node_modules/
 # misc
 .DS_Store
 .env.local
