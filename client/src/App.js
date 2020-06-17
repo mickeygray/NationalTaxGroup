@@ -7,6 +7,7 @@ import Login from "./components/auth/Login";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import AuthState from "./context/auth/AuthState";
 import "./App.css";
+import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
 import LeadState from "./context/lead/LeadState";
 import EmailState from "./context/email/EmailState";
 import TakeMeOffTheList from "./components/pages/splash/TakeMeOffTheList";
@@ -61,4 +62,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default withAuthenticator(App);

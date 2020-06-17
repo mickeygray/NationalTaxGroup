@@ -1,0 +1,156 @@
+{
+	"providers": {
+		"awscloudformation": {
+			"AuthRoleName": "amplify-eyore-production-64326-authRole",
+			"UnauthRoleArn": "arn:aws:iam::132243118155:role/amplify-eyore-production-64326-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::132243118155:role/amplify-eyore-production-64326-authRole",
+			"Region": "us-east-2",
+			"DeploymentBucketName": "amplify-eyore-production-64326-deployment",
+			"UnauthRoleName": "amplify-eyore-production-64326-unauthRole",
+			"StackName": "amplify-eyore-production-64326",
+			"StackId": "arn:aws:cloudformation:us-east-2:132243118155:stack/amplify-eyore-production-64326/86a6b670-b0a0-11ea-a41d-0a7adbd72fc8",
+			"AmplifyAppId": "d2se9geph2xa8a"
+		}
+	},
+	"function": {
+		"eyore477399ad": {
+			"build": true,
+			"providerPlugin": "awscloudformation",
+			"service": "Lambda",
+			"dependsOn": [],
+			"lastBuildTimeStamp": "2020-06-17T14:07:39.674Z",
+			"lastPackageTimeStamp": "2020-06-17T14:07:40.165Z",
+			"distZipFilename": "eyore477399ad-415169334d5879506871-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-eyore-production-64326-deployment/amplify-cfn-templates/function/eyore477399ad-cloudformation-template.json",
+				"logicalId": "functioneyore477399ad"
+			},
+			"lastPushTimeStamp": "2020-06-17T14:51:29.290Z",
+			"output": {
+				"Region": "us-east-2",
+				"Arn": "arn:aws:lambda:us-east-2:132243118155:function:eyore477399ad-production",
+				"Name": "eyore477399ad-production",
+				"LambdaExecutionRole": "eyoreLambdaRole9e69fb35-production"
+			},
+			"lastPushDirHash": "bEip6WUpHCo9Vxn418WFlJUFGIU="
+		},
+		"AdminQueriesf633d3dc": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "auth",
+					"resourceName": "cognito921aa65e",
+					"attributes": [
+						"UserPoolId"
+					]
+				}
+			],
+			"lastBuildTimeStamp": "2020-06-17T14:47:48.276Z",
+			"lastPackageTimeStamp": "2020-06-17T14:47:50.772Z",
+			"distZipFilename": "AdminQueriesf633d3dc-71745135455a654a2f73-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-eyore-production-64326-deployment/amplify-cfn-templates/function/AdminQueriesf633d3dc-cloudformation-template.json",
+				"logicalId": "functionAdminQueriesf633d3dc"
+			},
+			"lastPushTimeStamp": "2020-06-17T14:51:29.312Z",
+			"output": {
+				"Region": "us-east-2",
+				"Arn": "arn:aws:lambda:us-east-2:132243118155:function:AdminQueriesf633d3dc-production",
+				"Name": "AdminQueriesf633d3dc-production",
+				"LambdaExecutionRole": "AdminQueriesf633d3dcLambdaRole-production"
+			},
+			"lastPushDirHash": "1ViL2XCXvMoTjbAjVGR1qJyoTd8="
+		}
+	},
+	"auth": {
+		"cognito921aa65e": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-eyore-production-64326-deployment/amplify-cfn-templates/auth/cognito921aa65e-cloudformation-template.yml",
+				"logicalId": "authcognito921aa65e"
+			},
+			"lastPushTimeStamp": "2020-06-17T14:51:29.312Z",
+			"output": {
+				"AppClientSecret": "5378nrd4ud0fhos0aa2j5c87mttqijovdbg3ivcrfkbneeomrt0",
+				"UserPoolId": "us-east-2_eJYfSgJLR",
+				"AppClientIDWeb": "7t841qhglv5b6gjfco3lari10i",
+				"AppClientID": "6rak5v1dla2984lqm4cl3qritm",
+				"IdentityPoolId": "us-east-2:5c0c76e7-b9bd-42d0-9815-5cec71cb1a35",
+				"IdentityPoolName": "eyore_identitypool_b0c9cfee__production",
+				"UserPoolName": "eyore_userpool_b0c9cfee",
+				"HostedUIDomain": "eyore2c60d6e2-2c60d6e2-production",
+				"OAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://www.nattaxgroup.com/login/\"],\"LogoutURLs\":[\"https://www.nattaxgroup.com/logout/\"]}"
+			},
+			"lastPushDirHash": "UM9yyXL8f30BSFt3yr4MjIKFy5A=",
+			"dependsOn": []
+		}
+	},
+	"api": {
+		"apiae8f3a94": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "eyore477399ad",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-eyore-production-64326-deployment/amplify-cfn-templates/api/apiae8f3a94-cloudformation-template.json",
+				"logicalId": "apiapiae8f3a94"
+			},
+			"lastPushTimeStamp": "2020-06-17T14:51:29.302Z",
+			"output": {
+				"ApiName": "apiae8f3a94",
+				"RootUrl": "https://t5soonibm8.execute-api.us-east-2.amazonaws.com/production",
+				"ApiId": "t5soonibm8"
+			},
+			"lastPushDirHash": "cyGEdnIGTzjlk4eQBqvchCrhDRE="
+		},
+		"AdminQueries": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "auth",
+					"resourceName": "cognito921aa65e",
+					"attributes": [
+						"UserPoolId"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "AdminQueriesf633d3dc",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				}
+			],
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-eyore-production-64326-deployment/amplify-cfn-templates/api/admin-queries-cloudformation-template.json",
+				"logicalId": "apiAdminQueries"
+			},
+			"lastPushTimeStamp": "2020-06-17T14:51:29.312Z",
+			"output": {
+				"ApiName": "AdminQueries",
+				"RootUrl": "https://fwaqda76t3.execute-api.us-east-2.amazonaws.com/production"
+			},
+			"lastPushDirHash": "3h7OFLDgRyLWzJbrzttBFVC6QvA="
+		}
+	},
+	"hosting": {
+		"amplifyhosting": {
+			"service": "amplifyhosting",
+			"type": "cicd",
+			"lastPushTimeStamp": "2020-06-17T14:05:22.953Z"
+		}
+	}
+}

@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/mickeygray/nattaxgroup#readme",
   "dependencies": {
+    "@aws-amplify/ui-react": "^0.2.8",
+    "aws-amplify": "^3.0.17",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "concurrently": "^5.2.0",

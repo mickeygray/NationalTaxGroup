@@ -1,0 +1,28 @@
+{
+    "production": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-eyore-production-64326-authRole",
+            "UnauthRoleArn": "arn:aws:iam::132243118155:role/amplify-eyore-production-64326-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::132243118155:role/amplify-eyore-production-64326-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "amplify-eyore-production-64326-deployment",
+            "UnauthRoleName": "amplify-eyore-production-64326-unauthRole",
+            "StackName": "amplify-eyore-production-64326",
+            "StackId": "arn:aws:cloudformation:us-east-2:132243118155:stack/amplify-eyore-production-64326/86a6b670-b0a0-11ea-a41d-0a7adbd72fc8",
+            "AmplifyAppId": "d2se9geph2xa8a"
+        },
+        "categories": {
+            "auth": {
+                "cognito921aa65e": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Google\",\"client_id\":\"103897752467188115139\",\"client_secret\":\"idfiuewryrf98wu\"}]"
+                }
+            },
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "d2se9geph2xa8a",
+                    "type": "cicd"
+                }
+            }
+        }
+    }
+}
