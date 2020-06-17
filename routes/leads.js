@@ -7,7 +7,6 @@ const mongoose = require("mongoose");
 const csv = require("csvtojson");
 const fs = require("fs");
 const path = require("path");
-const puppeteer = require("puppeteer");
 const handlebars = require("handlebars");
 const key = require("../key.json");
 const nodemailer = require("nodemailer");
