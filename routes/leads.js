@@ -76,11 +76,11 @@ router.delete("/", auth, async (req, res) => {
 router.put("/:id/dnc", auth, async (req, res) => {
   console.log(req.body);
 
-  const { name, address, lexid, email } = req.body;
+  const { name, address, pinCode, email } = req.body;
   try {
-    if (lexid != null) {
+    if (pinCode != null) {
       const lead = await Lead.findOneAndUpdate(
-        { lexid: lexid },
+        { pinCode: pinCode },
         { status: "dnc" },
         {
           new: true,

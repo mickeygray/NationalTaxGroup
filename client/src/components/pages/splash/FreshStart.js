@@ -104,7 +104,7 @@ const FreshStart = () => {
               <form onSubmit={onSubmit}>
                 <input
                   type='text'
-                  name='firstname'
+                  name='fullName'
                   placeholder='Full Name'
                   onChange={onChange}
                   value={fullName}
