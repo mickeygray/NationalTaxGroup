@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import nftl from "../../../../images/nftl.png";
 import arrow from "../../../../images/arrow.png";
 import Footer from "../layout/Footer";
@@ -353,11 +353,15 @@ const LienViewer = () => {
               you may have recieved one of these by mail. If you are unsure
               about the status of your lien call us today.
             </h5>
-            <img src={arrow} />
+            <img alt='' src={arrow} />
             <h5 className='lead text-danger text-center'>1-213-513-5543</h5>
           </div>
           <div>
-            <img src={nftl} style={{ width: "566px", height: "750px" }} />
+            <img
+              alt=''
+              src={nftl}
+              style={{ width: "566px", height: "750px" }}
+            />
           </div>
         </div>
 

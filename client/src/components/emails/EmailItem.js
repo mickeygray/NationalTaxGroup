@@ -16,9 +16,9 @@ const EmailItem = ({ email }) => {
     setEmailState((prevState) => !prevState);
   }, []);
 
-  const { setTemplate, deleteTemplate, editTemplate } = emailContext;
+  const { setTemplate, deleteTemplate } = emailContext;
 
-  const { title, subject, html, _id } = email;
+  const { title, subject, _id } = email;
 
   const onClick = (e) => {
     setTemplate(email);

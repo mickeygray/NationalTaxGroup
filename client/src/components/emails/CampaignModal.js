@@ -5,7 +5,7 @@ import LeadContext from "../../context/lead/leadContext";
 const CampaignModal = (props) => {
   const emailContext = useContext(EmailContext);
   const leadContext = useContext(LeadContext);
-  const { saveCampaign, email, list } = emailContext;
+  const { saveCampaign, email } = emailContext;
   const { mailList } = leadContext;
 
   const onClick = (e) => {

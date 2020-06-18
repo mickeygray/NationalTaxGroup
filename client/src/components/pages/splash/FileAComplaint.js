@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const FileAComplaint = () => {
   const leadContext = useContext(LeadContext);
 
-  const { submitLead, lead } = leadContext;
+  const { submitLead } = leadContext;
 
   useEffect(() => {
     setForm({
@@ -20,8 +20,6 @@ const FileAComplaint = () => {
       status: "new",
     });
   }, []);
-
-  const [submitted, setSubmitted] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -39,7 +37,7 @@ const FileAComplaint = () => {
       [e.target.name]: e.target.value,
     });
 
-  const { fullName, email, phone, problem, company, paid, status } = form;
+  const { fullName, email, phone, problem, company, paid } = form;
 
   const onClick = (e) => {
     submitLead(form);
@@ -86,6 +84,7 @@ const FileAComplaint = () => {
               </h5>
 
               <Link
+                onClick={onClick}
                 to='/igetyourmoneyback'
                 className='btn btn-primary btn-block'
                 style={{ height: "50px" }}>

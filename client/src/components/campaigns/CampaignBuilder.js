@@ -14,7 +14,7 @@ const CampaignBuilder = () => {
 
   const emailContext = useContext(EmailContext);
 
-  const { sendEmail, email, saveCampaign } = emailContext;
+  const { sendEmail, email } = emailContext;
 
   const { mailList } = leadContext;
 

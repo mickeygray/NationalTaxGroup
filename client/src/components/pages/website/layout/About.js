@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import bodyimg from "../../../../images/bodyimg.jpg";
 import bodyimg2 from "../../../../images/bodyimg2.jpg";
 import bodyimg3 from "../../../../images/bodyimg3.jpg";

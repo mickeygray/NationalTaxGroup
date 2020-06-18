@@ -1,14 +1,9 @@
 import React, { Fragment } from "react";
-import { useLocation } from "react-router-dom";
+
 import court from "../../../../images/court.mp4";
 import SmallForm from "../layout/SmallForm";
 
 const Hero = () => {
-  const location = useLocation();
-  const { pathname } = location;
-
-  let img = null;
-
   return (
     <Fragment>
       <div className='grid-hero'>

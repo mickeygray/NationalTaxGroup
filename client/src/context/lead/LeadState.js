@@ -1,11 +1,10 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer } from "react";
 import LeadContext from "./leadContext";
 import LeadReducer from "./leadReducer";
 import axios from "axios";
 import {
   UPLOAD_FILE,
   SET_FILE,
-  SET_LIST,
   PARSE_LIST,
   UPDATE_LEAD,
   DELETE_LEADS,

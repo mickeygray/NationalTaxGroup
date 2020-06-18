@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer } from "react";
 import EmailContext from "./emailContext";
 import EmailReducer from "./emailReducer";
 import axios from "axios";

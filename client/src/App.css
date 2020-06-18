@@ -494,6 +494,33 @@ img {
   border-radius: 0px 50px 0px 50px;
 }
 
+.nav {
+  grid-area: "nav";
+  display: flex;
+}
+
+.reg {
+  grid-area: "reg";
+  width: 200px;
+}
+
+.max {
+  grid-area: "max";
+  width: 400px;
+}
+
+.sub {
+  grid-area: sub;
+  width: 50px;
+}
+
+.block {
+  grid-area: block;
+  display: grid;
+  grid-template-columns: 1;
+  grid-template-rows: repeat(4 1fr);
+}
+
 /* Grid */
 .grid-2 {
   display: grid;

@@ -44,10 +44,6 @@ const ContactForm = () => {
     });
   }, []);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-  };
-
   const onChange = (e) =>
     setForm({
       ...form,

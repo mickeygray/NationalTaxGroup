@@ -24,7 +24,7 @@ const ToolSelect = () => {
     } else if (clicked === "entity") {
       setPrice(price + 400);
     }
-  }, [clicked, setPrice]);
+  }, [clicked, setPrice, price]);
 
   useEffect(() => {
     if (price !== 0) {

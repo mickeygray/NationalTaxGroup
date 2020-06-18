@@ -11,6 +11,7 @@ const Footer = () => {
         <p className='text-primary'>
           <Link to='/'>
             <img
+              alt='National Tax Group'
               src={logo}
               style={{
                 width: "60px",

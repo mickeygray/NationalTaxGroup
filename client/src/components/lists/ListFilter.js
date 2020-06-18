@@ -1,29 +1,13 @@
-import React, { useState, useContext, useEffect, Fragment } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import LeadContext from "../../context/lead/leadContext";
 
 const ListFilter = () => {
   const leadContext = useContext(LeadContext);
 
-  const { parseDb, mailList, deleteLeads, setMailList } = leadContext;
+  const { parseDb, mailList, deleteLeads } = leadContext;
 
   const onSubmit = (e) => {
     deleteLeads(mailList);
-  };
-
-  const leadStatus = new Map([
-    ["contacted", "contacted"],
-    ["new", "new"],
-    ["dnc", "dnc"],
-    ["optedin", "optedin"],
-    ["converted", "converted"],
-    ["upsellable", "upsellable"],
-    ["highdollar", "highdollar"],
-  ]);
-
-  const setLeadStatus = (leadStatus) => {
-    setQuery({
-      status: leadStatus,
-    });
   };
 
   const [query, setQuery] = useState({

@@ -1,13 +1,8 @@
 import React, { Fragment } from "react";
-import { useLocation } from "react-router-dom";
+
 import typing from "../../../../images/typing.mp4";
 
 const LienHero = () => {
-  const location = useLocation();
-  const { pathname } = location;
-
-  let img = null;
-
   return (
     <Fragment>
       <div className='grid-hero'>

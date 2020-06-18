@@ -6,7 +6,7 @@ import Footer from "../website/layout/Footer";
 const FreshStart = () => {
   const leadContext = useContext(LeadContext);
 
-  const { submitLead, lead } = leadContext;
+  const { submitLead } = leadContext;
 
   useEffect(() => {
     setForm({
@@ -18,11 +18,9 @@ const FreshStart = () => {
       employed: "",
       income: "",
       creditscore: "",
-      status: "new",
+      status: "form",
     });
   }, []);
-
-  const [submitted, setSubmitted] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -32,8 +30,7 @@ const FreshStart = () => {
     years: "",
     employed: "",
     income: "",
-    creditscore: "",
-    status: "new",
+    status: "form",
   });
 
   const onChange = (e) =>
@@ -42,17 +39,7 @@ const FreshStart = () => {
       [e.target.name]: e.target.value,
     });
 
-  const {
-    fullName,
-    email,
-    phone,
-    amount,
-    years,
-    employed,
-    income,
-    creditscore,
-    status,
-  } = form;
+  const { fullName, email, phone, amount, years, employed, income } = form;
 
   const onClick = (e) => {
     submitLead(form);

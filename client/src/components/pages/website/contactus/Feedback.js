@@ -1,9 +1,8 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import clientPicture1 from "../../../../images/clientPicture1.jpg";
 import clientPicture2 from "../../../../images/clientPicture2.jpg";
 import clientPicture3 from "../../../../images/clientPicture3.jpg";
-import clientPicture4 from "../../../../images/clientPicture4.jpg";
-import clientPicture5 from "../../../../images/clientPicture5.jpg";
+
 import {
   CarouselProvider,
   Slider,
@@ -39,6 +38,7 @@ const Feedback = () => {
                   style={{ width: "40rem", height: "20rem" }}>
                   <p>
                     <img
+                      alt='National Tax Group'
                       className='round-img m-2'
                       style={{ width: "10rem", height: "10rem" }}
                       src={clientPicture1}
@@ -73,6 +73,7 @@ const Feedback = () => {
                   style={{ width: "40rem", height: "20rem" }}>
                   <p>
                     <img
+                      alt='National Tax Group'
                       className='round-img m-2'
                       style={{ width: "10rem", height: "10rem" }}
                       src={clientPicture2}
@@ -107,6 +108,7 @@ const Feedback = () => {
                   style={{ width: "40rem", height: "20rem" }}>
                   <p>
                     <img
+                      alt='National Tax Group'
                       className='round-img m-2'
                       style={{ width: "10rem", height: "10rem" }}
                       src={clientPicture3}

@@ -11,7 +11,7 @@ const Navbar = () => {
     // eslint-disable-next-line
   }, []);
 
-  const { isAuthenticated, logout, user, loadUser } = authContext;
+  const { isAuthenticated, logout, loadUser } = authContext;
 
   const [style, setStyle] = useState({});
 
@@ -75,18 +75,19 @@ const Navbar = () => {
     <div className='navgrid' onScroll={onScroll} style={style}>
       <div className='container'>
         <p className='text-primary'>
-          <a href='#' onClick={onClick}>
+          <Link to='/taxgroup' onClick={onClick}>
             <img
               src={logo}
+              alt='National Tax Group'
               style={{
                 width: "60px",
                 height: "60px",
                 borderRadius: "10px",
                 opacity: "50%",
               }}
-            />
-          </a>
-          National Tax Group
+            />{" "}
+            National Tax Group
+          </Link>
         </p>
       </div>
       <div>

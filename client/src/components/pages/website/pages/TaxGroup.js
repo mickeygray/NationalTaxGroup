@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
-import Navbar from "../layout/Navbar";
 import Hero from "../layout/Hero";
 import Footer from "../layout/Footer";
-import SmallForm from "../layout/SmallForm";
+
 import About from "../layout/About";
 import ContactForm from "../contactus/ContactForm";
 import Feedback from "../contactus/Feedback";

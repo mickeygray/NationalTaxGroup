@@ -9,7 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const exphbs = require("express-handlebars");
 const SetInterval = require("set-interval");
-const key = require("../key.json");
+const key = require("../config/key.json");
 
 // @route    POST api/emails
 // @desc     Register user
