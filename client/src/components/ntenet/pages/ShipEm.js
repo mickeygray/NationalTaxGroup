@@ -9,7 +9,10 @@ const ShipEm = () => {
   return (
     <div className='grid-3'>
       <div className='card'>
-        <h5 className='text-danger'> Name, Address, Amount, PinCode </h5>
+        <h5 className='text-danger'>
+          {" "}
+          Full Name, Address, Phone, Pincode, Email{" "}
+        </h5>
         <ListSearch />
         <Leads />
       </div>

@@ -8,12 +8,12 @@ const LienItem = ({ lead }) => {
     fullName,
     deliveryAddress,
     city,
-    st,
+    state,
     zip4,
     pinCode,
-    email,
+    emailAddress,
     plaintiff,
-    taxAmount,
+    amount,
   } = lead;
   const lienid = _id.toString();
 
@@ -22,12 +22,12 @@ const LienItem = ({ lead }) => {
     fullName,
     deliveryAddress,
     city,
-    st,
+    state,
     zip4,
+    emailAddress,
     pinCode,
-    email,
     plaintiff,
-    taxAmount,
+    amount,
   };
 
   const { setCurrent, makeDNC } = leadContext;
@@ -35,21 +35,29 @@ const LienItem = ({ lead }) => {
   return (
     <div className='card bg-light'>
       <h5 className='text-danger text-left'>{fullName}</h5>
-      <ul className='list'>
-        <li>
-          Address:
-          <br />
-          {deliveryAddress}
-        </li>
-        <li>
-          Lien Amount:
-          <br /> {taxAmount}
-        </li>
-        <li>
-          Plaintiff:
-          <br /> {plaintiff}
-        </li>
-      </ul>
+      <nav>
+        {" "}
+        <ul className='list grid-4' style={{ fontSize: ".9rem" }}>
+          <li>
+            Address:
+            <br />
+            {deliveryAddress}
+          </li>
+          <li>
+            Lien Amount:
+            <br /> {amount}
+          </li>
+          <li>
+            Plaintiff:
+            <br /> {plaintiff}
+          </li>
+          <li>
+            Pin Code:
+            <br /> {pinCode}
+          </li>
+        </ul>
+      </nav>
+
       <p>
         <button
           className='btn btn-dark btn-sm my-1'

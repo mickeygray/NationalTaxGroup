@@ -29,11 +29,11 @@ const PopkisForm = () => {
         fullName: "",
         deliveryAddress: "",
         city: "",
-        st: "",
+        state: "",
         zip4: "",
         plaintiff: "",
-        taxAmount: "",
-        email: "",
+        amount: "",
+        emailAddress: "",
         pinCode: "",
         compliant: "",
         filingStatus: "",
@@ -89,11 +89,11 @@ const PopkisForm = () => {
         fullName: "",
         deliveryAddress: "",
         city: "",
-        st: "",
+        state: "",
         zip4: "",
         plaintiff: "",
-        taxAmount: "",
-        email: "",
+        amount: "",
+        emailAddress: "",
         pinCode: "",
         compliant: "",
         filingStatus: "",
@@ -147,16 +147,13 @@ const PopkisForm = () => {
     dob2: "",
     deliveryAddress: "",
     city: "",
-    st: "",
+    state: "",
     zip4: "",
     plaintiff: "",
-    taxAmount: "",
-    email: "",
+    amount: "",
+    emailAddress: "",
     pinCode: "",
     plaintiff: "",
-    taxAmount: "",
-    email: "",
-    pinCode: "",
     compliant: "",
     filingStatus: "",
     cpa: "",
@@ -206,11 +203,11 @@ const PopkisForm = () => {
       dob2: "",
       deliveryAddress: "",
       city: "",
-      st: "",
+      state: "",
       zip: "",
       plaintiff: "",
-      taxAmount: "",
-      email: "",
+      amount: "",
+      emailAddress: "",
       pinCode: "",
       compliant: "",
       filingStatus: "",
@@ -262,11 +259,11 @@ const PopkisForm = () => {
     fullName,
     deliveryAddress,
     city,
-    st,
+    state,
     zip4,
     plaintiff,
-    taxAmount,
-    email,
+    amount,
+    emailAddress,
     pinCode,
     compliant,
     filingStatus,
@@ -316,11 +313,11 @@ const PopkisForm = () => {
       ...fullName,
       deliveryAddress,
       city,
-      st,
+      state,
       zip4,
       plaintiff,
-      taxAmount,
-      email,
+      amount,
+      emailAddress,
       pinCode,
       compliant,
       filingStatus,
@@ -404,8 +401,8 @@ const PopkisForm = () => {
           <input
             type='text'
             placeholder='State'
-            name='st'
-            value={st}
+            name='state'
+            value={state}
             onChange={onChange}
           />
           <label htmlFor='Zip'>Zip</label>
@@ -601,7 +598,7 @@ const PopkisForm = () => {
             type='text'
             placeholder='E-Mail'
             name='email'
-            value={email}
+            value={emailAddress}
             onChange={onChange}
           />
           <br />
@@ -647,7 +644,7 @@ const PopkisForm = () => {
             type='text'
             placeholder='Tax Debt'
             name='amount'
-            value={taxAmount}
+            value={amount}
             onChange={onChange}
           />
           <br />

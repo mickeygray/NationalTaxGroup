@@ -228,8 +228,9 @@ router.get("/search", auth, async (req, res) => {
       $or: [
         { fullName: regex },
         { deliveryAddress: regex },
-        { RMSID: regex },
-        { amount: regex },
+        { pinCode: regex },
+        { phone: regex },
+        { emailAddress: regex },
       ],
     });
     res.json(leads);

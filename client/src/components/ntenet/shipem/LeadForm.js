@@ -23,13 +23,13 @@ const LeadForm = () => {
         fullName: "",
         deliveryAddress: "",
         city: "",
-        st: "",
+        state: "",
         zip4: "",
         plaintiff: "",
-        taxAmount: "",
+        amount: "",
         lienid: "",
         pinCode: "",
-        email: "",
+        emailAddress: "",
       });
     }
   }, [current, leadContext]);
@@ -46,13 +46,13 @@ const LeadForm = () => {
     fullName: "",
     deliveryAddress: "",
     city: "",
-    st: "",
+    state: "",
     zip4: "",
     plaintiff: "",
-    taxAmount: "",
+    amount: "",
     lienid: "",
     pinCode: "",
-    email: "",
+    emailAddress: "",
   });
 
   const [call, setCall] = useState({
@@ -90,13 +90,13 @@ const LeadForm = () => {
 */
   const {
     fullName,
-    email,
+    emailAddress,
     deliveryAddress,
     city,
-    st,
+    state,
     zip4,
     plaintiff,
-    taxAmount,
+    amount,
     lienid,
     pinCode,
   } = record;
@@ -108,12 +108,12 @@ const LeadForm = () => {
     fullName,
     deliveryAddress,
     city,
-    st,
+    state,
     zip4,
     plaintiff,
-    taxAmount,
+    amount,
     lienid,
-    email,
+    emailAddress,
     pinCode,
     compliant,
     filingStatus,
@@ -129,7 +129,7 @@ const LeadForm = () => {
       fullName: "",
       deliveryAddress: "",
       city: "",
-      st: "",
+      state: "",
       zip4: "",
       plaintiff: "",
       taxAmount: "",
@@ -199,8 +199,8 @@ const LeadForm = () => {
             <input
               type='text'
               placeholder='State'
-              name='st'
-              value={st}
+              name='state'
+              value={state}
               onChange={onChange}
             />
 
@@ -223,8 +223,8 @@ const LeadForm = () => {
             <input
               type='text'
               placeholder='Tax Debt'
-              name='taxAmount'
-              value={taxAmount}
+              name='amount'
+              value={amount}
               onChange={onChange}
             />
             <input
@@ -247,7 +247,7 @@ const LeadForm = () => {
               type='text'
               placeholder='E-Mail'
               name='email'
-              value={email}
+              value={emailAddress}
               onChange={onChange}
             />
             <input
