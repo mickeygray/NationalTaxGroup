@@ -7,6 +7,9 @@ import ListFilter from "../../lists/ListFilter";
 import CampaignBuilder from "../../campaigns/CampaignBuilder";
 import CampaignEditor from "../../campaigns/CampaignEditor";
 import Campaigns from "../../campaigns/Campaigns";
+
+import NumberPanel from "../../emails/NumberPanel";
+
 const Home = () => {
   return (
     <div>
@@ -22,7 +25,7 @@ const Home = () => {
             <ListFilter />
           </div>
           <div className='card' style={{ width: "400px", height: "400px" }}>
-            Callrail
+            <NumberPanel />
           </div>
         </div>
 

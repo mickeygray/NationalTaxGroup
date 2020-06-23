@@ -29,17 +29,19 @@ const EmailCreator = () => {
     firstName: "{{lead.firstName}}",
     lastName: "{{lead.lastName}}",
     fullName: "{{lead.fullName}}",
-    address: "{{lead.address}}",
+    deliveryAddress: "{{lead.deliveryAddress}}",
     city: "{{lead.city}}",
-    st: "{{lead.st}}",
+    state: "{{lead.state}}",
     zip4: "{{lead.zip4}}",
     county: "{{lead.county}}",
-    type: "{{lead.type}}",
+    fileType: "{{lead.fileType}}",
     plaintiff: "{{lead.plaintiff}}",
-    taxAmount: "{{lead.taxAmount}}",
-    noticeDate: "{{lead.noticeDate}}",
-    lienDate: "{{lead.lienDate}}",
+    amount: "{{lead.amount}}",
+    loadDate: "{{lead.loadDate}}",
+    filingDate: "{{lead.filingDate}}",
     pinCode: "{{lead.pinCode}}",
+    fiveAmount: "{{lead.fiveAmount}}",
+    nineAmount: "{{lead.nineAmount}}",
   };
 
   const paragraphStyle = {
@@ -257,7 +259,7 @@ const EmailCreator = () => {
                 overflow: "scroll",
               }}>
               <Editor
-                withLive={withLive}
+                withlive={withLive}
                 value={html}
                 name='html'
                 onValueChange={(html) => setLetter({ ...html, html: html })}

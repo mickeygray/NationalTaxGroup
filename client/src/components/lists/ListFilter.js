@@ -12,15 +12,13 @@ const ListFilter = () => {
 
   const [query, setQuery] = useState({
     status: "",
-    type: "",
+    fileType: "",
     amount: {},
   });
 
   const onClick = (e) => {
     parseDb(query);
   };
-
-  console.log(query);
 
   return (
     <Fragment>
@@ -81,7 +79,7 @@ const ListFilter = () => {
                 onClick={() =>
                   setQuery({
                     status: "optedin",
-                    type: "Federal Tax Lien",
+                    fileType: "Federal Tax Lien",
                   })
                 }>
                 Federal Leads
@@ -93,7 +91,7 @@ const ListFilter = () => {
                 onClick={() =>
                   setQuery({
                     status: "optedin",
-                    type: "State Tax Lien",
+                    fileType: "State Tax Lien",
                   })
                 }>
                 State Tax

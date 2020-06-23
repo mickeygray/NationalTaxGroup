@@ -1,0 +1,100 @@
+<div className='card'> 
+<div className='card'>
+  tasks
+</div>
+<button className='btn-danger btn-sm btn py-3 my-1' >Set Task</button> 
+<select>
+  <option>Federal Prac Call</option>
+  <option>State Prac Call</option>
+  <option>Document Follow-up</option>
+  <option>File State Returns</option>
+  <option>File Federal Returns</option>
+  <option>Hardship Call</option>
+  <option>File Offer</option>
+  <option>Upsell Review</option>
+</select>
+</div>
+
+<div className='card'> 
+<button className='btn-danger btn-sm btn py-3 my-1' >Populate Form</button> 
+<select>
+  <option>433-A</option>
+  <option>12153</option>
+  <option>8821</option>
+  <option>2848</option>
+  <option>646</option>
+</select>
+</div>
+
+<div className='card'> 
+<div className='card'>
+  THS Query
+</div>
+<button className='btn-danger btn-sm btn py-3 my-1' >Pull THS </button> 
+</div>
+
+<div className='card'> 
+
+<div className='card'>
+  
+  <button className='btn-danger btn-sm btn py-3 my-1' >DropBox upload</button> 
+  <input type='file'/>
+  
+</div> 
+
+<div className='card'>
+  
+  <button className='btn-danger btn-sm btn py-3 my-1' >Search</button> 
+  <input type='text' placeholder='search dropbox'/>
+  
+<div className='card'>
+    Dropbox Content
+</div>
+
+</div>
+
+ <div className='card'>
+       <p>Start <span style={{float:'right'}}>End</span> </p>
+       {'  '}
+       <input
+          type='date'
+          name='date'
+   
+        />{'  '}
+          {'  '}
+        <input
+          type='date'
+          name='date'
+          style={{float:'right'}}
+
+        />
+        <br />
+        <input
+          type='submit'
+          value='Search Date Range'
+          className='btn-white btn-sm btn all-center'
+        />
+</div>
+         
+  <div className='card'>  
+        <input
+        type='radio'
+        name='Lead'
+        value='isClaimed'
+        checked={isClaimed === 'false'} 
+      />{' '}
+      Lead {' '}
+      <input
+        type='radio'
+        name='Client'
+        value='isClosed'
+        checked={isClosed === 'true' && isPaid === 'false'}
+      />{' '}
+      Client
+   <br />
+      <input
+          type='submit'
+          value='Unclaimed'
+          className='btn-danger btn-sm btn py-3'
+        />
+  </div>

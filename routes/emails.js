@@ -16,6 +16,9 @@ const key = require("../config/key.json");
 // @access   Public
 
 //create new email
+
+router.post("/campaign");
+
 router.post("/templates", async (req, res) => {
   const { title, reactString, html, text, subject, from, key } = req.body;
 
@@ -217,7 +220,7 @@ router.post("/", async (req, res) => {
         const mailer = {
           title: letter.title,
           from: letter.from,
-          to: lead.email,
+          to: lead.emailAddress,
           subject: letter.subject,
           template: "template",
           context: {

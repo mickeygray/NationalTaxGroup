@@ -11,9 +11,21 @@ const Upload = () => {
     header: true,
     dynamicTyping: true,
     skipEmptyLines: true,
+    beforeFirstChunk: function (chunk) {
+      var index = chunk.match(/\r\n|\r|\n/).index;
+      var headings = chunk.substr(0, index).split(",");
+      headings[15] = "pinCode";
+      return headings.join() + chunk.substr(index);
+    },
     transformHeader: (header) => toCamelCaseString(header),
+    transform: (data) => data.toProperCase(),
   };
 
+  String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
   function convertToString(input) {
     if (input) {
       if (typeof input === "string") {

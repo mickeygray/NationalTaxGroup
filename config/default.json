@@ -1,4 +1,5 @@
 {
   "mongoURI": "mongodb+srv://mickeygray:nXBefiXzZ1lyI3bJ@cluster0.xmo5h.mongodb.net/test?retryWrites=true&w=majority",
-  "jwtSecret": "idfiuewryrf98wu"
+  "jwtSecret": "idfiuewryrf98wu",
+  "callRailKey": "6c0dbe4e525e0bff243007882b40eb2b"
 }

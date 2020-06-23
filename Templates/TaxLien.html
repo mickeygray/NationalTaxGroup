@@ -33,7 +33,7 @@
     </div>
     <p align="center">
         <font face="WINGDINGS"><b>x</b></font> Personal and Confidential Tax Lien Information <br>
-        For the lien filed on <b>{{lead.lienDate}}</b>
+        For the lien filed on <b>{{lead.filingDate}}</b>
     </p>
 
     <p align="center"> YOUR LIEN ID<b>:&nbsp;&nbsp;<u>{{lead.pinCode}}</u></b></p>
@@ -58,7 +58,7 @@
     <table style="font-size: 10pt;" width="100%" border="0" cellspacing="0" cellpadding="0">
         <tbody>
             <tr align="center">
-                <td width="50%"><b>{{lead.address}}</b></td>
+                <td width="50%"><b>{{lead.deliveryAddress}}</b></td>
                 <td width="50%">&nbsp;</td>
             </tr>
             <tr align="center">
@@ -89,7 +89,7 @@
 
             <tr>
                 <td align="center" width="33%"><b>{{lead.lastName}}, {{lead.firstName}}</b></td>
-                <td align="center" width="33%"><b>Total Liability {{lead.taxAmount}}</b></td>
+                <td align="center" width="33%"><b>Total Liability {{lead.amount}}</b></td>
                 <td align="center" width="33%"><b>Risk Level : High</b></td>
     
             </tr>
@@ -106,7 +106,7 @@
                         
                         </tr>
             <tr>
-                <td><b>{{lead.type}} Summary</b></td>
+                <td><b>{{lead.fileType}} Summary</b></td>
                 <td width="1%">&nbsp;</td>
                 <td width="12%">&nbsp;</td>
 
@@ -114,7 +114,7 @@
             <tr bgcolor="#E6EFFF">
                 <td>&nbsp;&nbsp;&nbsp;Minimum Due</td>
                 <td align="center" width="1%">$</td>
-                <td align="right" width="12%">{{lead.taxAmount}}</td>
+                <td align="right" width="12%">{{lead.amount}}</td>
 
             </tr>
                                 <tr>

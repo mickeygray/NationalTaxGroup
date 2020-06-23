@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment, useContext } from "react";
 import { useLocation, Link } from "react-router-dom";
 import logo from "../../images/logo.png";
 import AuthContext from "../../context/auth/authContext";
+import RecentLeads from "../ntenet/stacks/RecentLeads";
 
 const Navbar = () => {
   const authContext = useContext(AuthContext);
@@ -49,27 +50,9 @@ const Navbar = () => {
     });
   };
 
-  const guestLinks = (
-    <Fragment>
-      <li>
-        <Link to='/login'>Login</Link>
-      </li>
-      <li>
-        <Link to='/register'>Register</Link>
-      </li>
-    </Fragment>
-  );
+  const guestLinks = <Fragment></Fragment>;
 
-  const authLinks = (
-    <Fragment>
-      <li>
-        <a href='#!' onClick={onLogout}>
-          <i className='fa fa-sign-out' />{" "}
-          <span className='hide-sm'>Logout</span>
-        </a>
-      </li>
-    </Fragment>
-  );
+  const authLinks = <Fragment></Fragment>;
 
   return (
     <div className='navgrid' onScroll={onScroll} style={style}>
@@ -92,11 +75,24 @@ const Navbar = () => {
       </div>
       <div>
         <br />
-        {location === "/" ? (
-          <ul>{isAuthenticated ? authLinks : guestLinks}</ul>
-        ) : (
-          ""
-        )}
+        <ul>
+          {" "}
+          <li>
+            <Link to='/login'>Login</Link>
+          </li>
+          <li>
+            <Link to='/register'>Register</Link>
+          </li>
+          <li>
+            <a href='#!' onClick={onLogout}>
+              <i className='fa fa-sign-out' />{" "}
+              <span className='hide-sm'>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <RecentLeads />
       </div>
     </div>
   );

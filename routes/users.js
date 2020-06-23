@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator");
 
 const User = require("../models/User");
@@ -71,5 +72,52 @@ router.post(
     }
   }
 );
+
+router.put("/:id", auth, async (req, res) => {
+  const [reminder] = req.body;
+  const reminders = [];
+  const userFields = {};
+
+  if (reminders) userFields.reminders = reminders;
+
+  try {
+    let user = await User.findById(req.params.id);
+
+    if (reminder) {
+      user = await User.findByIdAndUpdate(
+        req.params.id,
+        { $push: { reminders: reminder } },
+        { "new": true }
+      );
+    }
+    res.json(user);
+
+    console.log(user);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//delete Reminders
+
+// @route     DELETE api/contacts/:id
+// @desc      Delete contact
+// @access    Private
+router.delete("/:id", auth, async (req, res) => {
+  const user = req.params._id;
+  const reminderId = req.body.id;
+
+  try {
+    await User.findOneAndUpdate(
+      { user: user, "reminders.id": reminderId },
+      { $pull: { "reminders": { "id": reminderId } } }
+    );
+
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;

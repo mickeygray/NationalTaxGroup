@@ -31,7 +31,7 @@ router.post("/forms", async (req, res) => {
   console.log(req.body);
   const {
     fullName,
-    email,
+    emailAddress,
     status,
     years,
     employed,
@@ -45,7 +45,7 @@ router.post("/forms", async (req, res) => {
 
   const newLead = new Lead({
     fullName,
-    email,
+    emailAddress,
     status,
     years,
     employed,
@@ -79,7 +79,7 @@ router.put("/:id/dnc", auth, async (req, res) => {
   try {
     if (pinCode != null) {
       const lead = await Lead.findOneAndUpdate(
-        { pinCode: pinCode },
+        { rmsid: pinCode },
         { status: "dnc" },
         {
           new: true,
@@ -101,10 +101,10 @@ router.put("/:id/dnc", auth, async (req, res) => {
         }
       );
       res.json(lead);
-    } else if (email != null) {
-      const leadEmail = new RegExp(`${email}`, "gi");
+    } else if (emailAddress != null) {
+      const leadEmail = new RegExp(`${emailAddress}`, "gi");
       const lead = await Lead.findOneAndUpdate(
-        { email: email },
+        { emailAddress: leadEmail },
         { status: "dnc" },
         {
           new: true,
@@ -142,7 +142,7 @@ router.put("/", auth, async (req, res) => {
   );
 });
 
-router.get(`/:id/pinCode`, async (req, res) => {
+router.get(`/:id/RMSID`, async (req, res) => {
   const string = req.query.q;
 
   const leadData = string.split(",");
@@ -156,7 +156,7 @@ router.get(`/:id/pinCode`, async (req, res) => {
 
   const lead = mongooseToObj(
     await Lead.findOne({
-      "pinCode": leadData[0],
+      "RMSID": leadData[0],
     })
   );
 
@@ -211,21 +211,28 @@ router.get(`/:id/pinCode`, async (req, res) => {
 
 //Get Leads For Email List
 
-router.get("/", auth, async (req, res) => {
+router.get("/query", auth, async (req, res) => {
   const query = JSON.parse(req.query.q);
 
   const leads = await Lead.find(query);
   res.json(leads);
 
-  if ((query.status = "new")) {
-    const update = await Lead.updateMany(
-      { status: "new" },
-      { status: "contacted" }
-    );
-    res.json(update);
-  }
+  if (req.query.q.status === "new")
+    update = await Lead.updateMany({ status: "new" }, { status: "contacted" });
+});
 
+router.get("/search", auth, async (req, res) => {
   try {
+    const regex = new RegExp(`${req.query.q}`, "gi");
+    leads = await Lead.find({
+      $or: [
+        { fullName: regex },
+        { deliveryAddress: regex },
+        { RMSID: regex },
+        { amount: regex },
+      ],
+    });
+    res.json(leads);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
