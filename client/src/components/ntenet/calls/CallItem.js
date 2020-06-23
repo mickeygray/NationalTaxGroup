@@ -44,7 +44,7 @@ const CallItem = ({
   };
 
   return (
-    <div className='card'>
+    <div className='card' style={{ width: "250px" }}>
       <h5>{answered ? `Answered` : "Incoming Call..."} </h5>
       <h5>
         {first_call ? `First Time Caller` : `Total Calls: ${total_calls}`}{" "}
@@ -60,12 +60,10 @@ const CallItem = ({
       </ul>
 
       <div>
-        <input
-          type='submit'
-          value='My Call'
-          className='btn btn-dark btn-sm'
-          onClick={onClick}
-        />
+        <button className='btn btn-dark btn-sm' onClick={onClick}>
+          {" "}
+          My Call{" "}
+        </button>
       </div>
     </div>
   );

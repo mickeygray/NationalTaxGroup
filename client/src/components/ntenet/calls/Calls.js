@@ -13,7 +13,7 @@ const Calls = () => {
   }, 7000);
 
   return (
-    <div className='sidebar'>
+    <div className='sidebar' style={{ width: "300px" }}>
       {filtered !== null
         ? filtered.map((call) => <CallItem key={call.id} call={call} />)
         : calls.map((call) => <CallItem key={call.id} call={call} />)}

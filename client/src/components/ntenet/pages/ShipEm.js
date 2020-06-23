@@ -1,13 +1,13 @@
 import React from "react";
 import ListSearch from "../shipem/ListSearch";
-import Filter from "../calls/CallFilter";
+import CallFilter from "../calls/CallFilter";
 import Leads from "../shipem/Leads";
 import LeadForm from "../shipem/LeadForm";
 import Calls from "../calls/Calls";
 
 const ShipEm = () => {
   return (
-    <div className='grid-3'>
+    <div className='grid-ship'>
       <div className='card'>
         <h5 className='text-danger'>
           {" "}
@@ -23,7 +23,7 @@ const ShipEm = () => {
 
       <div className='card'>
         <h3 className='text-danger text-center'> Call Log </h3>
-        <Filter />
+        <CallFilter />
         <Calls />
       </div>
     </div>

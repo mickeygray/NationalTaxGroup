@@ -210,6 +210,11 @@ img {
   grid-column-start: 1;
 }
 
+.grid-ship {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr;
+}
+
 .grid-contact {
   display: grid;
   grid-template-columns: 2fr 1fr;
