@@ -52,6 +52,8 @@ const LeadState = (props) => {
     leads: [],
     prospects: [],
     prospect: {},
+    client: {},
+    clients: [],
     lien: {},
     lead: {},
     current: null,
@@ -367,6 +369,29 @@ const LeadState = (props) => {
     }
   };
 
+  const updateClient = async (leadFields, _id) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.put(
+        `/api/prospects/clients/${_id}`,
+        leadFields,
+        config
+      );
+
+      dispatch({
+        type: UPDATE_PROSPECT,
+        payload: res.data,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   //post to logics
   const postLogics = async (current) => {
     const config = {
@@ -577,6 +602,8 @@ const LeadState = (props) => {
         text: state.text,
         prospect: state.prospect,
         prospects: state.prospects,
+        clients: state.clients,
+        client: state.client,
         current: state.current,
         number: state.number,
         claimedBy: state.claimedBy,

@@ -77,6 +77,7 @@ const PopkisForm = () => {
         employerName: "",
         employerPhone: "",
         employerTime: "",
+        status: "",
       });
     }
   }, [setRecent, recentLead]);
@@ -137,6 +138,7 @@ const PopkisForm = () => {
         employerName: "",
         employerPhone: "",
         employerTime: "",
+        status: "",
       });
     }
   }, [getProspect, prospect]);
@@ -194,6 +196,7 @@ const PopkisForm = () => {
     employerName: "",
     employerPhone: "",
     employerTime: "",
+    status: "",
   });
 
   const clearLead = () => {
@@ -249,6 +252,7 @@ const PopkisForm = () => {
       employerName: "",
       employerPhone: "",
       employerTime: "",
+      status: "",
     });
   };
 
@@ -305,6 +309,7 @@ const PopkisForm = () => {
     totalCredit,
     employerName,
     employerPhone,
+    status,
   } = leadFields;
 
   const onChange = (e) => {

@@ -6,8 +6,8 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import AuthState from "./context/auth/AuthState";
-import "./App.css";
 import AlertState from "./context/alert/AlertState";
+import StatState from "./context/stat/StatState";
 import CallState from "./context/call/CallState";
 import UserState from "./context/user/UserState";
 import "./App.css";
@@ -32,54 +32,63 @@ const App = () => {
         <LeadState>
           <EmailState>
             <CallState>
-              <AlertState>
-                <Router>
-                  <Fragment>
-                    <Navbar />
-
-                    <Switch>
-                      <PrivateRoute exact path='/' component={Home} />
-                      <Route exact path='/register' component={Register} />
-                      <Route exact path='/login' component={Login} />
-                      <Route exact path='/freshstart' component={FreshStart} />
-                      <Route exact path='/lienviewer' component={LienViewer} />
-                      <Route exact path='/taxgroup' component={TaxGroup} />
-                      <PrivateRoute
-                        exact
-                        path='/prospects/:id'
-                        component={Popkis}
-                      />
-                      <PrivateRoute exact path='/stacks' component={Stacks} />
-                      <PrivateRoute
-                        exact
-                        path='/dangerzone'
-                        component={DangerZone}
-                      />
-                      <PrivateRoute exact path='/shipem' component={ShipEm} />
-                      <Route
-                        exact
-                        path='/free1040filler'
-                        component={Free1040Filler}
-                      />
-                      <Route
-                        exact
-                        path='/igetyourmoneyback'
-                        component={IGetYourMoneyBack}
-                      />
-                      <Route
-                        exact
-                        path='/fileacomplaint'
-                        component={FileAComplaint}
-                      />
-                      <Route
-                        exact
-                        path='/takemeoffthelist'
-                        component={TakeMeOffTheList}
-                      />
-                    </Switch>
-                  </Fragment>
-                </Router>
-              </AlertState>
+              <StatState>
+                <AlertState>
+                  <Router>
+                    <Fragment>
+                      <Navbar />
+                      <Switch>
+                        <PrivateRoute exact path='/' component={Home} />
+                        <Route exact path='/register' component={Register} />
+                        <Route exact path='/login' component={Login} />
+                        <Route
+                          exact
+                          path='/freshstart'
+                          component={FreshStart}
+                        />
+                        <Route
+                          exact
+                          path='/lienviewer'
+                          component={LienViewer}
+                        />
+                        <Route exact path='/taxgroup' component={TaxGroup} />
+                        <PrivateRoute
+                          exact
+                          path='/prospects/:id'
+                          component={Popkis}
+                        />
+                        <PrivateRoute exact path='/stacks' component={Stacks} />
+                        <PrivateRoute
+                          exact
+                          path='/dangerzone'
+                          component={DangerZone}
+                        />
+                        <PrivateRoute exact path='/shipem' component={ShipEm} />
+                        <Route
+                          exact
+                          path='/free1040filler'
+                          component={Free1040Filler}
+                        />
+                        <Route
+                          exact
+                          path='/igetyourmoneyback'
+                          component={IGetYourMoneyBack}
+                        />
+                        <Route
+                          exact
+                          path='/fileacomplaint'
+                          component={FileAComplaint}
+                        />
+                        <Route
+                          exact
+                          path='/takemeoffthelist'
+                          component={TakeMeOffTheList}
+                        />
+                      </Switch>
+                    </Fragment>
+                  </Router>
+                </AlertState>
+              </StatState>
             </CallState>
           </EmailState>
         </LeadState>

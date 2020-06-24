@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ProspectSchema = mongoose.Schema({
+const ClientSchema = mongoose.Schema({
   fullName: {
     type: String,
   },
@@ -25,6 +25,9 @@ const ProspectSchema = mongoose.Schema({
   cpa: {
     type: String,
   },
+  gross: { type: Number },
+  initial: { type: Number },
+  total: { type: Number },
   city: {
     type: String,
   },
@@ -63,13 +66,11 @@ const ProspectSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+
   closerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  createdBy: {
-    type: String,
-  },
   status: {
     type: String,
-    default: "prospect",
+    default: "client",
   },
   name2: {
     type: String,
@@ -90,9 +91,6 @@ const ProspectSchema = mongoose.Schema({
   zip2: {
     type: String,
     default: "",
-  },
-  quote: {
-    type: Number,
   },
   employerTime: {
     type: String,
@@ -221,4 +219,4 @@ const ProspectSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("prospect", ProspectSchema);
+module.exports = mongoose.model("client", ClientSchema);
