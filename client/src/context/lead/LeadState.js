@@ -350,7 +350,7 @@ const LeadState = (props) => {
   */
 
   // Update Lead
-  const updateProspect = async (leadFields, _id) => {
+  const updateClient = async (leadFields, _id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -358,7 +358,11 @@ const LeadState = (props) => {
     };
 
     try {
-      const res = await axios.put(`/api/prospects/${_id}`, leadFields, config);
+      const res = await axios.put(
+        `/api/prospects/clients/${_id}`,
+        leadFields,
+        config
+      );
 
       dispatch({
         type: UPDATE_PROSPECT,
