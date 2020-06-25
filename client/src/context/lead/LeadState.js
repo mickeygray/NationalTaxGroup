@@ -463,21 +463,6 @@ const LeadState = (props) => {
     }
   };
 
-  const updateClient = async (selectedFile) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const res = await axios.put(`/api/leads/`, selectedFile, config);
-
-    dispatch({
-      type: UPDATE_CLIENT,
-      payload: res.data,
-    });
-  };
-
   const submitLead = async (form) => {
     const config = {
       headers: {

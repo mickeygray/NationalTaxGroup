@@ -35,6 +35,8 @@ const StatState = (props) => {
     });
   };
 
+  //Aggregate dailys into a week weeklys into a month monthlys into a quarter quarterlys into years based on these reports
+
   //update reports
   const updateReports = async (reports) => {
     const config = {

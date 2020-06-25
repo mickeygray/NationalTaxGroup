@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Navbar from "./components/layout/Navbar";
-import Home from "./components/pages/app/Home";
+import StickyNavbar from "./components/layout/Navbar";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/routing/PrivateRoute";
@@ -12,10 +11,11 @@ import CallState from "./context/call/CallState";
 import UserState from "./context/user/UserState";
 import "./App.css";
 import "react-datepicker/dist/react-datepicker.css";
-import ShipEm from "./components/ntenet/pages/ShipEm";
-import Stacks from "./components/ntenet/pages/Stacks";
-import Popkis from "./components/ntenet/pages/Popkis";
-import DangerZone from "./components/ntenet/pages/DangerZone";
+import ShipEm from "./components/pages/app/ShipEm";
+import Stacks from "./components/pages/app/Stacks";
+import Popkis from "./components/pages/app/Popkis";
+import Eyore from "./components/pages/app/Eyore";
+import DangerZone from "./components/pages/app/DangerZone";
 import LeadState from "./context/lead/LeadState";
 import EmailState from "./context/email/EmailState";
 import TakeMeOffTheList from "./components/pages/splash/TakeMeOffTheList";
@@ -36,9 +36,8 @@ const App = () => {
                 <AlertState>
                   <Router>
                     <Fragment>
-                      <Navbar />
+                      <StickyNavbar />
                       <Switch>
-                        <PrivateRoute exact path='/' component={Home} />
                         <Route exact path='/register' component={Register} />
                         <Route exact path='/login' component={Login} />
                         <Route
@@ -58,11 +57,9 @@ const App = () => {
                           component={Popkis}
                         />
                         <PrivateRoute exact path='/stacks' component={Stacks} />
-                        <PrivateRoute
-                          exact
-                          path='/dangerzone'
-                          component={DangerZone}
-                        />
+                        <PrivateRoute exact path='/' component={DangerZone} />
+                        <PrivateRoute exact path='/eyore' component={Eyore} />
+
                         <PrivateRoute exact path='/shipem' component={ShipEm} />
                         <Route
                           exact
