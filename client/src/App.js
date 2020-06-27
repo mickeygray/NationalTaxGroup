@@ -1,6 +1,10 @@
 import React, { Fragment } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import StickyNavbar from "./components/layout/Navbar";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useLocation,
+} from "react-router-dom";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/routing/PrivateRoute";
@@ -36,10 +40,24 @@ const App = () => {
                 <AlertState>
                   <Router>
                     <Fragment>
-                      <StickyNavbar />
                       <Switch>
                         <Route exact path='/register' component={Register} />
                         <Route exact path='/login' component={Login} />
+
+                        <PrivateRoute
+                          exact
+                          path='/prospects/:id'
+                          component={Popkis}
+                        />
+                        <PrivateRoute exact path='/stacks' component={Stacks} />
+                        <PrivateRoute exact path='/' component={DangerZone} />
+                        <PrivateRoute exact path='/eyore' component={Eyore} />
+                        <PrivateRoute exact path='/shipem' component={ShipEm} />
+                      </Switch>
+                    </Fragment>
+                    <Fragment>
+                      <Switch>
+                        <Route exact path='/taxgroup' component={TaxGroup} />
                         <Route
                           exact
                           path='/freshstart'
@@ -50,16 +68,6 @@ const App = () => {
                           path='/lienviewer'
                           component={LienViewer}
                         />
-                        <Route exact path='/taxgroup' component={TaxGroup} />
-                        <PrivateRoute
-                          exact
-                          path='/prospects/:id'
-                          component={Popkis}
-                        />
-                        <PrivateRoute exact path='/stacks' component={Stacks} />
-                        <PrivateRoute exact path='/' component={DangerZone} />
-                        <PrivateRoute exact path='/eyore' component={Eyore} />
-                        <PrivateRoute exact path='/shipem' component={ShipEm} />
                         <Route
                           exact
                           path='/free1040filler'

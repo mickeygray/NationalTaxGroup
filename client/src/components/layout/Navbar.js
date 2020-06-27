@@ -11,17 +11,8 @@ const Navbar = () => {
   const { setAlert } = useContext(AlertContext);
   const { isAuthenticated, logout, user } = authContext;
 
-  useEffect(() => {
-    setText("Stacks!");
-  }, []);
-
   const onLogout = () => {
     logout();
-  };
-  const onClick = (e) => {
-    if (text === "Stacks!") {
-      setText("Racks!");
-    } else setText("Stacks!");
   };
 
   const [text, setText] = useState({
@@ -32,10 +23,8 @@ const Navbar = () => {
       <li>
         <Link to='/'>Danger Zone!</Link>
         <Link to='/ShipEm'>Ship Em!</Link>
-        <Link to='/Eyore'>Eyore!</Link>
-        <Link to='/Stacks' onClick={onClick}>
-          {text}
-        </Link>
+        <Link to='/Stacks'>Stacks</Link>
+        <Link to='/Eyore'>Eyore</Link>
         <a>Popkis!</a>
 
         <a href='#!' onClick={onLogout}>

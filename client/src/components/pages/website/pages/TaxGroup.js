@@ -6,11 +6,13 @@ import About from "../layout/About";
 import ContactForm from "../contactus/ContactForm";
 import Feedback from "../contactus/Feedback";
 import Blogs from "../About/Blogs";
+import StickyNavbar from "../../../layout/StickyNavbar";
 
 const TaxGroup = () => {
   return (
     <Fragment>
       <div>
+        <StickyNavbar />
         <Hero />
       </div>
 

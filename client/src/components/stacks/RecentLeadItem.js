@@ -52,7 +52,19 @@ const RecentLeadItem = ({
   };
 
   return (
-    <span className='bg-dark mx-1'>
+    <div
+      className='grid-2'
+      style={{
+        marginLeft: "5px",
+        width: "133px",
+        height: "25px",
+        overflow: "hidden",
+      }}>
+      <button>
+        style={{ fontSize: ".7rem" }}
+        onClick={() => deleteRecentLead(recentLeads, match)}> X
+      </button>
+
       <Link
         to={{ pathname: `/prospects/${_id}`, state: { match: true } }}
         onClick={onClick}
@@ -60,13 +72,7 @@ const RecentLeadItem = ({
         {" "}
         {fullName}
       </Link>
-      <button
-        className='bg-danger'
-        style={{ fontSize: ".7rem" }}
-        onClick={() => deleteRecentLead(recentLeads, match)}>
-        X
-      </button>
-    </span>
+    </div>
   );
 };
 

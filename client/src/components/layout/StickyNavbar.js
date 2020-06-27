@@ -1,19 +1,8 @@
 import React, { useEffect, useState, Fragment, useContext } from "react";
 import { useLocation, Link } from "react-router-dom";
 import logo from "../../images/logo.png";
-import AuthContext from "../../context/auth/authContext";
-import RecentLeads from "../stacks/RecentLeads";
 
 const StickyNavbar = () => {
-  const authContext = useContext(AuthContext);
-
-  useEffect(() => {
-    loadUser();
-    // eslint-disable-next-line
-  }, []);
-
-  const { isAuthenticated, logout, loadUser } = authContext;
-
   const [style, setStyle] = useState({});
 
   const position = window.pageYOffset;
@@ -26,10 +15,6 @@ const StickyNavbar = () => {
       backgroundColor: "none",
     });
   }, []);
-
-  const onLogout = () => {
-    logout();
-  };
 
   const location = useLocation();
   useEffect(() => {
@@ -50,10 +35,6 @@ const StickyNavbar = () => {
     });
   };
 
-  const guestLinks = <Fragment></Fragment>;
-
-  const authLinks = <Fragment></Fragment>;
-
   return (
     <div className='navgrid' onScroll={onScroll} style={style}>
       <div className='container'>
@@ -72,27 +53,6 @@ const StickyNavbar = () => {
             National Tax Group
           </Link>
         </p>
-      </div>
-      <div>
-        <br />
-        <ul>
-          {" "}
-          <li>
-            <Link to='/login'>Login</Link>
-          </li>
-          <li>
-            <Link to='/register'>Register</Link>
-          </li>
-          <li>
-            <a href='#!' onClick={onLogout}>
-              <i className='fa fa-sign-out' />{" "}
-              <span className='hide-sm'>Logout</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <RecentLeads />
       </div>
     </div>
   );

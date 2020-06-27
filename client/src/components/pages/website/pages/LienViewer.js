@@ -5,6 +5,7 @@ import Footer from "../layout/Footer";
 import LienHero from "../lienviewer/LienHero";
 import LienSearch from "../lienviewer/LienSearch";
 import StateItem from "../lienviewer/StateItem";
+import StickyNavbar from "../../../layout/StickyNavbar";
 
 const LienViewer = () => {
   const states = [
@@ -327,6 +328,7 @@ const LienViewer = () => {
 
   return (
     <div>
+      <StickyNavbar />
       <LienHero />
       <div className='container'>
         <div className='grid-2'>

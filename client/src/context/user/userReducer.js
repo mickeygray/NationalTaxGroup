@@ -35,7 +35,9 @@ export default (state, action) => {
     case DELETE_RECENTLEAD:
       return {
         ...state,
-        recentLeads: console.log(state),
+        recentLeads: state.recentLeads.filter(
+          (recentLead) => recentLead._id !== action.payload
+        ),
       };
     default:
       return state;

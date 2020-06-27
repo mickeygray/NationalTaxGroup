@@ -112,7 +112,7 @@ const UserState = (props) => {
     console.log(recentLeads);
   };
 
-  const deleteRecentLead = (match, recentLeads) => {
+  const deleteRecentLead = (recentLeads) => {
     dispatch({ type: DELETE_RECENTLEAD, payload: recentLeads });
   };
   // Push To User Arrays (Leads, Tasks, Reminders)

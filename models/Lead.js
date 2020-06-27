@@ -19,6 +19,7 @@ const leadSchema = new Schema(
     loadDate: String,
     fiveAmount: Number,
     nineAmount: Number,
+    loadDatePlusSeven: String,
     entityType: String,
     pinCode: String,
     origDept: String,

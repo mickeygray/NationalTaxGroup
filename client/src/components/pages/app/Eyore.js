@@ -1,56 +1,62 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Upload from "../../eyore/lists/Upload";
-
+import Navbar from "../../layout/Navbar";
 import EmailCreator from "../../eyore/emails/EmailCreator";
 import EmailLibrary from "../../eyore/emails/EmailLibrary";
 import ListFilter from "../../eyore/lists/ListFilter";
+import ListStats from "../../eyore/lists/ListStats";
 import CampaignBuilder from "../../eyore/campaigns/CampaignBuilder";
 import CampaignEditor from "../../eyore/campaigns/CampaignEditor";
 import Campaigns from "../../eyore/campaigns/Campaigns";
 
 const Eyore = () => {
   return (
-    <div>
-      <h3 className='text-danger text-center'>E-Yore</h3>
-      <div className='container'>
-        <div>
-          <EmailCreator />
-        </div>
-        <br />
-        <br />
-        <div className='grid-2'>
+    <Fragment>
+      <Fragment>
+        <Navbar />
+      </Fragment>
+      <div>
+        <h3 className='text-danger text-center'>E-Yore</h3>
+        <div className='container'>
           <div>
-            <ListFilter />
+            <EmailCreator />
           </div>
-          <div className='card' style={{ width: "400px", height: "400px" }}>
-            Phones
+          <br />
+          <br />
+          <div className='grid-2'>
+            <div>
+              <ListFilter />
+            </div>
+            <div>
+              <ListStats />
+            </div>
           </div>
-        </div>
 
-        <div className='grid-2'>
-          <div>
-            {" "}
-            <CampaignBuilder />
+          <div className='grid-2'>
+            <div>
+              {" "}
+              <CampaignBuilder />
+            </div>
+            <div>
+              <CampaignEditor />
+            </div>
           </div>
-          <div>
-            <CampaignEditor />
+          <div className='grid-2'>
+            <div>
+              <EmailLibrary />
+            </div>
+            <div>
+              {" "}
+              <Campaigns />
+            </div>
           </div>
-        </div>
-        <div className='grid-2'>
-          <div>
-            <EmailLibrary />
-          </div>
-          <div>
-            {" "}
-            <Campaigns />
-          </div>
-        </div>
 
-        <div>
-          <Upload />
+          <div>
+            <Upload />
+          </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

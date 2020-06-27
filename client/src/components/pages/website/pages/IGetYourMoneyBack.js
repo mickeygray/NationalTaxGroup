@@ -3,9 +3,11 @@ import Hero from "../IGetYourMoneyBack/Hero";
 import Strategy from "../IGetYourMoneyBack/Strategy";
 import ContactForm from "../IGetYourMoneyBack/ContactForm";
 import Footer from "../layout/Footer";
+import StickyNavbar from "../../../layout/StickyNavbar";
 const IGetYourMoneyBack = () => {
   return (
     <Fragment>
+      <StickyNavbar />
       <Hero />
       <Strategy />
 

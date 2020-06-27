@@ -1,6 +1,13 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  Fragment,
+} from "react";
 import LeadContext from "../../../../context/lead/leadContext";
 import TenFourtyItem from "../Free1040Filler/TenFourtyItem";
+import StickyNavbar from "../../../layout/StickyNavbar";
 
 const Free1040Filler = () => {
   const leadContext = useContext(LeadContext);
@@ -146,15 +153,20 @@ const Free1040Filler = () => {
   const formFields = Object.entries(form);
 
   return (
-    <form style={tenStyle}>
-      {formFields.map((form) => (
-        <TenFourtyItem
-          key={Object.values(form)}
-          updateForm={updateForm}
-          form={form}
-        />
-      ))}
-    </form>
+    <Fragment>
+      <Fragment>
+        <StickyNavbar />
+      </Fragment>
+      <form style={tenStyle}>
+        {formFields.map((form) => (
+          <TenFourtyItem
+            key={Object.values(form)}
+            updateForm={updateForm}
+            form={form}
+          />
+        ))}
+      </form>
+    </Fragment>
   );
 };
 
