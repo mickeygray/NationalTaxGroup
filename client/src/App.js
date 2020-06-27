@@ -59,7 +59,6 @@ const App = () => {
                         <PrivateRoute exact path='/stacks' component={Stacks} />
                         <PrivateRoute exact path='/' component={DangerZone} />
                         <PrivateRoute exact path='/eyore' component={Eyore} />
-
                         <PrivateRoute exact path='/shipem' component={ShipEm} />
                         <Route
                           exact

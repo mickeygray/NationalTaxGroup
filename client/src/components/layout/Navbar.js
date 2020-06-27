@@ -32,6 +32,7 @@ const Navbar = () => {
       <li>
         <Link to='/'>Danger Zone!</Link>
         <Link to='/ShipEm'>Ship Em!</Link>
+        <Link to='/Eyore'>Eyore!</Link>
         <Link to='/Stacks' onClick={onClick}>
           {text}
         </Link>

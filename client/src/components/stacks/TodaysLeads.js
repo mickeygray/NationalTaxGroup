@@ -4,8 +4,8 @@ import TodaysLeadItem from "../stacks/TodaysLeadItem";
 
 const TodaysLeads = () => {
   const leadContext = useContext(LeadContext);
-  const { addLead, prospect, todaysLeads, getLead } = leadContext;
-  const { isClaimed } = prospect;
+  const { addLead, current, todaysLeads, getLead } = leadContext;
+  const { status } = prospect;
 
   useEffect(() => {
     if (!todaysLeads) {

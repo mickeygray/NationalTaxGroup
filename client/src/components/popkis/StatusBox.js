@@ -31,11 +31,11 @@ const StatusBox = ({ prospect, client }) => {
           <p>Lead Claimed By: {closer} </p>
           <p>Lead Status: {status} </p>
           <select name='status' id='status'>
-            <option value=''>Prospect</option>
-            <option value=''>Client</option>
-            <option value=''>Upsellable</option>
-            <option value=''>Highdollar</option>
-            <option value=''>No Upsell</option>
+            <option value='prospect'>Prospect</option>
+            <option value='client'>Client</option>
+            <option value='upsellable'>Upsellable</option>
+            <option value='highdollar'>Highdollar</option>
+            <option value='noupsell'>No Upsell</option>
           </select>
         </div>
         <div>

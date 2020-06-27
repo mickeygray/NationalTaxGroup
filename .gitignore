@@ -10,7 +10,7 @@ node_modules/
 
 # production
 
-
+config/
 
 # misc
 .DS_Store
