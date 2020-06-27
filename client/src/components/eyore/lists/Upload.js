@@ -14,7 +14,6 @@ const Upload = () => {
     beforeFirstChunk: function (chunk) {
       var index = chunk.match(/\r\n|\r|\n/).index;
       var headings = chunk.substr(0, index).split(",");
-      headings[15] = "pinCode";
       return headings.join() + chunk.substr(index);
     },
     transformHeader: (header) => toCamelCaseString(header),
