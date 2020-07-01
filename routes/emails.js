@@ -191,7 +191,7 @@ router.post("/", async (req, res) => {
     secure: true,
     auth: {
       type: "OAuth2",
-      user: "FreshStart@nattaxgroup.com",
+      user: "lienunit@nattaxgroup.com",
       serviceClient: key.client_id,
       privateKey: key.private_key,
     },
@@ -213,7 +213,7 @@ router.post("/", async (req, res) => {
   SetInterval.start(
     function () {
       const lead = list[0];
-
+      console.log(lead);
       list.shift();
 
       if (lead != null) {

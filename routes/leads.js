@@ -16,8 +16,6 @@ const hbs = require("nodemailer-express-handlebars");
 //Add Leads to Mongo
 
 router.post("/", auth, async (req, res) => {
-  console.log(req.body);
-
   try {
     const leads = await Lead.insertMany(req.body);
     res.json(leads);
@@ -25,6 +23,186 @@ router.post("/", auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send("servererr");
   }
+});
+
+router.put("/:id", auth, async (req, res) => {
+  const string = Object.keys(req.body).toString();
+  const distinct = (value, index, self) => {
+    return self.indexOf(value) === index;
+  };
+  String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+  let reg1 = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/; // Get emails
+  let reg2 = /^(\(\d{3}\))?[\s-]?\d{3}[\s-]?\d{4}/gim;
+  let liens = string.match(/(?<=Debtor Information\s*).*?(?=\s*Number)/gs);
+  let emails = (string.match(reg1) || []).map((e) => e.replace(reg1, "$1"));
+  let phones = string.match(reg2).filter(distinct);
+  let bankruptcy = string.match(
+    /(?<=Petitioner Information\s*).*?(?=\s*Meeting Date)/gs
+  );
+  let real = string.match(/(?<=Deed Record for\s*).*?(?=\s*Loan Type)/gs);
+
+  console.log(real);
+  const leadString = liens.shift();
+  const leadBody =
+    "{" +
+    leadString
+      .replace(/[\s,]+/g, " ")
+      .trim()
+      .replace("Name:", '"fullName":"')
+      .replace("SSN:", '", "ssn":"')
+      .replace("Address:", '", "deliveryAddress":"')
+      .replace("Creditor Information Name:", '", "plaintiff":"')
+      .replace("Jurisdiction", '", "state":"')
+      .replace("Filing Information", "")
+      .replace("Amount", '", "amount":"')
+      .replace("Filing Date", '", "filingDate":"')
+      .concat('", "emailAddresses":"' + emails) +
+    '"}';
+
+  const lead = JSON.parse(leadBody);
+
+  const age = string.substring();
+  lead.county = lead.deliveryAddress
+    .match(/(?<=(\d+)(?!.*\d)\s*).*?(?=\s*COUNTY)/gs)
+    .toString();
+
+  lead.phones = phones;
+  lead.amount = lead.amount.replace(":", "");
+  lead.filingDate = lead.filingDate.replace(": ", "");
+  lead.state = lead.state.replace(": ", "");
+  lead.plaintiff = lead.plaintiff
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString()
+    .replace(",", " ")
+    .replace(",", " ")
+    .toProperCase();
+  lead.zip4 = lead.deliveryAddress
+    .substring(
+      lead.deliveryAddress.lastIndexOf(lead.state),
+      lead.deliveryAddress.lastIndexOf(lead.county)
+    )
+    .split(" ")
+    .splice(-1)
+    .toString();
+
+  lead.city = lead.deliveryAddress
+    .substring(0, lead.deliveryAddress.indexOf(lead.state))
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .splice(-1)
+    .toString();
+
+  lead.ssn = lead.ssn
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString();
+
+  lead.amount = lead.amount
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString();
+
+  lead.deliveryAddress = lead.deliveryAddress
+    .substring(0, lead.deliveryAddress.indexOf(lead.city))
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString()
+    .replace(",", " ")
+    .replace(",", " ")
+    .replace(",", " ")
+    .toProperCase();
+
+  lead.city = lead.city.toProperCase();
+  lead.county = lead.county
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString()
+    .toProperCase();
+  lead.state = lead.state
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString();
+
+  lead.firstName = lead.fullName
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })[1]
+    .toString()
+    .toProperCase();
+
+  lead.lastName = lead.fullName
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })[0]
+    .toString()
+    .toProperCase();
+
+  lead.fullName = lead.fullName.replace(
+    lead.fullName,
+    lead.firstName + " " + lead.lastName
+  );
+
+  lead.real = real;
+
+  lead.age = string.match(/(?<=[(]Age:\s*).*?(?=\s*[)])/gs)[0].toString();
+  lead.dob = string
+    .match(/(?<=[-]XXXX\s*).*?(?=\s*[(]Age:)/gs)[0]
+    .toString()
+    .trim();
+
+  const regex = new RegExp("/((^[A-Z][,][A-Z]))/", "g");
+
+  lead.family = string
+    .match(/(?<=Household Members\s*).*?(?=\s*Other Associates)/gs)
+    .filter(function (el) {
+      return el != "\r\n\r\nNone Listed";
+    })
+    .filter(function (el) {
+      return el != "\r\nNone Listed";
+    })
+    .toString()
+    .replace("\r\n", "")
+    .replace("\r\n +", "")
+    .split("+");
+
+  lead.emailAddresses = lead.emailAddresses.split(",").filter(distinct);
+
+  lead.bankruptcy = bankruptcy;
+  console.log(lead);
+});
+
+router.get("/lexis", auth, async (req, res) => {
+  const call = await Call.find().limit(1).sort({ $natural: -1 });
+});
+
+router.post("/lexis", auth, async (req, res) => {
+  const string = Object.keys(req.body).toString();
+
+  let reg = /LexID\(sm\):([\S]+)/gim; // Get hashtags.
+
+  let matches = (string.match(reg) || []).map((e) => e.replace(reg, "$1"));
+  console.log(matches);
 });
 
 router.post("/forms", async (req, res) => {
@@ -79,7 +257,7 @@ router.put("/:id/dnc", auth, async (req, res) => {
   try {
     if (pinCode != null) {
       const lead = await Lead.findOneAndUpdate(
-        { rmsid: pinCode },
+        { pinCode: pinCode },
         { status: "dnc" },
         {
           new: true,
@@ -142,7 +320,7 @@ router.put("/", auth, async (req, res) => {
   );
 });
 
-router.get(`/:id/RMSID`, async (req, res) => {
+router.get(`/:id/pinCode`, async (req, res) => {
   const string = req.query.q;
 
   const leadData = string.split(",");
@@ -156,7 +334,7 @@ router.get(`/:id/RMSID`, async (req, res) => {
 
   const lead = mongooseToObj(
     await Lead.findOne({
-      "RMSID": leadData[0],
+      "pinCode": leadData[0],
     })
   );
 

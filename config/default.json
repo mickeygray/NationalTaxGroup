@@ -1,5 +1,6 @@
 {
   "mongoURI": "mongodb+srv://mickeygray:nXBefiXzZ1lyI3bJ@cluster0.xmo5h.mongodb.net/test?retryWrites=true&w=majority",
   "jwtSecret": "idfiuewryrf98wu",
-  "callRailKey": "6c0dbe4e525e0bff243007882b40eb2b"
+  "callRailKey": "6c0dbe4e525e0bff243007882b40eb2b",
+  "sgKey": "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"
 }

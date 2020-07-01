@@ -1,41 +1,98 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/user/userContext";
-import AuthContext from "../../context/auth/authContext";
 
 const ReminderItem = ({
-  reminder: { clientId, clientName, reminderText, id, reminderDate },
+  reminder: {
+    text,
+    user,
+    userReminded,
+    reminderDate,
+    reminderDueDate,
+    status,
+    daysTilDue,
+    clientId,
+    id,
+  },
 }) => {
-  const reminder = { clientId, clientName, reminderText, id };
-  const { user } = useContext(AuthContext);
-  const { getLead } = useContext(LeadContext);
-  const { deleteReminder } = useContext(UserContext);
+  const reminder = {
+    text,
+    user,
+    userReminded,
+    reminderDate,
+    reminderDueDate,
+    status,
+    daysTilDue,
+    clientId,
+    id,
+  };
 
-  let dateDisplay = new Date(reminderDate);
+  useEffect(() => {
+    if (daysTilDue > 6) {
+      setColorStyle({
+        backgroundColor: "green",
+        color: "white",
+      });
+    } else if (daysTilDue < 6 && daysTilDue > 3) {
+      setColorStyle({
+        backgroundColor: "yellow",
+        color: "black",
+      });
+    } else if (daysTilDue < 3) {
+      setColorStyle({
+        backgroundColor: "red",
+        color: "yellow",
+      });
+    }
+  });
+
+  const { getProspect, getProspectName } = useContext(LeadContext);
+  const { deleteReminder, getUserName } = useContext(UserContext);
+
+  const prospect = getProspectName(clientId);
+
+  const { fullName } = prospect;
+
+  const assignedBy = getUserName(user);
+
+  let reminderDateDisplay = new Date(reminderDate);
   let formattedReminderDate = Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "numeric",
     day: "numeric",
-  }).format(dateDisplay);
+  }).format(reminderDateDisplay);
+
+  let reminderDueDateDisplay = new Date(reminderDueDate);
+  let formattedReminderDueDate = Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).format(reminderDueDateDisplay);
+
+  const [colorStyle, setColorStyle] = useState({
+    backgroundColor: "green",
+    color: "white",
+  });
 
   return (
-    <div className='card'>
+    <div className='card' style={colorStyle}>
       <Link
-        to={`/leads/${clientId}`}
-        onClick={() => getLead(clientId)}
+        to={`/prospects/${clientId}`}
+        onClick={() => getProspect(clientId)}
         className='btn btn-dark btn-sm'
         style={{ width: "10rem" }}>
-        {clientName}
+        {fullName}
       </Link>{" "}
       <span style={{ float: "right", height: "1rem", fontSize: ".7rem" }}>
         <button onClick={() => deleteReminder(user, reminder)}>X</button>
       </span>
-      <p style={{ backgroundColor: "white" }}>
-        {formattedReminderDate}
-        <br />
-        {reminderText}
-      </p>
+      <ul>
+        <li> Assigned By : {assignedBy}</li>
+        <li> Date Assigned: {formattedReminderDate}</li>
+        <li> Date Due: {formattedReminderDueDate}</li>
+      </ul>
+      <p>{text}</p>
     </div>
   );
 };

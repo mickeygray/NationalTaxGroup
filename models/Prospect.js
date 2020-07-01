@@ -49,10 +49,12 @@ const ProspectSchema = mongoose.Schema({
   notes: {
     type: [
       {
-        id: { type: String },
-        noteText: { type: String },
-        notePostedBy: { type: String },
-        noteDate: { type: Date, default: Date.now() },
+        id: { type: String, unique: true },
+        text: { type: String },
+        postedBy: { type: String },
+        postedDate: { type: Date },
+        updatedBy: { type: String },
+        updatedDate: { type: Date },
       },
     ],
   },
@@ -218,6 +220,9 @@ const ProspectSchema = mongoose.Schema({
   employerPhone: {
     type: String,
     default: "",
+  },
+  pdfs: {
+    type: Array,
   },
 });
 

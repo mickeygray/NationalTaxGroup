@@ -5,7 +5,7 @@ const Call = require("../models/Call.js");
 const Prospect = require("../models/Prospect.js");
 const Client = require("../models/Client.js");
 const axios = require("axios");
-
+const uuidv4 = require("uuid/v4");
 router.post("/calls", auth, async (req, res, next) => {
   const {
     answered,
@@ -77,153 +77,6 @@ router.get("/", auth, async (req, res) => {
   res.json(prospects);
 });
 
-router.get("/clients", auth, async (req, res) => {
-  console.log(req.query.q);
-  const regex = new RegExp(`${req.query.q}`, "gi");
-  const clients = await Client.find({
-    $or: [
-      { fullName: regex },
-      { deliveryAddress: regex },
-      { pinCode: regex },
-      { ssn: regex },
-    ],
-  });
-
-  res.json(clients);
-});
-
-router.post("/clients", auth, async (req, res) => {
-  const {
-    quote,
-    gross,
-    initial,
-    total,
-    notes,
-    fullName,
-    deliveryAddress,
-    city,
-    st,
-    zip4,
-    plaintiff,
-    taxAmount,
-    lienid,
-    phone,
-    email,
-    pinCode,
-    compliant,
-    filingStatus,
-    cpa,
-    ssn,
-    createdate,
-    createdBy,
-    closerId,
-    name2,
-    address2,
-    city2,
-    state2,
-    zip2,
-    employerTime,
-    ssn2,
-    pinCode2,
-    dob,
-    dob2,
-    relation,
-    phone2,
-    phone3,
-    email2,
-    email3,
-    prac,
-    problem1,
-    problem2,
-    problem3,
-    resSold,
-    resSold2,
-    home,
-    homePay,
-    wages,
-    income1Type,
-    income1Value,
-    income2Type,
-    income2Value,
-    income3Type,
-    income3Value,
-    otherIncomeType,
-    otherIncomeValue,
-    creditScore,
-    availableCredit,
-    totalCredit,
-    employerName,
-    employerPhone,
-  } = req.body;
-
-  const newClient = new Client({
-    quote,
-    gross,
-    initial,
-    total,
-    notes,
-    fullName,
-    deliveryAddress,
-    city,
-    st,
-    zip4,
-    plaintiff,
-    taxAmount,
-    lienid,
-    phone,
-    email,
-    pinCode,
-    compliant,
-    filingStatus,
-    cpa,
-    ssn,
-    createdate,
-    createdBy,
-    closerId,
-    name2,
-    address2,
-    city2,
-    state2,
-    zip2,
-    employerTime,
-    ssn2,
-    pinCode2,
-    dob,
-    dob2,
-    relation,
-    phone2,
-    phone3,
-    email2,
-    email3,
-    prac,
-    problem1,
-    problem2,
-    problem3,
-    resSold,
-    resSold2,
-    home,
-    homePay,
-    wages,
-    income1Type,
-    income1Value,
-    income2Type,
-    income2Value,
-    income3Type,
-    income3Value,
-    otherIncomeType,
-    otherIncomeValue,
-    creditScore,
-    availableCredit,
-    totalCredit,
-    employerName,
-    employerPhone,
-  });
-
-  const client = await newClient.save();
-
-  res.json(client);
-});
-
 router.post("/", auth, async (req, res) => {
   console.log(req.body);
   const {
@@ -231,7 +84,7 @@ router.post("/", auth, async (req, res) => {
     fullName,
     deliveryAddress,
     city,
-    st,
+    state,
     zip4,
     plaintiff,
     taxAmount,
@@ -242,10 +95,8 @@ router.post("/", auth, async (req, res) => {
     filingStatus,
     cpa,
     ssn,
-    noteText,
   } = req.body;
-  const notes = noteText;
-  let createdate;
+
   let name2;
   let address2;
   let city2;
@@ -285,15 +136,11 @@ router.post("/", auth, async (req, res) => {
   let employerPhone;
   let closerId;
 
-  const createdBy = req.user.id;
-  const notePostedBy = req.user.id;
-
   const newProspect = new Prospect({
-    notes,
     fullName,
     deliveryAddress,
     city,
-    st,
+    state,
     zip4,
     plaintiff,
     taxAmount,
@@ -305,8 +152,6 @@ router.post("/", auth, async (req, res) => {
     filingStatus,
     cpa,
     ssn,
-    createdate,
-    createdBy,
     closerId,
     name2,
     address2,
@@ -498,176 +343,80 @@ router.put("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   const prospect = req.params._id;
   const noteId = req.body.id;
+});
 
+router.post("/:_id/notes", auth, async (req, res) => {
+  console.log(req.body);
+
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    $push: {
+      "notes": {
+        text: req.body.text,
+        postedBy: req.body.postedBy,
+        postedDate: req.body.postedDate,
+        id: req.body.id,
+        updatedBy: req.body.postedBy,
+        updatedDate: req.body.postedDate,
+      },
+    },
+  });
+  res.json(prospect);
+
+  console.log(prospect);
+});
+
+router.put("/:_id/notes", auth, async (req, res) => {
+  const { note, user } = req.body;
+
+  const { text, updatedBy, id, updatedDate, postedBy, postedDate } = note;
+  const { name } = user;
+
+  let prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    $pull: { notes: { id: id } },
+  });
+
+  console.log(prospect);
+
+  prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    $push: {
+      notes: {
+        text: text,
+        postedBy: postedBy,
+        postedDate: postedDate,
+        updatedBy: name,
+        updatedDate: Date.now(),
+        id: uuidv4(),
+      },
+    },
+  });
+
+  res.json(prospect);
+});
+
+router.get("/:_id/notes", auth, async (req, res) => {
+  const prospect = await Prospect.findById(req.params.id);
+
+  res.json(prospect);
+});
+
+router.get("/:_id/fullName", auth, async (req, res) => {
+  const prospect = await Prospect.findById(req.params.id);
+
+  const { fullName } = prospect;
+  res.json(fullName);
+});
+
+router.delete("/:_id/notes/", auth, async (req, res) => {
+  console.log(req.query.q);
   try {
-    await prospect.findOneAndUpdate(
-      { prospect: prospect, "notes.id": noteId },
-      { $pull: { "notes": { "id": noteId } } }
-    );
+    const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+      $pull: { "notes": { "id": req.query.q } },
+    });
 
-    res.json(lead);
+    res.json(prospect);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 });
-
-router.put("/clients/:id", auth, async (req, res) => {
-  const {
-    note,
-    createdBy,
-    closerId,
-    fullName,
-    city,
-    state,
-    zip4,
-    plaintiff,
-    amount,
-    email,
-    pinCode,
-    compliant,
-    deliveryAddress,
-    filingStatus,
-    cpa,
-    ssn,
-    phone,
-    name2,
-    address2,
-    city2,
-    state2,
-    zip2,
-    employerTime,
-    ssn2,
-    pinCode2,
-    dob,
-    dob2,
-    relation,
-    phone2,
-    phone3,
-    email2,
-    email3,
-    prac,
-    problem1,
-    problem2,
-    problem3,
-    resSold,
-    resSold2,
-    home,
-    homePay,
-    wages,
-    income1Type,
-    income1Value,
-    income2Type,
-    income2Value,
-    income3Type,
-    income3Value,
-    otherIncomeType,
-    otherIncomeValue,
-    creditScore,
-    availableCredit,
-    totalCredit,
-    employerName,
-    employerPhone,
-  } = req.body;
-  const notes = [];
-  const leadFields = {};
-  if (notes) leadFields.notes = [notes];
-  if (dob) leadFields.dob = dob;
-  if (dob2) leadFields.dob2 = dob2;
-  if (createdBy) leadFields.createdBy = createdBy;
-  if (closerId) leadFields.closerId = closerId;
-  if (fullName) leadFields.fullName = fullName;
-  if (email) leadFields.email = email;
-  if (phone) leadFields.phone = phone;
-  if (deliveryAddress) leadFields.deliveryAddress = deliveryAddress;
-  if (city) leadFields.city = city;
-  if (state) leadFields.st = state;
-  if (zip4) leadFields.zip4 = zip4;
-  if (ssn2) leadFields.ssn2 = ssn2;
-  if (pinCode2) leadFields.pinCode2 = pinCode2;
-  if (zip2) leadFields.zip2 = zip2;
-  if (relation) leadFields.relation = relation;
-  if (plaintiff) leadFields.plaintiff = plaintiff;
-  if (amount) leadFields.amount = amount;
-  if (email) leadFields.email = email;
-  if (pinCode) leadFields.pinCode = pinCode;
-  if (compliant) leadFields.compliant = compliant;
-  if (filingStatus) leadFields.filingStatus = filingStatus;
-  if (cpa) leadFields.cpa = cpa;
-  if (ssn) leadFields.ssn = ssn;
-  if (name2) leadFields.name2 = name2;
-  if (email2) leadFields.email2 = email2;
-  if (phone2) leadFields.phone2 = phone2;
-  if (email3) leadFields.email3 = email3;
-  if (phone3) leadFields.phone3 = phone3;
-  if (address2) leadFields.address2 = address2;
-  if (city2) leadFields.city2 = city2;
-  if (state2) leadFields.state2 = state2;
-  if (zip2) leadFields.zip2 = zip2;
-  if (prac) leadFields.prac = prac;
-  if (problem1) leadFields.problem1 = problem1;
-  if (problem2) leadFields.problem2 = problem2;
-  if (problem3) leadFields.problem3 = problem3;
-  if (resSold) leadFields.resSold = resSold;
-  if (resSold2) leadFields.resSold2 = resSold2;
-  if (home) leadFields.home = home;
-  if (homePay) leadFields.homePay = homePay;
-  if (wages) leadFields.wages = wages;
-  if (income1Type) leadFields.income1Type = income1Type;
-  if (income1Value) leadFields.income1Value = income1Value;
-  if (income2Type) leadFields.income2Type = income2Type;
-  if (income1Value) leadFields.income2Value = income2Value;
-  if (income3Type) leadFields.income3Type = income3Type;
-  if (income3Value) leadFields.income3Value = income3Value;
-  if (otherIncomeValue) leadFields.otherIncomeValue = otherIncomeValue;
-  if (otherIncomeType) leadFields.otherIncomeType = otherIncomeType;
-  if (creditScore) leadFields.creditScore = creditScore;
-  if (availableCredit) leadFields.availableCredit = availableCredit;
-  if (totalCredit) leadFields.totalCredit = totalCredit;
-  if (employerName) leadFields.employerName = employerName;
-  if (employerPhone) leadFields.employerPhone = employerPhone;
-  if (employerName) leadFields.employerTime = employerTime;
-
-  try {
-    let client = await Client.findById(req.params.id);
-
-    if (!client) return res.status(404).json({ msg: "lead not found" });
-
-    if (note) {
-      client = await Client.findByIdAndUpdate(
-        req.params.id,
-        { $push: { notes: note } },
-        { "new": true }
-      );
-    } else {
-      prospect = await Client.findByIdAndUpdate(
-        req.params.id,
-        { $set: leadFields },
-        { new: true }
-      );
-    }
-    res.json(client);
-    console.log(client);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-router.delete("/clients/:id", auth, async (req, res) => {
-  const client = req.params._id;
-  const noteId = req.body.id;
-
-  try {
-    await client.findOneAndUpdate(
-      { _id: client, "notes.id": noteId },
-      { $pull: { "notes": { "id": noteId } } }
-    );
-
-    res.json(client);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
-
 module.exports = router;

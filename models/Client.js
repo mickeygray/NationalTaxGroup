@@ -217,6 +217,9 @@ const ClientSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  pdfs: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model("client", ClientSchema);

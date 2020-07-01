@@ -12,7 +12,7 @@ const RecentLeads = () => {
   useEffect(() => {}, [setRecent, recentLeads, userContext]);
 
   const deleteLead = useCallback(() => {
-    deleteRecentLead(recentLeads, recentLead);
+    deleteRecentLead(recentLead._id);
   }, []);
 
   return (

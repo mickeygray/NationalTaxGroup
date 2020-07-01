@@ -9,13 +9,13 @@ import PopkisForm from "../../popkis/PopkisForm";
 import leadContext from "../../../context/lead/leadContext";
 
 const Popkis = ({ match }) => {
-  const { getProspect, prospect, client } = useContext(leadContext);
+  const { setProspect, getProspect, prospect, notes, setNotes } = useContext(
+    leadContext
+  );
 
   useEffect(() => {
     getProspect(match.params.id);
   }, []);
-
-  console.log(prospect);
 
   return (
     <Fragment>
@@ -25,19 +25,19 @@ const Popkis = ({ match }) => {
 
       <div>
         <h1 className='text-danger'>Popkis!</h1>
-        <StatusBox prospect={prospect} client={client} />
+        <StatusBox prospect={prospect} />
         <div className='grid-6'>
-          <div className='sidebar'>
-            <LeadCalls prospect={prospect} client={client} />
-          </div>
-          <div className='container'>
-            <PopkisForm prospect={prospect} />
-          </div>
-          <div className='sidebar' style={{ width: "30rem" }}>
-            <div className='card'>
-              <Notes prospect={prospect} client={client} />
+          <div className='grid-popkis'>
+            <div>
+              <Notes prospect={prospect} />
               <hr />
-              <NotePad prospect={prospect} client={client} />
+              <NotePad prospect={prospect} />
+            </div>
+            <div>
+              <PopkisForm prospect={prospect} />
+            </div>
+            <div>
+              <LeadCalls prospect={prospect} />
             </div>
           </div>
         </div>

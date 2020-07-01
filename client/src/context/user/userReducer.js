@@ -1,9 +1,13 @@
 import {
   SET_RECENT,
   GET_LEADS,
-  UPDATE_USER,
+  POST_REMINDER,
   DELETE_REMINDER,
   DELETE_RECENTLEAD,
+  GET_USER,
+  GET_USERNAME,
+  GET_USERREMINDED,
+  SET_USER,
 } from "../types";
 
 export default (state, action) => {
@@ -18,12 +22,30 @@ export default (state, action) => {
         ...state,
         prospects: action.payload,
       };
-    case UPDATE_USER:
+    case GET_USER:
       return {
         ...state,
-        users: state.users.map((user) =>
-          user._id === action.payload._id ? action.payload : user
-        ),
+        user: action.payload,
+      };
+    case SET_USER:
+      return {
+        ...state,
+        reminded: action.payload,
+      };
+    case GET_USERREMINDED:
+      return {
+        ...state,
+        users: action.payload,
+      };
+    case GET_USERNAME:
+      return {
+        ...state,
+        name: action.payload,
+      };
+    case POST_REMINDER:
+      return {
+        ...state,
+        reminder: action.payload,
       };
     case DELETE_REMINDER:
       return {

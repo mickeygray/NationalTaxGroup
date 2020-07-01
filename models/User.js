@@ -29,11 +29,15 @@ const UserSchema = mongoose.Schema({
   },
   reminders: [
     {
+      user: { type: mongoose.Schema.Types.ObjectId },
+      userReminded: { type: mongoose.Schema.Types.ObjectId },
+      reminderDate: { type: Date },
+      reminderDueDate: { type: Date },
+      status: { type: String },
+      daysTilDue: { type: Number },
       id: { type: String },
-      reminderText: { type: String },
-      clientName: { type: String },
+      text: { type: String },
       clientId: { type: mongoose.Schema.Types.ObjectId },
-      reminderDate: { type: Date, default: Date.now() },
     },
   ],
 });

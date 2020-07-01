@@ -17,10 +17,8 @@ import {
   CLEAR_LEAD,
   SET_CURRENT,
   LET_CALL,
-  DELETE_NOTE,
   CLEAR_LIENS,
   CLEAR_NUMBER,
-  SET_NOTES,
   POST_LOGICS,
   GET_FIELDS,
   POST_PREV,
@@ -29,16 +27,72 @@ import {
   CLEAR_LEADFIELDS,
   CLEAR_RECENTLEAD,
   UPDATE_PROSPECT,
+  POST_NOTE,
+  GET_NOTES,
+  PUT_NOTE,
   SET_NOTE,
+  SET_NOTES,
+  DELETE_NOTE,
+  ADD_LEXIS,
+  SET_PROSPECT,
+  GET_NAME,
 } from "../types";
 
 export default (state, action) => {
   switch (action.type) {
+    case DELETE_NOTE:
+      return {
+        ...state,
+        notes: state.notes.filter((note) => note.id !== action.payload),
+      };
+
+    case POST_NOTE:
+      return {
+        ...state,
+        note: action.payload,
+      };
+    case PUT_NOTE:
+      return {
+        ...state,
+        note: action.payload,
+      };
+    case GET_NAME:
+      return {
+        ...state,
+        fullName: action.payload,
+      };
+
+    case GET_NOTES:
+      return {
+        ...state,
+        notes: action.payload,
+      };
+    case SET_NOTES:
+      return {
+        ...state,
+        notes: action.payload,
+      };
+    case SET_NOTE:
+      return {
+        ...state,
+        currentNote: action.payload,
+      };
+    case SET_PROSPECT:
+      return {
+        ...state,
+        prospect: action.payload,
+      };
+
     case UPLOAD_FILE:
       return {
         ...state,
         selectedFile: action.payload,
         loaded: 0,
+      };
+    case UPLOAD_FILE:
+      return {
+        ...state,
+        file: action.payload,
       };
     case DELETE_LEADS:
       return {
@@ -107,11 +161,7 @@ export default (state, action) => {
         ...state,
         recentLeads: action.payload,
       };
-    case SET_NOTE:
-      return {
-        ...state,
-        note: action.payload,
-      };
+
     case POST_PREV:
       return {
         ...state,
@@ -131,11 +181,6 @@ export default (state, action) => {
       return {
         ...state,
         recentLead: action.payload,
-      };
-    case SET_NOTES:
-      return {
-        ...state,
-        notes: action.payload,
       };
 
     case GET_LEAD:
@@ -188,11 +233,7 @@ export default (state, action) => {
         ...state,
         leads: action.payload,
       };
-    case DELETE_NOTE:
-      return {
-        ...state,
-        notes: state.notes.filter((note) => note._id !== action.payload),
-      };
+
     case CLEAR_LIENS:
       return {
         ...state,

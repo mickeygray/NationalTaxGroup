@@ -5,7 +5,7 @@ import AuthContext from "../auth/authContext";
 import LeadReducer from "./leadReducer";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
-import { v4 as uuidv4 } from "uuid";
+
 import {
   UPLOAD_FILE,
   SET_FILE,
@@ -14,6 +14,7 @@ import {
   DELETE_LEADS,
   MAKE_DNC,
   UPDATE_CLIENT,
+  ADD_LEXIS,
   SUBMIT_LEAD,
   GET_LIEN,
   SEARCH_LIENS,
@@ -31,15 +32,21 @@ import {
   CLEAR_LEADFIELDS,
   CLEAR_RECENTLEAD,
   SET_RECENTLEAD,
-  SET_NOTES,
+  GET_NOTES,
+  PUT_NOTE,
   SET_NOTE,
+  SET_NOTES,
+  POST_NOTE,
   DELETE_NOTE,
+  SET_PROSPECT,
+  GET_NAME,
 } from "../types";
 
 const LeadState = (props) => {
   const initialState = {
     selectedFile: null,
     loaded: null,
+    currentNote: null,
     bcc: [],
     vars: [],
     mailList: [],
@@ -56,6 +63,7 @@ const LeadState = (props) => {
     clients: [],
     lien: {},
     lead: {},
+    note: {},
     current: null,
     call: {},
     calls: [],
@@ -92,6 +100,14 @@ const LeadState = (props) => {
     });
   };
 
+  const addLexis = async (file, current) => {
+    const res = await axios.put(`/api/leads/${current.lienid}/pdfs`, file);
+
+    dispatch({
+      type: ADD_LEXIS,
+      payload: res.data,
+    });
+  };
   const addLead = async (prospect) => {
     const config = {
       headers: {
@@ -115,12 +131,7 @@ const LeadState = (props) => {
       filingStatus,
       cpa,
       ssn,
-      noteText,
     } = prospect;
-
-    const noteId = uuidv4();
-
-    const notes = [{ id: noteId, noteText: noteText, notePostedBy: "" }];
 
     const steve = {
       phone,
@@ -138,7 +149,6 @@ const LeadState = (props) => {
       filingStatus,
       cpa,
       ssn,
-      notes,
     };
 
     const res = await axios.post("/api/prospects/", steve, config);
@@ -166,6 +176,15 @@ const LeadState = (props) => {
     dispatch({ type: CLEAR_NUMBER });
   };
 
+  const getProspectName = async (clientId) => {
+    const res = await axios.get(`/api/prospects/${clientId}/fullName`);
+
+    dispatch({
+      type: GET_NAME,
+      payload: res.data,
+    });
+  };
+
   const { user } = useContext(AuthContext);
 
   const setClaim = async (user, prospect) => {
@@ -177,37 +196,76 @@ const LeadState = (props) => {
     updateLead(leadFields, _id);
   };
 
-  const putNote = async (noteSpace1, user, prospect) => {
-    console.log(user);
-    const _id = prospect._id;
-    const noteId = uuidv4();
+  const setNotes = (notes) => {
+    console.log(notes);
+    dispatch({ type: SET_NOTES, payload: notes });
+  };
 
-    const note = {
-      id: noteId,
-      noteText: JSON.stringify(noteSpace1),
-      notePostedBy: user.name,
+  const putNote = async (note, user, prospect) => {
+    const noteObj = {
+      note: note,
+      user: user,
     };
 
-    const leadFields = { note };
+    const { notes } = prospect;
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/notes/`,
+      noteObj
+    );
+    setNotes(notes);
+    setNotes(null);
 
-    updateLead(leadFields, _id);
+    dispatch({
+      type: PUT_NOTE,
+      payload: res.data,
+    });
   };
 
-  const setApproved = async (prospect) => {
-    const _id = prospect._id;
-    const isApproved = true;
-    const leadFields = { isApproved };
+  const getNotes = async (prospect) => {
+    const res = await axios.get(`/api/prospects/${prospect._id}/notes`);
 
-    updateLead(leadFields, _id);
+    dispatch({
+      type: GET_NOTES,
+      payload: res.data,
+    });
   };
 
-  const setUnclaim = async (user, prospect) => {
-    const _id = prospect._id;
-    const claimedBy = "unclaimed";
-    const isClaimed = false;
-    const leadFields = { claimedBy, isClaimed };
+  const postNote = async (note, prospect) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-    updateLead(leadFields, _id);
+    const { _id, notes } = prospect;
+
+    const res = await axios.post(`/api/prospects/${_id}/notes`, note, config);
+    setNotes(notes);
+    setNotes(null);
+    dispatch({
+      type: POST_NOTE,
+      payload: res.data,
+    });
+  };
+
+  const setCurrentNote = (currentNote) => {
+    console.log(currentNote);
+    dispatch({
+      type: SET_NOTE,
+      payload: currentNote,
+    });
+  };
+
+  const deleteNote = async (note, prospect) => {
+    const { _id, notes } = prospect;
+    const { id } = note;
+
+    await axios.delete(`/api/prospects/${_id}/notes?q=${id}`);
+
+    dispatch({
+      type: DELETE_NOTE,
+      payload: id,
+    });
   };
 
   //Search Liens
@@ -222,39 +280,9 @@ const LeadState = (props) => {
     dispatch({ type: SET_CURRENT, payload: current });
   };
 
-  const setNotes = (notes) => {
-    dispatch({ type: SET_NOTES, payload: notes });
-  };
-
-  const setNote = (note) => {
-    dispatch({ type: SET_NOTE, payload: note });
-  };
   // Set Call in Ship Em Form
   const letCall = (number) => {
     dispatch({ type: LET_CALL, payload: number });
-  };
-
-  const deleteNote = async (note, prospect) => {
-    const { _id } = prospect;
-    const { id } = note;
-
-    const config = {
-      params: {
-        _id: _id,
-      },
-      data: {
-        id: id,
-      },
-    };
-    console.log(_id);
-    console.log(id);
-
-    const res = await axios.delete(`/api/prospects/${_id}`, config);
-
-    dispatch({
-      type: DELETE_NOTE,
-      payload: res.data,
-    });
   };
 
   // get id and set name id value pair for recent array
@@ -263,7 +291,9 @@ const LeadState = (props) => {
     const res = await axios.get(`/api/prospects/${_id}`);
 
     const prospect = res.data;
-
+    const notes = { prospect };
+    setNotes(notes);
+    setNotes(null);
     dispatch({
       type: GET_LEAD,
       payload: prospect,
@@ -450,6 +480,11 @@ const LeadState = (props) => {
     dispatch({ type: SET_FILE, payload: selectedFile });
   };
 
+  const setProspect = (prospect) => {
+    console.log(prospect);
+    dispatch({ type: SET_PROSPECT, payload: prospect });
+  };
+
   const deleteLeads = async (leads) => {
     try {
       await axios.delete(`/api/leads/`, leads);
@@ -561,9 +596,6 @@ const LeadState = (props) => {
 
     data.forEach(function (element) {
       element.status = "new";
-      element.amount = parseFloat(element.amount).toFixed(2);
-      element.nineAmount = parseFloat(element.amount * 0.95).toFixed(2);
-      element.fiveAmount = parseFloat(element.amount * 0.05).toFixed(2);
     });
     const res = await axios.post(`/api/leads`, data, config);
 
@@ -584,6 +616,7 @@ const LeadState = (props) => {
         calls: state.calls,
         note: state.note,
         notes: state.notes,
+        currentNote: state.currentNote,
         text: state.text,
         prospect: state.prospect,
         prospects: state.prospects,
@@ -602,6 +635,9 @@ const LeadState = (props) => {
         mailObject: state.mailObject,
         mailList: state.mailList,
         dncArray: state.dncArray,
+        addLexis,
+        getProspectName,
+        setProspect,
         deleteLeads,
         addLead,
         setSelectedFile,
@@ -620,14 +656,15 @@ const LeadState = (props) => {
         clearNumber,
         setClaim,
         putNote,
-        setUnclaim,
+        postNote,
+        getNotes,
+        setNotes,
+        setCurrentNote,
+        deleteNote,
         setRecentLead,
         setCurrent,
-        setApproved,
         letCall,
         clearLiens,
-        setNote,
-        setNotes,
         updateProspect,
         getProspects,
         getMyLeads,

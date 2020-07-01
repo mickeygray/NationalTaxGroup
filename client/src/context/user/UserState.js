@@ -10,9 +10,13 @@ import { createBrowserHistory } from "history";
 import {
   SET_RECENT,
   GET_LEADS,
-  UPDATE_USER,
+  POST_REMINDER,
   DELETE_REMINDER,
   DELETE_RECENTLEAD,
+  GET_USER,
+  GET_USERNAME,
+  GET_USERREMINDED,
+  SET_USER,
 } from "../types";
 
 const UserState = (props) => {
@@ -21,6 +25,8 @@ const UserState = (props) => {
     user: {},
     users: [],
     reminders: [],
+    reminder: {},
+    reminded: null,
     prospects: [],
     recentLeads: [],
     prospect: {},
@@ -33,9 +39,36 @@ const UserState = (props) => {
 
   //get user name
   const getUserName = async (_id) => {
-    const user = await axios.get(`/api/users/${_id}`);
+    const res = await axios.get(`/api/users/${_id}/name`);
+    dispatch({
+      type: GET_USERNAME,
+      payload: res.data,
+    });
+  };
 
+  const setUser = (user) => {
     console.log(user);
+    dispatch({ type: SET_USER, payload: user });
+  };
+
+  //get user name
+  const getUser = async (_id) => {
+    const res = await axios.get(`/api/users/${_id}`);
+    dispatch({
+      type: GET_USER,
+      payload: res.data,
+    });
+  };
+
+  const getUserReminded = async (query) => {
+    const q = Object.values(query);
+    const res = await axios.get(`/api/users?q=${q}`);
+    dispatch({
+      type: GET_USERREMINDED,
+      payload: res.data,
+    });
+
+    console.log(res.data);
   };
 
   // load my dashboard
@@ -112,11 +145,14 @@ const UserState = (props) => {
     console.log(recentLeads);
   };
 
-  const deleteRecentLead = (recentLeads) => {
-    dispatch({ type: DELETE_RECENTLEAD, payload: recentLeads });
+  const deleteRecentLead = (_id) => {
+    dispatch({
+      type: DELETE_RECENTLEAD,
+      payload: _id,
+    });
   };
   // Push To User Arrays (Leads, Tasks, Reminders)
-  const updateUser = async (noteSpace, user, prospect) => {
+  const postReminder = async (reminder, user, prospect) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -124,23 +160,14 @@ const UserState = (props) => {
     };
 
     try {
-      const _id = user._id;
-      const reminderId = uuidv4();
-      const reminder = {
-        id: reminderId,
-        reminderText: JSON.stringify(noteSpace),
-        clientName: prospect.fullName,
-        clientId: prospect._id,
-      };
-
-      const reminders = [reminder];
-
-      const userFields = reminders;
-
-      const res = await axios.put(`/api/users/${_id}`, userFields, config);
+      const res = await axios.put(
+        `/api/users/${reminder.userReminded}/reminders`,
+        reminder,
+        config
+      );
 
       dispatch({
-        type: UPDATE_USER,
+        type: POST_REMINDER,
         payload: res.data,
       });
       console.log(res.data);
@@ -162,10 +189,14 @@ const UserState = (props) => {
         recentLeads: state.recentLeads,
         text: state.text,
         user: state.user,
+        reminded: state.reminded,
         getMyLeads,
         setRecent,
+        getUser,
+        setUser,
         getUserName,
-        updateUser,
+        getUserReminded,
+        postReminder,
         deleteReminder,
         deleteRecentLead,
       }}>

@@ -13,7 +13,9 @@ const Calls = () => {
   }, 7000);
 
   return (
-    <div className='sidebar' style={{ width: "300px" }}>
+    <div
+      className='sidebar'
+      style={{ width: "300px", height: "90vh", overflow: "scroll" }}>
       {filtered !== null
         ? filtered.map((call) => <CallItem key={call.id} call={call} />)
         : calls.map((call) => <CallItem key={call.id} call={call} />)}

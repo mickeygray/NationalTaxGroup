@@ -1,27 +1,46 @@
 import React, { useContext } from "react";
 import LeadContext from "../../context/lead/leadContext";
-import AuthContext from "../../context/auth/authContext";
 
-const NoteItem = ({ note: { noteText, id, notePostedBy, noteDate } }) => {
-  const note = { noteText, id, notePostedBy, noteDate };
-  const { setNote, deleteNote, prospect } = useContext(LeadContext);
-  const { loginRefresh, token, myToken } = useContext(AuthContext);
+import { v4 as uuidv4 } from "uuid";
+const NoteItem = ({
+  note: { text, id, postedBy, postedDate, updatedDate, updatedBy },
+}) => {
+  const note = { text, id, postedBy, postedDate, updatedDate, updatedBy };
+  const { setCurrentNote, deleteNote, prospect, setNotes } = useContext(
+    LeadContext
+  );
 
-  let dateDisplay = new Date(noteDate);
-  let formattedNoteDate = Intl.DateTimeFormat("en-US", {
+  const { notes } = prospect;
+
+  let dateDisplay1 = new Date(postedDate);
+  let formattedPostedDate = Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "numeric",
     day: "numeric",
-  }).format(dateDisplay);
-  const refreshPage = () => {
-    window.location.reload(false);
-  };
+  }).format(dateDisplay1);
+
+  let dateDisplay2 = new Date(postedDate);
+  let formattedUpdatedDate = Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).format(dateDisplay2);
 
   const onClick = (e) => {
+    e.preventDefault();
     deleteNote(note, prospect);
-    refreshPage(false);
-    loginRefresh(localStorage, token);
+    setNotes([]);
+    setCurrentNote({
+      text: "",
+      postedBy: "",
+      postedDate: Date.now(),
+      updatedBy: "",
+      updatedDate: Date.now(),
+      id: uuidv4(),
+    });
   };
+
+  const currentNote = note;
 
   return (
     <div className='card bg-white'>
@@ -31,11 +50,15 @@ const NoteItem = ({ note: { noteText, id, notePostedBy, noteDate } }) => {
       <button
         className='btn btn-white btn-block'
         style={{ height: "6rem", fontSize: ".7rem" }}
-        onClick={() => setNote(noteText, notePostedBy)}>
+        onClick={() => setCurrentNote(currentNote)}>
         <strong>
-          {notePostedBy ? notePostedBy : ""}
+          {updatedBy === postedBy
+            ? `Posted By : ${postedBy}`
+            : `Updated By : ${updatedBy}`}
           <br />
-          {formattedNoteDate}
+          {updatedDate === postedDate
+            ? `Posted On: ${formattedPostedDate}`
+            : `Last Updated: ${formattedUpdatedDate}`}
         </strong>
       </button>
     </div>

@@ -44,7 +44,7 @@ const RecentLeadItem = ({
     _id,
   };
   const { setRecentLead, getProspect } = useContext(LeadContext);
-  const { deleteRecentLead, recentLeads } = useContext(UserContext);
+  const { deleteRecentLead, recentLead } = useContext(UserContext);
 
   const onClick = (e) => {
     getProspect(_id);
@@ -53,25 +53,30 @@ const RecentLeadItem = ({
 
   return (
     <div
-      className='grid-2'
+      className='btn btn-light btn-sm'
       style={{
+        backgroundColor: "black",
         marginLeft: "5px",
-        width: "133px",
-        height: "25px",
-        overflow: "hidden",
+        width: "150px",
+        height: "35px",
       }}>
-      <button>
-        style={{ fontSize: ".7rem" }}
-        onClick={() => deleteRecentLead(recentLeads, match)}> X
-      </button>
-
       <Link
+        style={{
+          overflow: "hidden",
+        }}
         to={{ pathname: `/prospects/${_id}`, state: { match: true } }}
-        onClick={onClick}
-        className='btn btn-dark btn-sm'>
+        onClick={onClick}>
         {" "}
         {fullName}
       </Link>
+      <button
+        style={{
+          float: "right",
+        }}
+        onClick={() => deleteRecentLead(match._id)}>
+        {" "}
+        X
+      </button>
     </div>
   );
 };

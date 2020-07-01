@@ -1,6 +1,13 @@
-import React, { useContext, useEffect, useState, Fragment } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  Fragment,
+  useCallback,
+} from "react";
 import LeadContext from "../../context/lead/leadContext";
-
+import LexisModal from "./LexisModal";
+import FileUpload from "./FileUpload";
 const LeadForm = () => {
   const leadContext = useContext(LeadContext);
 
@@ -13,6 +20,8 @@ const LeadForm = () => {
     addLead,
     postLogics,
     current,
+
+    addLexis,
   } = leadContext;
 
   useEffect(() => {
@@ -149,8 +158,13 @@ const LeadForm = () => {
     });
   };
 
+  const toggleVisibility = useCallback(() => {
+    setModalState((prevState) => !prevState);
+  }, []);
+
+  const [showModal, setModalState] = useState(false);
+
   const onSubmit = (e) => {
-    e.preventDefault();
     addLead(prospect);
     clearAll();
   };
@@ -160,16 +174,38 @@ const LeadForm = () => {
     clearLead();
   };
 
-  const onClick = (e) => {
-    letCall(number);
+  const [file, setFile] = useState("");
+
+  const onUpload = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const onClick = async (e) => {
+    e.preventDefault();
+    addLexis(file, current);
   };
 
   return (
     <Fragment>
-      <p className='text-center'>
-        <strong className='text-danger  large'>Ship Em!</strong>
-      </p>
-
+      <div>
+        {showModal && <LexisModal toggleVisibility={toggleVisibility} />}
+      </div>
+      <div>
+        <button className='btn btn-danger' onClick={onSubmit}>
+          Ship Em
+        </button>
+        <button onClick={() => clearAll()} className='btn btn-light'>
+          Clear
+        </button>
+        <button
+          onClick={() => setModalState((prevState) => !prevState)}
+          className='btn btn-dark'>
+          {showModal ? "Close Lexis" : "Open Lexis"}
+        </button>
+        <button className='btn btn-primary' onClick={onClick}>
+          Enrich Lead
+        </button>
+      </div>
       <form onSubmit={onSubmit}>
         <div className='container grid-2'>
           <div className='card'>
@@ -312,31 +348,10 @@ const LeadForm = () => {
               checked={cpa === "nocpa"}
               onChange={onChange}
             />
-            NO CPA{" "}
+            NO CPA
+            <br />
+            <input type='file' onChange={onUpload} style={{ width: "200px" }} />
           </div>
-        </div>
-        <div className='card all-center'>
-          <textarea
-            value={noteText}
-            placeholder='notes'
-            name='noteText'
-            onChange={onChange}
-          />
-        </div>
-
-        <div>
-          <input
-            type='submit'
-            className='btn btn-danger btn-block'
-            value='Ship Em!'
-          />
-        </div>
-        <div>
-          <input
-            type='submit'
-            className='btn btn-light btn-block'
-            value='Clear'
-          />
         </div>
       </form>
     </Fragment>

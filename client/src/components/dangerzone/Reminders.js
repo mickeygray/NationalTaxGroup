@@ -5,18 +5,18 @@ import LeadContext from "../../context/lead/leadContext";
 import AuthContext from "../../context/auth/authContext";
 
 const Reminders = () => {
-  const authContext = useContext(AuthContext);
   const userContext = useContext(UserContext);
   const leadContext = useContext(LeadContext);
+  const authContext = useContext(AuthContext);
   const { lead } = leadContext;
+  const { getUser } = userContext;
   const { user } = authContext;
-  /*
-  if (user) {
-    const { reminders } = user
-    
-  }
-  */
 
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  console.log(user);
   //
   return (
     <>

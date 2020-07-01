@@ -30,7 +30,6 @@ router.post(
     const { name, email, password } = req.body;
 
     try {
-      console.log("niggers");
       let user = await User.findOne({ email });
 
       if (user) {
@@ -72,24 +71,54 @@ router.post(
     }
   }
 );
-
-router.put("/:id", auth, async (req, res) => {
-  const [reminder] = req.body;
-  const reminders = [];
-  const userFields = {};
-
-  if (reminders) userFields.reminders = reminders;
-
+router.get("/", auth, async (req, res) => {
+  console.log(req.query.q);
   try {
-    let user = await User.findById(req.params.id);
+    const regex = new RegExp(`${req.query.q}`, "gi");
+    users = await User.find({ name: regex });
+    res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
-    if (reminder) {
-      user = await User.findByIdAndUpdate(
-        req.params.id,
-        { $push: { reminders: reminder } },
-        { "new": true }
-      );
-    }
+router.get("/:_id/name", auth, async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  const { name } = user;
+  res.json(name);
+});
+
+router.get("/:_id/name", auth, async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  const { name } = user;
+  res.json(name);
+});
+
+router.get("/:_id", auth, async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  res.json(user);
+});
+
+router.put("/:id/reminders", auth, async (req, res) => {
+  console.log(req.body);
+  try {
+    const user = await User.findByIdAndUpdate(req.params._id, {
+      $push: {
+        "reminders": {
+          text: req.body.text,
+          user: req.params._id,
+          userReminded: req.body._id,
+          reminderDate: Date.now(),
+          reminderDueDate: req.body.reminderDueDate,
+          status: req.body.status,
+          daysTilDue: req.body.reminderDueDate - Date.now(),
+        },
+      },
+    });
     res.json(user);
 
     console.log(user);
