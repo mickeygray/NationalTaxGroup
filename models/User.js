@@ -29,7 +29,7 @@ const UserSchema = mongoose.Schema({
   },
   reminders: [
     {
-      user: { type: mongoose.Schema.Types.ObjectId },
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       userReminded: { type: mongoose.Schema.Types.ObjectId },
       reminderDate: { type: Date },
       reminderDueDate: { type: Date },
@@ -37,7 +37,7 @@ const UserSchema = mongoose.Schema({
       daysTilDue: { type: Number },
       id: { type: String },
       text: { type: String },
-      clientId: { type: mongoose.Schema.Types.ObjectId },
+      clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" },
     },
   ],
 });

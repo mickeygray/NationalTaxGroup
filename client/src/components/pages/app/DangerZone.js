@@ -20,7 +20,7 @@ const DangerZone = () => {
       <Fragment>
         <Navbar />
       </Fragment>
-      <div className='container'>
+      <div className='container' style={{ height: "100vh" }}>
         <h1 className='text-danger'>Danger Zone!</h1>
         <div className='grid-3'>
           <div className='sidebar' style={{ width: "15rem" }}>

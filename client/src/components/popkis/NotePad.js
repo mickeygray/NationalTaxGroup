@@ -72,7 +72,7 @@ const NotePad = ({ prospect }) => {
     <div>
       {showModal && (
         <ReminderModal
-          text={text}
+          {...note}
           {...prospect}
           toggleVisibility={toggleVisibility}
         />

@@ -63,7 +63,6 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 router.get("/", auth, async (req, res) => {
-  console.log(req.query.q);
   const regex = new RegExp(`${req.query.q}`, "gi");
   const prospects = await Prospect.find({
     $or: [
@@ -375,8 +374,6 @@ router.put("/:_id/notes", auth, async (req, res) => {
     $pull: { notes: { id: id } },
   });
 
-  console.log(prospect);
-
   prospect = await Prospect.findByIdAndUpdate(req.params._id, {
     $push: {
       notes: {
@@ -400,10 +397,9 @@ router.get("/:_id/notes", auth, async (req, res) => {
 });
 
 router.get("/:_id/fullName", auth, async (req, res) => {
-  const prospect = await Prospect.findById(req.params.id);
+  let prospect = await Prospect.findById(req.params._id);
 
-  const { fullName } = prospect;
-  res.json(fullName);
+  res.json(prospect);
 });
 
 router.delete("/:_id/notes/", auth, async (req, res) => {

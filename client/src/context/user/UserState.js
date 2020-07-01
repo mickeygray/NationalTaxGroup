@@ -31,6 +31,7 @@ const UserState = (props) => {
     recentLeads: [],
     prospect: {},
     text: "",
+    name: null,
   };
 
   const leadContext = useContext(LeadContext);
@@ -152,7 +153,7 @@ const UserState = (props) => {
     });
   };
   // Push To User Arrays (Leads, Tasks, Reminders)
-  const postReminder = async (reminder, user, prospect) => {
+  const postReminder = async (reminder) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -180,6 +181,7 @@ const UserState = (props) => {
     <UserContext.Provider
       value={{
         user: state.user,
+        name: state.name,
         users: state.users,
         tasks: state.tasks,
         reminders: state.reminders,

@@ -74,6 +74,7 @@ const LeadState = (props) => {
     claimedBy: "unclaimed",
     recentLeads: [],
     todaysLeads: [],
+    fullName: null,
   };
 
   const [state, dispatch] = useReducer(LeadReducer, initialState);
@@ -177,11 +178,14 @@ const LeadState = (props) => {
   };
 
   const getProspectName = async (clientId) => {
+    console.log(clientId);
+
     const res = await axios.get(`/api/prospects/${clientId}/fullName`);
 
+    const { fullName } = res.data;
     dispatch({
       type: GET_NAME,
-      payload: res.data,
+      payload: fullName,
     });
   };
 
@@ -610,6 +614,7 @@ const LeadState = (props) => {
       value={{
         dncArray: [],
         liens: state.liens,
+        fullName: state.fullName,
         lien: state.lien,
         lead: state.lead,
         call: state.call,

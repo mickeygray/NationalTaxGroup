@@ -8,8 +8,8 @@ const Reminders = () => {
   const userContext = useContext(UserContext);
   const leadContext = useContext(LeadContext);
   const authContext = useContext(AuthContext);
-  const { lead } = leadContext;
-  const { getUser } = userContext;
+  const { lead, getLeadName } = leadContext;
+  const { getUser, getUserName } = userContext;
   const { user } = authContext;
 
   useEffect(() => {
@@ -21,14 +21,17 @@ const Reminders = () => {
   return (
     <>
       <div style={leadStyle}>
-        <div className='bg-white' style={{ height: "5rem" }}>
+        <div
+          className='bg-white'
+          style={{ overflowY: "scroll", height: "100vh" }}>
           <h2 className='text-danger all-center'> My Reminders</h2>
+
+          {user
+            ? user.reminders.map((reminder) => (
+                <ReminderItem key={reminder.id} reminder={reminder} />
+              ))
+            : ""}
         </div>
-        {user
-          ? user.reminders.map((reminder) => (
-              <ReminderItem key={reminder.id} reminder={reminder} />
-            ))
-          : ""}
       </div>
     </>
   );

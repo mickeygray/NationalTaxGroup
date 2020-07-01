@@ -3,46 +3,53 @@ import UserContext from "../../context/user/userContext";
 import AuthContext from "../../context/auth/authContext";
 import LeadContext from "../../context/lead/leadContext";
 import UserModal from "./UserModal";
+import { v4 as uuidv4 } from "uuid";
 
 const ReminderModal = (props) => {
   const userContext = useContext(UserContext);
   const leadContext = useContext(LeadContext);
   const { user } = useContext(AuthContext);
-  const { updateUser, getUserReminded, users, setUser, reminded } = userContext;
+  const {
+    postReminder,
+    getUserReminded,
+    users,
+    setUser,
+    reminded,
+  } = userContext;
 
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState(false);
 
+  const { text } = props;
+
   const [reminder, setReminder] = useState({
-    text: props.text,
-    user: user._id,
-    userReminded: "",
+    text: text,
+    _id: user._id,
+    userReminded: {},
     reminderDate: Date.now(),
     reminderDueDate: "",
     status: "",
     daysTilDue: 0,
     clientId: props._id,
   });
-
-  useState(() => {
-    setReminder({
-      text: props.text,
-      user: user._id,
-      userReminded: "",
-      reminderDate: Date.now(),
-      reminderDueDate: "",
-      status: "",
-      daysTilDue: 0,
-      clientId: props._id,
-    });
-  }, []);
-
-  useState(() => {
+  useEffect(() => {
     if (reminded != null) {
       setReminder({
-        text: props.text,
-        user: user._id,
-        userReminded: reminded._id,
+        text: text,
+        _id: user._id,
+        userReminded: reminded,
+        reminderDate: Date.now(),
+        reminderDueDate: "",
+        status: "",
+        daysTilDue: 0,
+        clientId: props._id,
+        id: uuidv4(),
+      });
+    } else {
+      setReminder({
+        text: text,
+        _id: user._id,
+        userReminded: {},
         reminderDate: Date.now(),
         reminderDueDate: "",
         status: "",
@@ -50,7 +57,7 @@ const ReminderModal = (props) => {
         clientId: props._id,
       });
     }
-  }, [reminded, userContext]);
+  }, [reminded, text, userContext]);
 
   const onChange = (e) => {
     setReminder({ ...reminder, [e.target.name]: e.target.value });
@@ -72,7 +79,7 @@ const ReminderModal = (props) => {
   };
 
   console.log(reminder);
-  console.log(users);
+
   return (
     <>
       <div className='card container'>
@@ -121,7 +128,7 @@ const ReminderModal = (props) => {
 
           <button
             className='btn btn-block btn-primary'
-            onClick={() => updateUser}>
+            onClick={() => postReminder(reminder)}>
             Send Reminder
           </button>
         </form>

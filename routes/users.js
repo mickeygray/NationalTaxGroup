@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator");
+const moment = require("moment");
 
 const User = require("../models/User");
 
@@ -84,17 +85,11 @@ router.get("/", auth, async (req, res) => {
 });
 
 router.get("/:_id/name", auth, async (req, res) => {
-  const user = await User.findById(req.params.id);
+  console.log(req.params._id);
 
-  const { name } = user;
-  res.json(name);
-});
+  let user = await User.findById(req.params._id);
 
-router.get("/:_id/name", auth, async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  const { name } = user;
-  res.json(name);
+  res.json(user);
 });
 
 router.get("/:_id", auth, async (req, res) => {
@@ -104,24 +99,26 @@ router.get("/:_id", auth, async (req, res) => {
 });
 
 router.put("/:id/reminders", auth, async (req, res) => {
-  console.log(req.body);
+  var diff = new moment.duration(
+    Date.parse(req.body.reminderDueDate) - Date.now()
+  );
   try {
-    const user = await User.findByIdAndUpdate(req.params._id, {
+    const user = await User.findByIdAndUpdate(req.body.userReminded._id, {
       $push: {
         "reminders": {
           text: req.body.text,
-          user: req.params._id,
-          userReminded: req.body._id,
+          _id: req.body._id,
+          userReminded: req.body.userReminded._id,
           reminderDate: Date.now(),
           reminderDueDate: req.body.reminderDueDate,
           status: req.body.status,
-          daysTilDue: req.body.reminderDueDate - Date.now(),
+          daysTilDue: diff.asDays(),
+          clientId: req.body.clientId,
+          id: req.body.id,
         },
       },
     });
     res.json(user);
-
-    console.log(user);
   } catch (err) {
     console.log(err);
   }

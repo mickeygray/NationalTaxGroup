@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/user/userContext";
+import userContext from "../../context/user/userContext";
 
 const ReminderItem = ({
   reminder: {
@@ -14,11 +15,16 @@ const ReminderItem = ({
     daysTilDue,
     clientId,
     id,
+    _id,
   },
 }) => {
+  const leadContext = useContext(LeadContext);
+  const userContext = useContext(UserContext);
+  const { getProspect, getProspectName, fullName } = leadContext;
+  const { deleteReminder, getUserName, name } = userContext;
   const reminder = {
     text,
-    user,
+    _id,
     userReminded,
     reminderDate,
     reminderDueDate,
@@ -27,6 +33,22 @@ const ReminderItem = ({
     clientId,
     id,
   };
+  useEffect(() => {
+    getProspectName(clientId);
+    getUserName(_id);
+  }, []);
+
+  useEffect(() => {
+    if (name != null) {
+      setAssignedBy(name);
+    }
+  }, [name, userContext]);
+
+  useEffect(() => {
+    if (fullName != null) {
+      setFullName(fullName);
+    }
+  }, [fullName, leadContext]);
 
   useEffect(() => {
     if (daysTilDue > 6) {
@@ -45,17 +67,20 @@ const ReminderItem = ({
         color: "yellow",
       });
     }
+  }, [daysTilDue]);
+
+  const [clientName, setFullName] = useState("");
+
+  const [assignedBy, setAssignedBy] = useState({
+    date: "",
+    email: "",
+    leads: [],
+    name: "",
+    password: "",
+    prevLeads: [],
+    reminders: [],
+    tasks: [],
   });
-
-  const { getProspect, getProspectName } = useContext(LeadContext);
-  const { deleteReminder, getUserName } = useContext(UserContext);
-
-  const prospect = getProspectName(clientId);
-
-  const { fullName } = prospect;
-
-  const assignedBy = getUserName(user);
-
   let reminderDateDisplay = new Date(reminderDate);
   let formattedReminderDate = Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -82,17 +107,15 @@ const ReminderItem = ({
         onClick={() => getProspect(clientId)}
         className='btn btn-dark btn-sm'
         style={{ width: "10rem" }}>
-        {fullName}
+        {clientName ? clientName : ""}
       </Link>{" "}
       <span style={{ float: "right", height: "1rem", fontSize: ".7rem" }}>
         <button onClick={() => deleteReminder(user, reminder)}>X</button>
       </span>
-      <ul>
-        <li> Assigned By : {assignedBy}</li>
-        <li> Date Assigned: {formattedReminderDate}</li>
-        <li> Date Due: {formattedReminderDueDate}</li>
-      </ul>
-      <p>{text}</p>
+      <p>Assigned By : {assignedBy.name ? assignedBy.name : ""}</p>
+      <p>Due On : {formattedReminderDueDate}</p>
+      <p>Status : {status}</p>
+      <p>Notes: {text}</p>
     </div>
   );
 };
