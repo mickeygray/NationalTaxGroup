@@ -85,7 +85,7 @@ const FileAComplaint = () => {
                 </ul>
                 <h5>
                   The Consultation is completely free and we will review your
-                  lawsuit and tax case for free
+                  lawsuit and tax case for free. Give us a call 1-800-459-7124
                 </h5>
 
                 <Link

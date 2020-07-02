@@ -25,7 +25,7 @@ const Popkis = ({ match }) => {
 
       <div>
         <h1 className='text-danger'>Popkis!</h1>
-        <StatusBox prospect={prospect} />
+
         <div className='grid-6'>
           <div className='grid-popkis'>
             <div>

@@ -184,9 +184,9 @@ router.post("/", async (req, res) => {
     if (err) throw err;
     console.log("thefilehasbeensaved");
   });
-
+  /*
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: "smtp.sendgrid.net",
     port: 465,
     secure: true,
     auth: {
@@ -194,6 +194,18 @@ router.post("/", async (req, res) => {
       user: "lienunit@nattaxgroup.com",
       serviceClient: key.client_id,
       privateKey: key.private_key,
+    },
+  });
+  */
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.sendgrid.net",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "apikey",
+      pass:
+        "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",
     },
   });
 

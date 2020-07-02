@@ -50,7 +50,9 @@ const PlanCards = () => {
 
           <h5>Starting at $499.00/month</h5>
           <br />
-          <a href='#contact' className='btn btn-sm btn-success all-center'>
+          <a
+            href='tel:+18004597124'
+            className='btn btn-sm btn-success all-center'>
             Expert Tax Relief
           </a>
         </div>
@@ -96,7 +98,9 @@ const PlanCards = () => {
           </h5>
           <h5>Starting at $5000.00</h5>
           <br />
-          <a href='#contact' className='btn btn-sm btn-success all-center'>
+          <a
+            href='tel:+18004597124'
+            className='btn btn-sm btn-success all-center'>
             Expert Tax Help
           </a>
           <br />
@@ -143,7 +147,9 @@ const PlanCards = () => {
           </h5>
           <h5>Must have a 600 credit score</h5>
           <br />
-          <a href='#contact' className='btn btn-sm btn-success all-center'>
+          <a
+            href='tel:+18004597124'
+            className='btn btn-sm btn-success all-center'>
             Qualify for a Loan
           </a>
           <br />

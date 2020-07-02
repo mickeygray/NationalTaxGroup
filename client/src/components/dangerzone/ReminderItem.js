@@ -100,6 +100,8 @@ const ReminderItem = ({
     color: "white",
   });
 
+  console.log(assignedBy);
+
   return (
     <div className='card' style={colorStyle}>
       <Link
@@ -110,7 +112,9 @@ const ReminderItem = ({
         {clientName ? clientName : ""}
       </Link>{" "}
       <span style={{ float: "right", height: "1rem", fontSize: ".7rem" }}>
-        <button onClick={() => deleteReminder(user, reminder)}>X</button>
+        <button onClick={() => deleteReminder(userReminded, reminder)}>
+          X
+        </button>
       </span>
       <p>Assigned By : {assignedBy.name ? assignedBy.name : ""}</p>
       <p>Due On : {formattedReminderDueDate}</p>

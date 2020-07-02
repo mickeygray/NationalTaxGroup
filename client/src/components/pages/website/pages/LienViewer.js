@@ -373,8 +373,9 @@ const LienViewer = () => {
             have received correspondance from a third party reguarding that
             debt, please take a moment and contact your home state at one of
             these links. If you need help reaching out to the state due to high
-            call volume or for any other reason. Contact our office and we will
-            help you walk through process of paying your taxes back.
+            call volume or for any other reason. Contact our office at
+            1=800=459=7124 and we will help you walk through process of paying
+            your taxes back.
           </h3>
           <div style={userStyle}>
             {states.map((state) => (

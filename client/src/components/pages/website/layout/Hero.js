@@ -36,7 +36,7 @@ const Hero = () => {
             </p>
             <br />
             <a
-              href='tel:+180000000'
+              href='tel:+18004597124'
               className='btn btn-primary all-center'
               style={{ borderRadius: "5px", width: "200px" }}>
               I need help

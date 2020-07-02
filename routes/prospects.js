@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Call = require("../models/Call.js");
 const Prospect = require("../models/Prospect.js");
-const Client = require("../models/Client.js");
 const axios = require("axios");
 const uuidv4 = require("uuid/v4");
 router.post("/calls", auth, async (req, res, next) => {

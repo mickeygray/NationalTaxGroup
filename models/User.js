@@ -21,12 +21,12 @@ const UserSchema = mongoose.Schema({
   prevLeads: {
     type: Array,
   },
-  leads: {
-    type: Array,
-  },
-  tasks: {
-    type: Array,
-  },
+  recentProspects: [
+    { _id: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" } },
+  ],
+  role: { type: String },
+  resoCred1: { type: String },
+  resoCred2: { type: String },
   reminders: [
     {
       _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

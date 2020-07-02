@@ -93,27 +93,6 @@ const UserState = (props) => {
     });
   };
 
-  const deleteReminder = async (user, reminder, reminders) => {
-    const { _id } = user;
-    const { id } = reminder;
-
-    const config = {
-      params: {
-        _id: _id,
-      },
-      data: {
-        id: id,
-      },
-    };
-
-    await axios.delete(`/api/users/${_id}`, config);
-
-    dispatch({
-      type: DELETE_REMINDER,
-      payload: user,
-    });
-  };
-
   // prevLeads
 
   const setRecent = (match) => {
@@ -144,6 +123,18 @@ const UserState = (props) => {
       payload: recentLeads,
     });
     console.log(recentLeads);
+  };
+
+  const deleteReminder = async (userReminded, reminder) => {
+    console.log(reminder);
+    const { id } = reminder;
+
+    await axios.delete(`/api/users/${userReminded}/reminders?q=${id}`);
+
+    dispatch({
+      type: DELETE_REMINDER,
+      payload: id,
+    });
   };
 
   const deleteRecentLead = (_id) => {

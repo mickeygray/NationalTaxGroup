@@ -65,9 +65,43 @@ const ProspectSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  closerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  caseWorkers: {
+    originator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    loanProcessors: [
+      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
+    ],
+    documentProcessors: [
+      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
+    ],
+    upsells: [{ _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } }],
+    primaryReso: [
+      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
+    ],
+    secondaryReso: [
+      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
+    ],
+  },
+  resoStatus: {
+    federalFile: { type: String },
+    stateFile: { type: String },
+    hardship: { type: String },
+    payment: { type: String },
+    offer: { type: String },
+    corp: { type: String },
+  },
+  paymentId: {
     type: String,
+  },
+  paymentStatus: {
+    quote: { type: Number },
+    gross: { type: Number },
+    initial: { type: Number },
+    total: { type: Number },
+    loans: { type: String },
   },
   status: {
     type: String,
@@ -182,6 +216,9 @@ const ProspectSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  age: {
+    type: Number,
+  },
   income2Value: {
     type: String,
     default: "",
@@ -223,6 +260,21 @@ const ProspectSchema = mongoose.Schema({
   },
   pdfs: {
     type: Array,
+  },
+  real: {
+    address: { type: String },
+    county: { type: String },
+    sellerName: { type: String },
+    parcelNumber: { type: String },
+    loanAmout: { type: String },
+  },
+  family: { type: Array },
+  bankruptcy: {
+    type: { type: String },
+    caseNumber: { type: String },
+    date: { type: String },
+    filingType: { type: String },
+    court: { type: String },
   },
 });
 

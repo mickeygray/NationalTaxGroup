@@ -51,7 +51,7 @@ export default (state, action) => {
       return {
         ...state,
         reminders: state.reminders.filter(
-          (reminder) => reminder._id !== action.payload
+          (reminder) => reminder.id !== action.payload
         ),
       };
     case DELETE_RECENTLEAD:

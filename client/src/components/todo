@@ -1,9 +1,51 @@
-implement front end for lead enrichment in popkis and as stand alone 
-assign and track campaign phone numbers in callrail
-transform lead before shipem conversion
-JSONTOCSV!!!!!
-string methods for bankruptcy, property
-parse mail invoice
-write report functions 
-put requests 
-reminders
+Popkis:  StatusBox wiring, Deal Closing interface (modal in popkis to list in on another sheet that has access to the national processing api / loan portal)
+
+Stacks: Design and implement jsonto csv  here search prospects in one part, search clients in another part, array of leads created in shipem in another. 
+
+Dangerzone populate last 10 prospects created on my leads allow search for specific leads call tick refinement
+
+Eyore: List and campaign console rework list filter to include smtp routes get and process reports from sendgrid amazon and google 
+
+the big guns: make the infinite lead machine, turn reports into csv, do report math, parse invoices, pop in tableau frame.  
+
+Ship Em: Lead enrichment put request 
+
+Email address cleaning Regex
+
+Pdf population and generatation
+
+dropbox api, ths api,fine tune callrail api for eyore 
+
+route email service to all aspects of the application. 
+
+on registration page make place for roll and credentials 
+
+copy about 501-c3 advantages 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const transporter = nodemailer.createTransport({
+    host: "email-smtp.us-west-2.amazonaws.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "AKIAR5SSN3BFSGQEGYWG",
+      pass: "BLwzfKIh/KRGwqwZofltXC5jgkMrpGW1M8ZGuQlgM6w/",
+    },
+  });

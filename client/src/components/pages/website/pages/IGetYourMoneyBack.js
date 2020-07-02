@@ -23,14 +23,17 @@ const IGetYourMoneyBack = () => {
           </ul>
         </div>
         <div className='text-danger text-center'>
-          What do all these companies have in common? They all normally require
-          You – the consumer – to pay for services up front - with nothing more
-          Than a promise to deliver to you measurable value. But what happens
-          when Those companies don’t deliver on their promises? Where does that
-          leave You the customer? That’s where igetmoneyback springs into
-          action! It’s No secret there are a lot of bad apples out there. Once
-          we determine You’ve been ripped off, we fight for your rights by
-          utilizing every tool At our disposal.
+          <h5>1-800-459-7124</h5>
+          <p>
+            What do all these companies have in common? They all normally
+            require You – the consumer – to pay for services up front - with
+            nothing more Than a promise to deliver to you measurable value. But
+            what happens when Those companies don’t deliver on their promises?
+            Where does that leave You the customer? That’s where igetmoneyback
+            springs into action! It’s No secret there are a lot of bad apples
+            out there. Once we determine You’ve been ripped off, we fight for
+            your rights by utilizing every tool At our disposal.
+          </p>
         </div>
       </div>
 

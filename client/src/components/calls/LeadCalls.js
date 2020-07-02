@@ -5,9 +5,9 @@ import LeadContext from "../../context/lead/leadContext";
 
 const LeadCalls = () => {
   const callContext = useContext(CallContext);
-  const { lead } = useContext(LeadContext);
+  const { prospect } = useContext(LeadContext);
   const { leadCalls, setNumber } = callContext;
-  const { phone, phone2, phone3 } = lead;
+  const { phone, phone2, phone3 } = prospect;
 
   return (
     <>

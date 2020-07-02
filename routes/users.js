@@ -129,16 +129,13 @@ router.put("/:id/reminders", auth, async (req, res) => {
 // @route     DELETE api/contacts/:id
 // @desc      Delete contact
 // @access    Private
-router.delete("/:id", auth, async (req, res) => {
-  const user = req.params._id;
-  const reminderId = req.body.id;
-
+router.delete("/:id/reminders", auth, async (req, res) => {
   try {
-    await User.findOneAndUpdate(
-      { user: user, "reminders.id": reminderId },
-      { $pull: { "reminders": { "id": reminderId } } }
-    );
+    await User.findByIdAndUpdate(req.params.id, {
+      $pull: { "reminders": { "id": req.query.q } },
+    });
 
+    console.log(user);
     res.json(user);
   } catch (err) {
     console.error(err.message);

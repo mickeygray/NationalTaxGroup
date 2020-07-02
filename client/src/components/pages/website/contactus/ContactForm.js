@@ -52,6 +52,7 @@ const ContactForm = () => {
     <Fragment>
       <div className='container all center'>
         <form className='card bg-primary' style={{ width: "30rem" }}>
+          <h5>1-800-459-7124</h5>
           <h5>
             <span className='lead text-danger'>A</span>sk us anything or just
             leave your name and number..
