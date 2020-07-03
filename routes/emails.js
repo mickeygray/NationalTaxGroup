@@ -20,7 +20,16 @@ const key = require("../config/key.json");
 router.post("/campaign");
 
 router.post("/templates", async (req, res) => {
-  const { title, reactString, html, text, subject, from, key } = req.body;
+  const {
+    title,
+    reactString,
+    html,
+    text,
+    subject,
+    from,
+    key,
+    trackingNumber,
+  } = req.body;
 
   const newEmail = new Email({
     title,
@@ -29,6 +38,7 @@ router.post("/templates", async (req, res) => {
     text,
     subject,
     from,
+    trackingNumber,
     key,
   });
 
@@ -38,8 +48,20 @@ router.post("/templates", async (req, res) => {
 });
 
 router.post("/campaigns", async (req, res) => {
-  const { title, html, text, subject, from, list, campaignName } = req.body;
+  const {
+    title,
+    html,
+    text,
+    subject,
+    from,
+    list,
+    trackingNumber,
+    campaignName,
+  } = req.body;
 
+  const trackingNumbers = [];
+
+  trackingNumbers.push(trackingNumber);
   const newCampaign = new Campaign({
     title,
     html,
@@ -48,6 +70,7 @@ router.post("/campaigns", async (req, res) => {
     from,
     list,
     campaignName,
+    trackingNumbers,
   });
 
   const campaign = await newCampaign.save();
@@ -110,7 +133,7 @@ router.put("/campaigns/:id", auth, async (req, res) => {
 });
 
 router.put("/template/:id", auth, async (req, res) => {
-  const { title, html, text, subject, from } = req.body;
+  const { title, html, text, subject, from, trackingNumber } = req.body;
 
   const campaignFields = {};
 
@@ -119,6 +142,7 @@ router.put("/template/:id", auth, async (req, res) => {
   if (text) campaignFields.text = text;
   if (subject) campaignFields.title = title;
   if (from) campaignFields.title = title;
+  if (trackingNumber) campaignFields.trackingNumber = trackingNumber;
 
   const email = await Email.findByIdAndUpdate(
     req.params.id,
@@ -186,17 +210,15 @@ router.post("/", async (req, res) => {
   });
   /*
   const transporter = nodemailer.createTransport({
-    host: "smtp.sendgrid.net",
+    host: "email-smtp.us-west-2.amazonaws.com",
     port: 465,
     secure: true,
     auth: {
-      type: "OAuth2",
-      user: "lienunit@nattaxgroup.com",
-      serviceClient: key.client_id,
-      privateKey: key.private_key,
+      user: "AKIAR5SSN3BFSGQEGYWG",
+      pass: "BLwzfKIh/KRGwqwZofltXC5jgkMrpGW1M8ZGuQlgM6w/",
     },
   });
-  */
+*/
 
   const transporter = nodemailer.createTransport({
     host: "smtp.sendgrid.net",
@@ -209,6 +231,19 @@ router.post("/", async (req, res) => {
     },
   });
 
+  /*
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      type: "OAuth2",
+      user: "lienunit@nattaxgroup.com",
+      serviceClient: key.client_id,
+      privateKey: key.private_key,
+    },
+  });
+*/
   const options = {
     viewEngine: {
       extName: ".hbs",
@@ -231,12 +266,13 @@ router.post("/", async (req, res) => {
       if (lead != null) {
         const mailer = {
           title: letter.title,
-          from: letter.from,
+          from: "stevebigge@nattaxgroup.com",
           to: lead.emailAddress,
           subject: letter.subject,
           template: "template",
           context: {
             lead: lead,
+            letter: letter,
           },
         };
         transporter.sendMail(mailer);
@@ -244,7 +280,7 @@ router.post("/", async (req, res) => {
         SetInterval.clear("cleared");
       }
     },
-    1000,
+    100,
     "cleared"
   );
 });

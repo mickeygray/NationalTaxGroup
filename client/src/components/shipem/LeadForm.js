@@ -73,7 +73,6 @@ const LeadForm = () => {
     filingStatus: "married",
     cpa: "cpa",
     ssn: "",
-    noteText: "",
   });
 
   const onChange = (e) => {
@@ -110,7 +109,7 @@ const LeadForm = () => {
     pinCode,
   } = record;
   const { phone } = call;
-  const { compliant, filingStatus, cpa, ssn, noteText } = open;
+  const { compliant, filingStatus, cpa, ssn } = open;
 
   const prospect = {
     phone,
@@ -128,7 +127,6 @@ const LeadForm = () => {
     filingStatus,
     cpa,
     ssn,
-    noteText,
   };
   console.log(prospect);
   const clearLead = () => {
@@ -153,7 +151,6 @@ const LeadForm = () => {
       compliant: "filed",
       filingStatus: "m",
       cpa: "cpa",
-      noteText: "",
       ssn: "",
     });
   };

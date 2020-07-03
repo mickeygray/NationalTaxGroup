@@ -5,6 +5,11 @@ import {
   GET_REPORT,
   MAKE_CSV,
   SEND_REPORT,
+  GET_FILTER,
+  GET_CAMPAIGN,
+  GET_IDARRAY,
+  GET_CURRENTEMAIL,
+  GET_LISTLENGTH,
 } from "../types";
 
 export default (state, action) => {
@@ -13,6 +18,31 @@ export default (state, action) => {
       return {
         ...state,
         report: action.payload,
+      };
+    case GET_FILTER:
+      return {
+        ...state,
+        query: action.payload,
+      };
+    case GET_CAMPAIGN:
+      return {
+        ...state,
+        currentCampaign: action.payload,
+      };
+    case GET_CURRENTEMAIL:
+      return {
+        ...state,
+        currentEmail: action.payload,
+      };
+    case GET_IDARRAY:
+      return {
+        ...state,
+        idArray: action.payload,
+      };
+    case GET_LISTLENGTH:
+      return {
+        ...state,
+        listLength: action.payload,
       };
     case UPDATE_REPORTS:
       return {

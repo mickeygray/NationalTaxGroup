@@ -6,17 +6,19 @@ import React, {
   useCallback,
 } from "react";
 import EmailContext from "../../../context/email/emailContext";
+import StatContext from "../../../context/stat/statContext";
 import Modal from "../emails/Modal";
 
 const CampaignItem = ({ campaign }) => {
   const emailContext = useContext(EmailContext);
-
+  const statContext = useContext(StatContext);
   const [showEmail, setEmailState] = useState(false);
 
   const toggleVisibility = useCallback(() => {
     setEmailState((prevState) => !prevState);
   }, []);
 
+  const { getCurrentCampaign } = statContext;
   const { setCampaign, deleteCampaign } = emailContext;
 
   const { campaignName, _id } = campaign;
@@ -37,6 +39,7 @@ const CampaignItem = ({ campaign }) => {
 
   const onClick = (e) => {
     setCampaign(campaign);
+    getCurrentCampaign(campaign);
   };
 
   const [modalStyle, setModalStyle] = useState({

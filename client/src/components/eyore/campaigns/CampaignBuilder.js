@@ -30,6 +30,7 @@ const CampaignBuilder = () => {
     text: "",
     subject: "",
     from: "",
+    trackingNumber: "",
   });
 
   const [list, setList] = useState({
@@ -50,7 +51,14 @@ const CampaignBuilder = () => {
 
   const clearAll = () => {
     setList([]);
-    setLetter({ title: "", html: "", text: "", subject: "", from: "" });
+    setLetter({
+      title: "",
+      html: "",
+      text: "",
+      subject: "",
+      from: "",
+      trackingNumber: "",
+    });
   };
   console.log(campaign);
 

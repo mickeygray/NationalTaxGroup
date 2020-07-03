@@ -20,6 +20,7 @@ const CampaignModal = (props) => {
     subject: email.subject,
     text: email.text,
     from: email.from,
+    startDate: Date.now(),
   });
 
   const { campaignName } = campaign;

@@ -7,26 +7,31 @@ const reportSchema = new Schema({
   calls: [
     {
       callid: { type: mongoose.Schema.Types.ObjectId, ref: "Call" },
-      clientNumber: { type: String },
+      phone: { type: String },
       trackingNumber: { type: String },
     },
   ],
+  listName: { type: String },
+  listLength: { type: Number },
+  date: { type: Date },
+  ids: [{ _id: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" } }],
   prospects: [
     {
-      prospectId: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" },
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" },
       lienid: { type: String },
       quote: { type: Number },
-      closerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      claimedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     },
   ],
   clients: [
     {
-      clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
+      clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" },
       lienid: { type: String },
       gross: { type: Number },
       initial: { type: Number },
       total: { type: Number },
-      closerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      originator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      upsell: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     },
   ],
   maths: {

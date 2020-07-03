@@ -1,7 +1,15 @@
 import React from "react";
-
-const CampaignCalls = () => {
-  return <div>map campaign calls</div>;
+import CampaignCallItem from "./CampaignCallItem";
+const CampaignCalls = (props) => {
+  console.log(props);
+  return (
+    <div>
+      <h3>Campaign Calls</h3>
+      {props.campaignCallState.map((call) => (
+        <CampaignCallItem key={call.id} call={call} />
+      ))}
+    </div>
+  );
 };
 
 export default CampaignCalls;

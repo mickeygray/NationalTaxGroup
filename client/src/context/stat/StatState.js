@@ -8,13 +8,22 @@ import {
   DELETE_REPORT,
   GET_REPORT,
   MAKE_CSV,
-  SEND_REPORT,
+  GET_FILTER,
+  GET_CAMPAIGN,
+  GET_CURRENTEMAIL,
+  GET_LISTLENGTH,
+  GET_IDARRAY,
 } from "../types";
 
 const StatState = (props) => {
   const initialState = {
     report: {},
     reports: [],
+    listLength: null,
+    filterSelected: null,
+    idArray: null,
+    currentCampaign: null,
+    currentEmail: null,
   };
 
   const [state, dispatch] = useReducer(StatReducer, initialState);
@@ -97,12 +106,50 @@ const StatState = (props) => {
     });
   };
 
+  const getFilterSelected = (query) => {
+    console.log(query);
+    dispatch({
+      type: GET_FILTER,
+      payload: query,
+    });
+  };
+
+  const getCurrentCampaign = (campaign) => {
+    const currentCampaign = campaign;
+    dispatch({
+      type: GET_CAMPAIGN,
+      payload: currentCampaign,
+    });
+  };
+
+  const getCurrentEmail = (email) => {
+    const currentEmail = email;
+    console.log(currentEmail);
+    dispatch({
+      type: GET_CURRENTEMAIL,
+      payload: currentEmail,
+    });
+  };
+
   //export csv
 
-  const sendReport = (res) => {
+  const getListLength = (mailList) => {
+    const listLength = mailList.length;
+
+    console.log(listLength);
     dispatch({
-      type: SEND_REPORT,
-      payload: res.data,
+      type: GET_LISTLENGTH,
+      payload: listLength,
+    });
+  };
+
+  const getIdArray = (mailList) => {
+    let idArray = [];
+    mailList.forEach((lead) => idArray.push(lead._id));
+    console.log(idArray);
+    dispatch({
+      type: GET_IDARRAY,
+      payload: idArray,
     });
   };
 
@@ -111,11 +158,21 @@ const StatState = (props) => {
       value={{
         report: state.report,
         reports: state.reports,
+        listLength: state.listLength,
+        filterSelected: state.filterSelected,
+        currentCampaign: state.currentCampaign,
+        currentEmail: state.currentEmail,
+        idArray: state.idArray,
+        getListLength,
+        getFilterSelected,
+        getCurrentCampaign,
+        getCurrentEmail,
         makeReport,
+        getIdArray,
         updateReports,
         getReport,
         makeCSV,
-        sendReport,
+
         deleteReport,
       }}>
       {props.children}

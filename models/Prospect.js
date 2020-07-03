@@ -49,7 +49,7 @@ const ProspectSchema = mongoose.Schema({
   notes: {
     type: [
       {
-        id: { type: String, unique: true },
+        id: { type: String },
         text: { type: String },
         postedBy: { type: String },
         postedDate: { type: Date },
@@ -65,7 +65,7 @@ const ProspectSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  createdBy: {
+  claimedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },

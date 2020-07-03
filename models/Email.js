@@ -8,6 +8,7 @@ const emailSchema = new Schema({
   text: String,
   subject: String,
   from: String,
+  trackingNumber: String,
   clicks: { type: Number, default: 0 },
   unsubscribes: { type: Number, default: 0 },
   key: String,

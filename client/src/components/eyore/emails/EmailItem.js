@@ -7,8 +7,10 @@ import React, {
 } from "react";
 import EmailContext from "../../../context/email/emailContext";
 import Modal from "./Modal";
+import StatContext from "../../../context/stat/statContext";
 
 const EmailItem = ({ email }) => {
+  const statContext = useContext(StatContext);
   const emailContext = useContext(EmailContext);
   const [showEmail, setEmailState] = useState(false);
 
@@ -17,11 +19,12 @@ const EmailItem = ({ email }) => {
   }, []);
 
   const { setTemplate, deleteTemplate } = emailContext;
-
+  const { getCurrentEmail } = statContext;
   const { title, subject, _id } = email;
 
   const onClick = (e) => {
     setTemplate(email);
+    getCurrentEmail(email);
   };
 
   useEffect(() => {

@@ -100,7 +100,7 @@
                                                                                             INCOME TAX SETTLEMENT
                                                                                             OFFER<br />
                                                                                             <span
-                                                                                                style="font-size: 1.5rem;">1-800-381-3729</span><br />
+                                                                                                style="font-size: 1.5rem;">{{letter.trackingNumber}}</span><br />
                                                                                             Se Habla Espanol<br />
                                                                                         </p>
                                                                                     </td>
@@ -123,7 +123,7 @@
                                                                                     <td style="
                                                                               display: inline-block;
                                                                               text-align: center;
-                                                                              font-size: 1.1rem;ccccc
+                                                                              font-size: 1.1rem;
                                                                               font-weight: 900;
                                                                               border: 1px solid #000000;
                                                                               padding-left: 10px;
@@ -201,7 +201,7 @@
                                                                                 <br />
                                                                                 On average we save 93% or better and
                                                                                 many pay nothing at all. Call
-                                                                                1-800-305-4962 to hear abou your options
+                                                                            {{letter.trackingNumber}} to hear abou your options
                                                                                 and get the help you need to resolve
                                                                                 your tax problem once and for all.
                                                                         </p>
@@ -325,7 +325,7 @@
                                                                                         align="center">
                                                                                         <h1
                                                                                             style="line-height: 150%; color: #24578e; font-size: 18px; font-family: lora, georgia, times new roman, serif;">
-                                                                                            ${{lead.amount}}
+                                                                                            {{lead.amount}}
                                                                                         </h1>
                                                                                     </td>
                                                                                 </tr>
@@ -363,7 +363,7 @@
                                                                                         align="center">
                                                                                         <h1
                                                                                             style="line-height: 150%; color: #24578e; font-size: 18px; font-family: lora, georgia, times new roman, serif;">
-                                                                                            ${{lead.nineAmount}}
+                                                                                            {{lead.nineAmount}}
                                                                                         </h1>
                                                                                     </td>
                                                                                 </tr>
@@ -401,7 +401,7 @@
                                                                                         align="center">
                                                                                         <h1
                                                                                             style="line-height: 150%; color: #24578e; font-size: 18px; font-family: lora, georgia, times new roman, serif;">
-                                                                                            ${{lead.fiveAmount}}
+                                                                                            {{lead.fiveAmount}}
                                                                                         </h1>
                                                                                     </td>
                                                                                 </tr>
@@ -465,7 +465,7 @@
                                                                                 <tr>
                                                                                     <td>
                                                                                         <p style="text-align: center;">
-                                                                                            <a href="tel:+18003813729"
+                                                                                            <a href="tel:+{{letter.trackingNumber}}"
                                                                                                 target="_blank"
                                                                                                 rel="noopener noreferrer"
                                                                                                 data-auth="NotApplicable"

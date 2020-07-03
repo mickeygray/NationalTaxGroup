@@ -8,6 +8,8 @@ import ListStats from "../../eyore/lists/ListStats";
 import CampaignBuilder from "../../eyore/campaigns/CampaignBuilder";
 import CampaignEditor from "../../eyore/campaigns/CampaignEditor";
 import Campaigns from "../../eyore/campaigns/Campaigns";
+import CampaignCalls from "../../calls/CampaignCalls";
+import CampaignPreviewer from "../../eyore/campaigns/CampaignPreviewer";
 
 const Eyore = () => {
   return (
@@ -28,7 +30,7 @@ const Eyore = () => {
               <ListFilter />
             </div>
             <div>
-              <ListStats />
+              <CampaignPreviewer />
             </div>
           </div>
 

@@ -42,6 +42,7 @@ const EmailCreator = () => {
     pinCode: "{{lead.pinCode}}",
     fiveAmount: "{{lead.fiveAmount}}",
     nineAmount: "{{lead.nineAmount}}",
+    trackingNumber: "{{letter.trackingNumber}}",
   };
 
   const paragraphStyle = {
@@ -121,6 +122,7 @@ const EmailCreator = () => {
       subject: "",
       from: "",
       key: keyVal,
+      trackingNumber: "",
     });
   }, []);
 
@@ -138,6 +140,7 @@ const EmailCreator = () => {
     reactstring: "",
     key: keyVal,
     html: "",
+    trackingNumber: "",
   });
 
   const onChange = (e) => {
@@ -153,6 +156,7 @@ const EmailCreator = () => {
       reactstring: "",
       key: keyVal,
       html: "",
+      trackingNumber: "",
     });
     setTemplate(null);
   };
@@ -167,7 +171,15 @@ const EmailCreator = () => {
     }
   };
 
-  const { title, text, subject, from, reactstring, html } = letter;
+  const {
+    title,
+    text,
+    subject,
+    from,
+    reactstring,
+    html,
+    trackingNumber,
+  } = letter;
 
   return (
     <div>
@@ -246,6 +258,14 @@ const EmailCreator = () => {
                   placeholder='html'
                   type='text'
                   name='html'
+                  onChange={onChange}
+                />
+
+                <input
+                  value={trackingNumber}
+                  placeholder='Tracking Number'
+                  type='text'
+                  name='trackingNumber'
                   onChange={onChange}
                 />
               </form>

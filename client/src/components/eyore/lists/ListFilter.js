@@ -1,11 +1,11 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useState, useContext, Fragment, useEffect } from "react";
 import LeadContext from "../../../context/lead/leadContext";
-
+import StatContext from "../../../context/stat/statContext";
 const ListFilter = () => {
   const leadContext = useContext(LeadContext);
-
+  const statContext = useContext(StatContext);
   const { parseDb, mailList, deleteLeads } = leadContext;
-
+  const { getFilterSelected, getListLength, getIdArray } = statContext;
   const onSubmit = (e) => {
     deleteLeads(mailList);
   };
@@ -18,7 +18,15 @@ const ListFilter = () => {
 
   const onClick = (e) => {
     parseDb(query);
+    getFilterSelected(query);
   };
+
+  useEffect(() => {
+    if (mailList != null) {
+      getListLength(mailList);
+      getIdArray(mailList);
+    }
+  }, [mailList]);
 
   return (
     <Fragment>

@@ -35,6 +35,7 @@ const TakeMeOffTheList = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(lead);
     makeDNC(lead);
     clearLead();
   };

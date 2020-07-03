@@ -8,7 +8,8 @@ import {
   FILTER_CALLS,
   CLEAR_FILTER,
   GET_LEADCALLS,
-  GET_NUMBS,
+  GET_EMAILCALLS,
+  GET_CAMPAIGNCALLS,
 } from "../types";
 
 let callRailKey;
@@ -26,6 +27,9 @@ const CallState = (props) => {
     filtered: null,
     thing: null,
     leadCalls: [],
+    currentCalls: null,
+    emailCalls: null,
+    campaignCalls: null,
   };
 
   const [state, dispatch] = useReducer(CallReducer, initialState);
@@ -106,15 +110,63 @@ const CallState = (props) => {
     dispatch({ type: CLEAR_FILTER });
   };
 
+  const getEmailCalls = async (currentEmail) => {
+    const config = {
+      headers: {
+        "Authorization": `Token token=6c0dbe4e525e0bff243007882b40eb2b`,
+      },
+    };
+
+    const { trackingNumber } = currentEmail;
+    const res = await axios.get(
+      `https://api.callrail.com/v3/a/423787543/calls.json?search=${trackingNumber}&&fields=formatted_duration,recording_player,total_calls,formatted_customer_phone_number,created_at,id`,
+      config
+    );
+
+    dispatch({
+      type: GET_EMAILCALLS,
+      payload: res.data.calls,
+    });
+  };
+
+  const getCampaignCalls = async (currentCampaign) => {
+    const config = {
+      headers: {
+        "Authorization": `Token token=6c0dbe4e525e0bff243007882b40eb2b`,
+      },
+    };
+
+    const { trackingNumbers } = currentCampaign;
+
+    console.log(trackingNumbers);
+    const numbers = trackingNumbers.toString();
+    const res = await axios.get(
+      `https://api.callrail.com/v3/a/423787543/calls.json?search=${numbers}&&fields=formatted_duration,recording_player,total_calls,formatted_customer_phone_number,created_at,id`,
+      config
+    );
+
+    dispatch({
+      type: GET_CAMPAIGNCALLS,
+      payload: res.data.calls,
+    });
+  };
+
   return (
     <CallContext.Provider
       value={{
         calls: state.calls,
         call: state.call,
         filtered: state.filtered,
+        thing: state.thing,
         leadCalls: state.leadCalls,
+
+        emailCalls: state.emailCalls,
+        campaignCalls: state.campaignCalls,
         getCalls,
         sendCall,
+        getCampaignCalls,
+
+        getEmailCalls,
         filterCalls,
         clearFilter,
         getLeadCalls,

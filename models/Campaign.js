@@ -8,7 +8,9 @@ const campaignSchema = new Schema({
   subject: String,
   from: String,
   campaignName: String,
+  startDate: Date,
   list: [],
+  trackingNumbers: [],
 });
 
 module.exports = mongoose.model("campaign", campaignSchema);

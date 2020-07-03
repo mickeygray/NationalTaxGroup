@@ -1,5 +1,9 @@
 import {
   GET_CALLS,
+  SET_EMAILCALLS,
+  SET_CAMPAIGNCALLS,
+  GET_EMAILCALLS,
+  GET_CAMPAIGNCALLS,
   SEND_CALL,
   FILTER_CALLS,
   CLEAR_FILTER,
@@ -14,6 +18,18 @@ export default (state, action) => {
         ...state,
         calls: action.payload,
       };
+
+    case GET_CAMPAIGNCALLS:
+      return {
+        ...state,
+        campaignCalls: action.payload,
+      };
+    case GET_EMAILCALLS:
+      return {
+        ...state,
+        emailCalls: action.payload,
+      };
+
     case GET_LEADCALLS:
       return {
         ...state,

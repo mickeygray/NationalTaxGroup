@@ -250,10 +250,10 @@ router.delete("/", auth, async (req, res) => {
     });
 });
 
-router.put("/:id/dnc", auth, async (req, res) => {
+router.put("/:id/dnc", async (req, res) => {
   console.log(req.body);
 
-  const { name, address, pinCode, email } = req.body;
+  const { name, address, pinCode, emailAddress } = req.body;
   try {
     if (pinCode != null) {
       const lead = await Lead.findOneAndUpdate(
