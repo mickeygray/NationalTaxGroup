@@ -3,8 +3,32 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Call = require("../models/Call.js");
 const Prospect = require("../models/Prospect.js");
+const CaseWorker = require("../models/CaseWorker");
+const PaymentMethod = require("../models/PaymentMethod");
 const axios = require("axios");
 const uuidv4 = require("uuid/v4");
+
+router.get("/status", auth, async (req, res) => {
+  const statusa = Object.values(req.query.q)
+    .toString()
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "");
+
+  const prospects = await Prospect.find({ "status": statusa });
+
+  console.log(prospects);
+  res.json(prospects);
+
+  //const prospects = await Prospect.find(query);
+  //res.json(prospects);
+});
+
 router.post("/calls", auth, async (req, res, next) => {
   const {
     answered,
@@ -54,6 +78,38 @@ router.get("/calls", auth, async (req, res, next) => {
   res.json(call);
 });
 
+router.get("/payments/search/", auth, async (req, res) => {
+  console.log(req.query.q);
+
+  const prospects = await Prospect.find().sort({
+    "paymentSchedule.paymentDate": -1,
+  });
+
+  var payments = [];
+  function getPayments(prospects) {
+    for (var i = 0; i < prospects.length; i++) {
+      payments.push(prospects[i].paymentSchedule);
+    }
+    return payments;
+  }
+
+  getPayments(prospects);
+
+  let merged = [].concat.apply([], payments);
+
+  var filtered = merged.filter(function (el) {
+    return el != null;
+  });
+
+  let paymentArray = [];
+  for (var i = 0; i < filtered.length; i++) {
+    if (filtered[i].paymentAmount != null) {
+      paymentArray.push(filtered[i]);
+    }
+  }
+
+  res.json(paymentArray);
+});
 router.get("/:id", auth, async (req, res) => {
   // console.log(req);
   const prospect = await Prospect.findById(req.params.id);
@@ -85,16 +141,16 @@ router.post("/", auth, async (req, res) => {
     state,
     zip4,
     plaintiff,
-    taxAmount,
+    amount,
     lienid,
-    email,
+    emailAddress,
     pinCode,
     compliant,
     filingStatus,
     cpa,
     ssn,
   } = req.body;
-
+  /*
   let name2;
   let address2;
   let city2;
@@ -133,7 +189,8 @@ router.post("/", auth, async (req, res) => {
   let employerName;
   let employerPhone;
   let closerId;
-
+  let _id;
+*/
   const newProspect = new Prospect({
     fullName,
     deliveryAddress,
@@ -141,53 +198,15 @@ router.post("/", auth, async (req, res) => {
     state,
     zip4,
     plaintiff,
-    taxAmount,
+    amount,
     lienid,
     phone,
-    email,
+    emailAddress,
     pinCode,
     compliant,
     filingStatus,
     cpa,
     ssn,
-    closerId,
-    name2,
-    address2,
-    city2,
-    state2,
-    zip2,
-    employerTime,
-    ssn2,
-    pinCode2,
-    dob,
-    dob2,
-    relation,
-    phone2,
-    phone3,
-    email2,
-    email3,
-    prac,
-    problem1,
-    problem2,
-    problem3,
-    resSold,
-    resSold2,
-    home,
-    homePay,
-    wages,
-    income1Type,
-    income1Value,
-    income2Type,
-    income2Value,
-    income3Type,
-    income3Value,
-    otherIncomeType,
-    otherIncomeValue,
-    creditScore,
-    availableCredit,
-    totalCredit,
-    employerName,
-    employerPhone,
   });
 
   const prospect = await newProspect.save();
@@ -389,10 +408,220 @@ router.put("/:_id/notes", auth, async (req, res) => {
   res.json(prospect);
 });
 
+router.put("/:_id/caseWorkers/loanProcessors", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "caseWorkers.loanProcessors": {
+        "name": req.body.name,
+        "email": req.body.email,
+        "role": req.body.role,
+        "resoCred1": req.body.resoCred1,
+        "resoCred2": req.body.resoCred2,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:_id/caseWorkers/documentProcessors", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "caseWorkers.documentProcessors": {
+        "name": req.body.name,
+        "email": req.body.email,
+        "role": req.body.role,
+        "resoCred1": req.body.resoCred1,
+        "resoCred2": req.body.resoCred2,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:_id/caseWorkers/taxPreparers", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "caseWorkers.taxPreparers": {
+        "name": req.body.name,
+        "email": req.body.email,
+        "role": req.body.role,
+        "resoCred1": req.body.resoCred1,
+        "resoCred2": req.body.resoCred2,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+router.put("/:_id/caseWorkers/originators", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "caseWorkers.originators": {
+        "name": req.body.name,
+        "email": req.body.email,
+        "role": req.body.role,
+        "resoCred1": req.body.resoCred1,
+        "resoCred2": req.body.resoCred2,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+router.put("/:_id/caseWorkers/upsells", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "caseWorkers.upsells": {
+        "name": req.body.name,
+        "email": req.body.email,
+        "role": req.body.role,
+        "resoCred1": req.body.resoCred1,
+        "resoCred2": req.body.resoCred2,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+router.put("/:_id/caseWorkers/federalReso", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "caseWorkers.federalReso": {
+        "name": req.body.name,
+        "email": req.body.email,
+        "role": req.body.role,
+        "resoCred1": req.body.resoCred1,
+        "resoCred2": req.body.resoCred2,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:_id/caseWorkers/stateReso", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "caseWorkers.stateReso": {
+        "name": req.body.name,
+        "email": req.body.email,
+        "role": req.body.role,
+        "resoCred1": req.body.resoCred1,
+        "resoCred2": req.body.resoCred2,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:_id/paymentMethods", auth, async (req, res) => {
+  console.log(req.body);
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": {
+      "paymentMethods": {
+        "name": req.body.name,
+        "type": req.body.type,
+        "ccName": req.body.ccName,
+        "ccType": req.body.ccType,
+        "ccNo": req.body.ccNo,
+        "ccExp": req.body.ccExp,
+        "ccZip": req.body.ccZip,
+        "ccSec": req.body.ccSec,
+        "ccPin": req.body.ccPin,
+        "accBank": req.body.accBank,
+        "accType": req.body.accType,
+        "accRouting": req.body.accRouting,
+        "accNo": req.body.accNo,
+        "contact": req.body.contact,
+      },
+    },
+  });
+
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:_id/paymentSchedule", auth, async (req, res) => {
+  console.log(req.body);
+
+  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": { "paymentSchedule": req.body },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:_id/paymentSchedule/:_id", auth, async (req, res) => {
+  console.log(req.body);
+
+  console.log(req.params);
+
+  const { newPayment } = req.body;
+  const { paymentAmount, paymentMethod, paymentDate, paymentId } = newPayment;
+
+  const prospect = await Prospect.findOneAndUpdate(
+    {
+      "_id": req.body.prospectid,
+      "paymentSchedule._id": req.params._id,
+    },
+    {
+      "$set": {
+        "paymentSchedule.$.paymentAmount": paymentAmount,
+        "paymentSchedule.$.paymentMethod": paymentMethod,
+        "paymentSchedule.$.paymentDate": paymentDate,
+        "paymentSchedule.$.paymentId": paymentId,
+      },
+    },
+    { new: true }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus", auth, async (req, res) => {
+  const {
+    federalFile,
+    stateFile,
+    hardship,
+    paymentPlan,
+    offer,
+    corp,
+  } = req.body;
+
+  let resoFields = {};
+
+  if (federalFile) resoFields.federalFile = federalFile;
+  if (stateFile) resoFields.stateFile = stateFile;
+  if (hardship) resoFields.hardship = hardship;
+  if (paymentPlan) resoFields.paymentPlan = paymentPlan;
+  if (offer) resoFields.offer = offer;
+  if (corp) resoFields.corp = corp;
+
+  let prospect = await Prospect.findByIdAndUpdate(
+    req.params.id,
+    { $set: { "resoStatus": resoFields } },
+    { new: true }
+  );
+
+  res.json(prospect);
+});
+
 router.get("/:_id/notes", auth, async (req, res) => {
   const prospect = await Prospect.findById(req.params.id);
 
   res.json(prospect);
+
+  console.log(prospect);
 });
 
 router.get("/:_id/fullName", auth, async (req, res) => {
@@ -406,6 +635,56 @@ router.delete("/:_id/notes/", auth, async (req, res) => {
   try {
     const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
       $pull: { "notes": { "id": req.query.q } },
+    });
+
+    res.json(prospect);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.delete("/:_id/paymentMethods/", auth, async (req, res) => {
+  console.log(req.query.q);
+  try {
+    const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+      $pull: { "paymentMethods": { "_id": req.query.q } },
+    });
+
+    res.json(prospect);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.delete("/:_id/caseWorkers/", auth, async (req, res) => {
+  console.log(req.query.q);
+  try {
+    const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+      $pull: {
+        "caseWorkers.originators": { "_id": req.query.q },
+        "caseWorkers.documentProcessors": { "_id": req.query.q },
+        "caseWorkers.loanProcessors": { "_id": req.query.q },
+        "caseWorkers.federalReso": { "_id": req.query.q },
+        "caseWorkers.stateReso": { "_id": req.query.q },
+        "caseWorkers.taxPreparers": { "_id": req.query.q },
+        "caseWorkers.upsells": { "_id": req.query.q },
+      },
+    });
+
+    res.json(prospect);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.delete("/:_id/paymentSchedule/", auth, async (req, res) => {
+  console.log(req.query.q);
+  try {
+    const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+      $pull: { "paymentSchedule": { "_id": req.query.q } },
     });
 
     res.json(prospect);

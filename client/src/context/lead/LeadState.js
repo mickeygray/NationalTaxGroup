@@ -40,11 +40,21 @@ import {
   DELETE_NOTE,
   SET_PROSPECT,
   GET_NAME,
+  PUSH_WORKER,
+  PUT_RESO,
+  PUT_PAYMENTSCHEDULE,
+  PUT_PAYMENTINFO,
+  PUT_PAYMENTSCHEDULEITEM,
+  SET_CURRENTMETHOD,
+  DELETE_PAYMENTMETHOD,
+  DELETE_PAYMENTSCHEDULEITEM,
+  DELETE_WORKER,
 } from "../types";
 
 const LeadState = (props) => {
   const initialState = {
     selectedFile: null,
+    caseWorkers: [],
     loaded: null,
     currentNote: null,
     bcc: [],
@@ -65,13 +75,13 @@ const LeadState = (props) => {
     lead: {},
     note: {},
     current: null,
+    currentMethod: null,
     call: {},
     calls: [],
     note: {},
     notes: [],
     text: "",
     number: null,
-    claimedBy: "unclaimed",
     recentLeads: [],
     todaysLeads: [],
     fullName: null,
@@ -191,15 +201,6 @@ const LeadState = (props) => {
 
   const { user } = useContext(AuthContext);
 
-  const setClaim = async (user, prospect) => {
-    const _id = prospect._id;
-    const claimedBy = user.name;
-    const isClaimed = true;
-    const leadFields = { claimedBy, isClaimed };
-
-    updateLead(leadFields, _id);
-  };
-
   const setNotes = (notes) => {
     console.log(notes);
     dispatch({ type: SET_NOTES, payload: notes });
@@ -223,6 +224,7 @@ const LeadState = (props) => {
       type: PUT_NOTE,
       payload: res.data,
     });
+    getProspect(prospect._id);
   };
 
   const getNotes = async (prospect) => {
@@ -250,6 +252,7 @@ const LeadState = (props) => {
       type: POST_NOTE,
       payload: res.data,
     });
+    getProspect(prospect._id);
   };
 
   const setCurrentNote = (currentNote) => {
@@ -270,12 +273,59 @@ const LeadState = (props) => {
       type: DELETE_NOTE,
       payload: id,
     });
+    getProspect(prospect._id);
   };
 
+  const deletePaymentMethod = async (paymentMethod, prospect) => {
+    const { paymentMethods } = prospect;
+    const { _id } = paymentMethod;
+
+    await axios.delete(
+      `/api/prospects/${prospect._id}/paymentMethods?q=${_id}`
+    );
+
+    dispatch({
+      type: DELETE_PAYMENTMETHOD,
+      payload: _id,
+    });
+    getProspect(prospect._id);
+  };
+
+  const deletePaymentScheduleItem = async (payment, prospect) => {
+    const { paymentMethods } = prospect;
+    const { _id } = payment;
+
+    await axios.delete(
+      `/api/prospects/${prospect._id}/paymentSchedule?q=${_id}`
+    );
+
+    dispatch({
+      type: DELETE_PAYMENTSCHEDULEITEM,
+      payload: _id,
+    });
+    getProspect(prospect._id);
+  };
+
+  const deleteWorker = async (caseWorker, prospect) => {
+    const { _id } = caseWorker;
+
+    await axios.delete(`/api/prospects/${prospect._id}/caseWorkers?q=${_id}`);
+
+    dispatch({
+      type: DELETE_WORKER,
+      payload: _id,
+    });
+
+    getProspect(prospect._id);
+  };
   //Search Liens
 
   const setRecentLead = (recentLead) => {
     dispatch({ type: SET_RECENTLEAD, payload: recentLead });
+  };
+
+  const setCurrentMethod = (paymentMethod) => {
+    dispatch({ type: SET_CURRENTMETHOD, payload: paymentMethod });
   };
 
   // Set Lien in Ship Em Form
@@ -393,7 +443,7 @@ const LeadState = (props) => {
 
     try {
       const res = await axios.put(
-        `/api/prospects/clients/${_id}`,
+        `/api/prospects/clientId/}`,
         leadFields,
         config
       );
@@ -547,6 +597,51 @@ const LeadState = (props) => {
     });
   };
 
+  const pushWorker = async (user, prospect, group) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const { caseWorkers } = group;
+
+    const location = Object.values(caseWorkers)
+      .toString()
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "")
+      .replace(",", "");
+
+    console.log(location);
+
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/caseWorkers/${location}`,
+      user,
+      config
+    );
+
+    dispatch({
+      type: PUSH_WORKER,
+      payload: res.data,
+    });
+    getProspect(prospect._id);
+  };
+
   const parseDb = async (query) => {
     const config = {
       headers: {
@@ -554,12 +649,14 @@ const LeadState = (props) => {
       },
     };
 
-    console.log(query);
+    const qCheck = Object.values(query).toString().length;
 
-    const queryString = JSON.stringify(query);
+    const q = Object.values(query).toString();
+
+    console.log(q);
     const res = await axios.get(
-      `/api/leads/query?q=${queryString}`,
-      query,
+      `/api/${qCheck > 5 ? "prospects" : "leads"}/status?q=${q}`,
+      q,
       config
     );
 
@@ -570,6 +667,142 @@ const LeadState = (props) => {
       type: PARSE_LIST,
       payload: mailList,
     });
+  };
+
+  const putResoStatus = async (reso, prospect) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/resoStatus`,
+      reso,
+      config
+    );
+
+    dispatch({
+      type: PUT_RESO,
+      payload: res.data,
+    });
+
+    getProspect(prospect._id);
+  };
+
+  const putPaymentMethod = async (method, prospect) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/paymentMethods`,
+      method,
+      config
+    );
+
+    dispatch({
+      type: PUT_PAYMENTINFO,
+      payload: res.data,
+    });
+    getProspect(prospect._id);
+    console.log(res.data);
+  };
+
+  const putPaymentScheduleItem = async (newPayment, prospect) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params: {
+        _id: prospect._id,
+      },
+    };
+
+    const prospectid = prospect._id;
+
+    const pockage = {
+      newPayment,
+      prospectid,
+    };
+
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/paymentSchedule/${newPayment._id}`,
+      pockage,
+      config
+    );
+    dispatch({
+      type: PUT_PAYMENTSCHEDULEITEM,
+      payload: res.data,
+    });
+
+    getProspect(prospect._id);
+  };
+
+  const putPaymentSchedule = async (iteration, scheduleItem, prospect) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    let sched = [];
+
+    const scheduleItem1 = {
+      paymentMethod: scheduleItem.initialPaymentMethod,
+      paymentAmount: scheduleItem.initialPaymentAmount,
+      paymentDate: Date.parse(scheduleItem.initialPaymentDate),
+      paymentId: "",
+    };
+
+    const scheduleItem2 = {
+      paymentMethod: scheduleItem.secondPaymentMethod,
+      paymentAmount: scheduleItem.secondPaymentAmount,
+      paymentDate: Date.parse(scheduleItem.secondPaymentDate),
+      paymentId: "",
+    };
+
+    sched.push(scheduleItem1);
+    sched.push(scheduleItem2);
+    const startDate = Date.parse(scheduleItem.thirdPaymentDate);
+    let it = parseInt(iteration.installments);
+    let int;
+    let arr;
+    if (iteration.interval === "single") {
+      int = 0 * 86400000;
+    } else if (iteration.interval === "weekly") {
+      int = 7 * 86400000; // int is in millisseconds
+    } else if (iteration.interval === "biweekly") {
+      int = 14 * 86400000; // int is in millisseconds
+    } else if (iteration.interval === "monthly") {
+      int = 30.42 * 86400000; // int is in millisseconds
+    }
+    arr = [];
+
+    for (let i = 0; i < it; i++)
+      arr[i] = {
+        paymentDate: new Date(startDate + i * int),
+        paymentMethod: iteration.initialPaymentMethod,
+        paymentAmount: iteration.installmentAmount,
+        paymentId: "",
+      };
+
+    console.log(arr);
+
+    const paymentSchedule = sched.concat(arr);
+
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/paymentSchedule`,
+      paymentSchedule,
+      config
+    );
+
+    dispatch({
+      type: PUT_PAYMENTSCHEDULE,
+      payload: res.data,
+    });
+    getProspect(prospect._id);
+    console.log(res.data);
   };
 
   const getLead = async (lead) => {
@@ -628,6 +861,7 @@ const LeadState = (props) => {
         clients: state.clients,
         client: state.client,
         current: state.current,
+        currentMethod: state.currentMethod,
         number: state.number,
         claimedBy: state.claimedBy,
         recentLeads: state.recentLeads,
@@ -640,10 +874,18 @@ const LeadState = (props) => {
         mailObject: state.mailObject,
         mailList: state.mailList,
         dncArray: state.dncArray,
+        caseWorkers: state.caseWorkers,
         addLexis,
+        setCurrentMethod,
+        putPaymentMethod,
+        deletePaymentMethod,
+        deletePaymentScheduleItem,
+        putPaymentScheduleItem,
+        pushWorker,
         getProspectName,
         setProspect,
         deleteLeads,
+        deleteWorker,
         addLead,
         setSelectedFile,
         uploadFile,
@@ -655,11 +897,11 @@ const LeadState = (props) => {
         updateClient,
         makeDNC,
         searchLeads,
+        putResoStatus,
         clearLead,
         clearLeadFields,
         clearRecentLead,
         clearNumber,
-        setClaim,
         putNote,
         postNote,
         getNotes,
@@ -675,6 +917,7 @@ const LeadState = (props) => {
         getMyLeads,
         getProspect,
         postLogics,
+        putPaymentSchedule,
       }}>
       {props.children}
     </LeadContext.Provider>

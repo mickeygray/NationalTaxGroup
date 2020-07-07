@@ -91,7 +91,7 @@ const CampaignPreviewer = () => {
       Current Campaign : {currentCampaign ? currentCampaign.campaignName : ""}{" "}
       <br />
       Current Email : {currentEmail ? currentEmail.title : ""} <br />
-      Current List Filter : Federal Prospect <br />
+      Current List Filter : {filterSelected ? filterSelected : ""} <br />
       Current List Length :{listLength ? listLength : ""}
       <br />
       Campaign Start Date: {currentCampaign ? currentCampaign.startDate : ""}

@@ -1,4 +1,5 @@
 import React, { useReducer, useContext } from "react";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import AuthContext from "../auth/authContext";
 import LeadContext from "../lead/leadContext";
@@ -135,9 +136,11 @@ const UserState = (props) => {
       type: DELETE_REMINDER,
       payload: id,
     });
+
+    getUser(userReminded);
   };
 
-  const deleteRecentLead = (_id) => {
+  const deleteRecentLead = (_id, location) => {
     dispatch({
       type: DELETE_RECENTLEAD,
       payload: _id,

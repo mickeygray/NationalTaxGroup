@@ -28,23 +28,53 @@ const ListFilter = () => {
     }
   }, [mailList]);
 
+  const clearQuery = () => {
+    setQuery("");
+    getFilterSelected(query);
+  };
   return (
     <Fragment>
       <h3>Filter the Mail List</h3>
-      <div className='card grid-2'>
+      <nav className='nav navbar'>
+        {" "}
+        <ul>
+          <li>
+            {" "}
+            <button className='btn btn-sm btn-success p-2 ' onClick={onClick}>
+              Load List
+            </button>{" "}
+          </li>
+          <li>
+            {" "}
+            <button
+              className='btn btn-sm btn-light p-2'
+              onClick={() => clearQuery()}>
+              Clear Filter
+            </button>
+          </li>
+          <li>
+            {" "}
+            <button
+              className='btn btn-sm btn-danger py-2'
+              onClick={() =>
+                setQuery({
+                  status: "dnc",
+                })
+              }>
+              Pull DNCS
+            </button>{" "}
+          </li>
+          <li>
+            {" "}
+            <button className='btn btn-sm btn-danger py-2' onClick={onSubmit}>
+              Delete DNCS
+            </button>
+          </li>
+        </ul>
+      </nav>
+      <div className='grid-4 card bg-light all-center'>
         <div>
           <ul>
-            <li className='py-1'>
-              <button
-                className='btn btn-sm btn-danger py-2'
-                onClick={() =>
-                  setQuery({
-                    status: "dnc",
-                  })
-                }>
-                Pull DNCS
-              </button>
-            </li>
             <li className='py-1'>
               <button
                 className='btn btn-sm btn-danger py-2'
@@ -53,7 +83,7 @@ const ListFilter = () => {
                     status: "new",
                   })
                 }>
-                Non Contacted
+                New Emails
               </button>
             </li>
             <li className='py-1'>
@@ -61,20 +91,22 @@ const ListFilter = () => {
                 className='btn btn-sm btn-danger py-2'
                 onClick={() =>
                   setQuery({
-                    status: "contacted",
+                    status: "lexis",
                   })
                 }>
-                All Contacted Leads
+                Enriched Emails
               </button>
             </li>
             <li className='py-1'>
-              <button className='btn btn-sm btn-danger py-2' onClick={onSubmit}>
-                Delete DNCS
-              </button>
-            </li>
-            <li className='py-1'>
-              <button className='btn btn-sm btn-success' onClick={onClick}>
-                Load List
+              <button
+                style={{ width: "110px" }}
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "form",
+                  })
+                }>
+                Form <br /> Emails
               </button>
             </li>
           </ul>
@@ -86,11 +118,10 @@ const ListFilter = () => {
                 className='btn btn-sm btn-danger py-2'
                 onClick={() =>
                   setQuery({
-                    status: "optedin",
-                    fileType: "Federal Tax Lien",
+                    status: "lead",
                   })
                 }>
-                Federal Leads
+                Leads
               </button>
             </li>
             <li className='py-1'>
@@ -98,11 +129,11 @@ const ListFilter = () => {
                 className='btn btn-sm btn-danger py-2'
                 onClick={() =>
                   setQuery({
-                    status: "optedin",
+                    status: "lead",
                     fileType: "State Tax Lien",
                   })
                 }>
-                State Tax
+                State Tax Leads
               </button>
             </li>
             <li className='py-1'>
@@ -110,10 +141,65 @@ const ListFilter = () => {
                 className='btn btn-sm btn-danger py-2'
                 onClick={() =>
                   setQuery({
-                    status: "converted",
+                    status: "lead",
+                    fileType: "Federal Tax Lien",
                   })
                 }>
-                All Clients
+                Federal Tax Leads
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <ul>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "prospect",
+                  })
+                }>
+                Prospects
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "prospect",
+                    amount: { "$gte": 25000 },
+                  })
+                }>
+                Above $25000
+              </button>
+            </li>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "prospect",
+                    amount: { "$lt": 25000 },
+                  })
+                }>
+                Under $25000
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <ul>
+            <li className='py-1'>
+              <button
+                className='btn btn-sm btn-danger py-2'
+                onClick={() =>
+                  setQuery({
+                    status: "upsellable",
+                  })
+                }>
+                Clients
               </button>
             </li>
             <li className='py-1'>
@@ -124,7 +210,7 @@ const ListFilter = () => {
                     status: "upsellable",
                   })
                 }>
-                All Upsellable Clients
+                Upsellable Clients
               </button>
             </li>
             <li className='py-1'>
@@ -135,7 +221,7 @@ const ListFilter = () => {
                     status: "highdollar",
                   })
                 }>
-                All High Dollar Clients
+                Highdollar Clients
               </button>
             </li>
           </ul>

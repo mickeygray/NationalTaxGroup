@@ -5,9 +5,11 @@ const CampaignCalls = (props) => {
   return (
     <div>
       <h3>Campaign Calls</h3>
-      {props.campaignCallState.map((call) => (
-        <CampaignCallItem key={call.id} call={call} />
-      ))}
+      {props.campaignCallState
+        ? props.campaignCallState.map((call) => (
+            <CampaignCallItem key={call.id} call={call} />
+          ))
+        : ""}
     </div>
   );
 };

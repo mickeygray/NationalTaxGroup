@@ -25,6 +25,7 @@ const Navbar = () => {
         <Link to='/ShipEm'>Ship Em!</Link>
         <Link to='/Stacks'>Stacks</Link>
         <Link to='/Eyore'>Eyore</Link>
+        <Link to='/PPsPalace'>PPs Palace</Link>
         <a>Popkis!</a>
 
         <a href='#!' onClick={onLogout}>

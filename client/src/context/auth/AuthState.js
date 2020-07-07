@@ -12,12 +12,14 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
+  VERIFY_SUCCESS,
 } from "../types";
 
 const AuthState = (props) => {
   const initialState = {
     token: localStorage.getItem("token"),
     isAuthenticated: null,
+    isVerified: null,
     loading: true,
     user: null,
     error: null,
@@ -42,7 +44,7 @@ const AuthState = (props) => {
   };
 
   // Register User
-  const register = async (formData) => {
+  const register = async (user) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -50,7 +52,7 @@ const AuthState = (props) => {
     };
 
     try {
-      const res = await axios.post("/api/users", formData, config);
+      const res = await axios.post("/api/users", user, config);
 
       dispatch({
         type: REGISTER_SUCCESS,
@@ -58,6 +60,28 @@ const AuthState = (props) => {
       });
 
       loadUser();
+    } catch (err) {
+      dispatch({
+        type: REGISTER_FAIL,
+        payload: err.response.data.msg,
+      });
+    }
+  };
+
+  const verifyAdmin = async (adminCred) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.post("/api/auth/admin", adminCred, config);
+      console.log(res.data);
+      dispatch({
+        type: VERIFY_SUCCESS,
+        payload: res.data,
+      });
     } catch (err) {
       dispatch({
         type: REGISTER_FAIL,
@@ -102,6 +126,7 @@ const AuthState = (props) => {
       value={{
         token: state.token,
         isAuthenticated: state.isAuthenticated,
+        isVerified: state.isVerified,
         loading: state.loading,
         user: state.user,
         error: state.error,
@@ -110,6 +135,7 @@ const AuthState = (props) => {
         login,
         logout,
         clearErrors,
+        verifyAdmin,
       }}>
       {props.children}
     </AuthContext.Provider>

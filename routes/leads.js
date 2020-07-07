@@ -389,14 +389,27 @@ router.get(`/:id/pinCode`, async (req, res) => {
 
 //Get Leads For Email List
 
-router.get("/query", auth, async (req, res) => {
-  const query = JSON.parse(req.query.q);
+router.get("/status", auth, async (req, res) => {
+  console.log(req.query);
 
-  const leads = await Lead.find(query);
+  const statusa = Object.values(req.query.q)
+
+    .toString()
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "");
+
+  console.log(statusa);
+
+  const leads = await Lead.find({ "status": statusa });
+
+  console.log(leads);
   res.json(leads);
-
-  if (req.query.q.status === "new")
-    update = await Lead.updateMany({ status: "new" }, { status: "contacted" });
 });
 
 router.get("/search", auth, async (req, res) => {

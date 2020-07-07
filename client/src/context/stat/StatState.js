@@ -13,6 +13,12 @@ import {
   GET_CURRENTEMAIL,
   GET_LISTLENGTH,
   GET_IDARRAY,
+  GET_ALLCALLS,
+  FILTER_PAYMENTS,
+  GET_PAYMENTS,
+  SEARCH_PAYMENTDATES,
+  CLEAR_FILTER,
+  UPDATE_PAYMENTSTATUS,
 } from "../types";
 
 const StatState = (props) => {
@@ -21,12 +27,71 @@ const StatState = (props) => {
     reports: [],
     listLength: null,
     filterSelected: null,
+    filtered: null,
     idArray: null,
     currentCampaign: null,
     currentEmail: null,
+    payments: [],
+    todaysPayments: [],
   };
 
   const [state, dispatch] = useReducer(StatReducer, initialState);
+
+  const filterPayments = async (text) => {
+    dispatch({ type: FILTER_PAYMENTS, payload: text });
+  };
+
+  const clearFilter = () => {
+    dispatch({ type: CLEAR_FILTER });
+  };
+
+  const getTodaysPayments = async () => {
+    const res = await axios.get(`/api/prospects/payments/search/`);
+
+    dispatch({
+      type: GET_PAYMENTS,
+      payload: res.data,
+    });
+
+    searchPaymentDates(res.data);
+  };
+  const searchPaymentDates = async (payments) => {
+    let dateDisplay1 = new Date(Date.now());
+    let today = Intl.DateTimeFormat("fr-CA", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hours: "numeric",
+      minutes: "numeric",
+      seconds: "numeric",
+    }).format(dateDisplay1);
+    console.log(today);
+
+    console.log(payments);
+
+    var todaysPayments = [];
+    for (var i = 0; i < payments.length; i++) {
+      if (payments[i].paymentDate.includes(today)) {
+        todaysPayments.push(payments[i]);
+      }
+    }
+
+    dispatch({
+      type: SEARCH_PAYMENTDATES,
+      payload: todaysPayments,
+    });
+  };
+
+  const updatePayment = async (payment, user, prospect) => {
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/paymentSchedule/${payment._id}/paymentId`
+    );
+
+    dispatch({
+      type: UPDATE_PAYMENTSTATUS,
+      payload: res.data,
+    });
+  };
 
   //make report
   const makeReport = async (campaign) => {
@@ -107,10 +172,10 @@ const StatState = (props) => {
   };
 
   const getFilterSelected = (query) => {
-    console.log(query);
+    const filterSelected = Object.values(query).toString();
     dispatch({
       type: GET_FILTER,
-      payload: query,
+      payload: filterSelected,
     });
   };
 
@@ -131,6 +196,14 @@ const StatState = (props) => {
     });
   };
 
+  const getAllCalls = async () => {
+    const res = await axios.get("/api/calls");
+
+    dispatch({
+      type: GET_ALLCALLS,
+      payload: res.data,
+    });
+  };
   //export csv
 
   const getListLength = (mailList) => {
@@ -157,13 +230,19 @@ const StatState = (props) => {
     <StatContext.Provider
       value={{
         report: state.report,
+        payments: state.payments,
+        todaysPayments: state.todaysPayments,
         reports: state.reports,
         listLength: state.listLength,
+        filtered: state.filtered,
         filterSelected: state.filterSelected,
         currentCampaign: state.currentCampaign,
         currentEmail: state.currentEmail,
         idArray: state.idArray,
         getListLength,
+        clearFilter,
+        updatePayment,
+        getAllCalls,
         getFilterSelected,
         getCurrentCampaign,
         getCurrentEmail,
@@ -172,7 +251,10 @@ const StatState = (props) => {
         updateReports,
         getReport,
         makeCSV,
-
+        getTodaysPayments,
+        filterPayments,
+        clearFilter,
+        searchPaymentDates,
         deleteReport,
       }}>
       {props.children}

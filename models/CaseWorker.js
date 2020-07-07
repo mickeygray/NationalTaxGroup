@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const UserSchema = mongoose.Schema({
+const CaseWorkerSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -10,21 +11,6 @@ const UserSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  prevLeads: {
-    type: Array,
-  },
-  recentProspects: [
-    { _id: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" } },
-  ],
-  admin: { type: String },
   role: { type: String },
   resoCred1: { type: String },
   resoCred2: { type: String },
@@ -43,4 +29,4 @@ const UserSchema = mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model("caseWorker", CaseWorkerSchema);

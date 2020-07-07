@@ -36,6 +36,15 @@ import {
   ADD_LEXIS,
   SET_PROSPECT,
   GET_NAME,
+  PUSH_WORKER,
+  PUT_RESO,
+  PUT_PAYMENTINFO,
+  PUT_PAYMENTSCHEDULE,
+  PUT_PAYMENTSCHEDULEITEM,
+  DELETE_PAYMENTMETHOD,
+  DELETE_PAYMENTSCHEDULEITEM,
+  SET_CURRENTMETHOD,
+  DELETE_WORKER,
 } from "../types";
 
 export default (state, action) => {
@@ -44,6 +53,21 @@ export default (state, action) => {
       return {
         ...state,
         notes: state.notes.filter((note) => note.id !== action.payload),
+      };
+    case PUSH_WORKER:
+      return {
+        ...state,
+        caseWorkers: action.payload,
+      };
+    case PUT_PAYMENTSCHEDULE:
+      return {
+        ...state,
+        paymentSchedule: action.payload,
+      };
+    case PUT_PAYMENTSCHEDULEITEM:
+      return {
+        ...state,
+        newPayment: action.payload,
       };
 
     case POST_NOTE:
@@ -55,6 +79,16 @@ export default (state, action) => {
       return {
         ...state,
         note: action.payload,
+      };
+    case PUT_RESO:
+      return {
+        ...state,
+        resoStatus: action.payload,
+      };
+    case PUT_PAYMENTINFO:
+      return {
+        ...state,
+        paymentMethod: action.payload,
       };
     case GET_NAME:
       return {
@@ -71,6 +105,11 @@ export default (state, action) => {
       return {
         ...state,
         notes: action.payload,
+      };
+    case SET_CURRENTMETHOD:
+      return {
+        ...state,
+        currentMethod: action.payload,
       };
     case SET_NOTE:
       return {
@@ -93,6 +132,53 @@ export default (state, action) => {
       return {
         ...state,
         file: action.payload,
+      };
+    case DELETE_LEADS:
+      return {
+        ...state,
+        leads: state.leads.filter((lead) => lead._id !== action.payload),
+      };
+    case DELETE_PAYMENTSCHEDULEITEM:
+      return {
+        ...state,
+        payment: state.prospect.paymentSchedule.filter(
+          (payment) => payment._id !== action.payload
+        ),
+      };
+
+    case DELETE_WORKER:
+      return {
+        ...state,
+        caseWorker:
+          state.prospect.caseWorkers.originators.filter(
+            (caseWorker) => caseWorker._id !== action.payload
+          ) &&
+          state.prospect.caseWorkers.documentProcessors.filter(
+            (caseWorker) => caseWorker._id !== action.payload
+          ) &&
+          state.prospect.caseWorkers.loanProcessors.filter(
+            (caseWorker) => caseWorker._id !== action.payload
+          ) &&
+          state.prospect.caseWorkers.taxPreparers.filter(
+            (caseWorker) => caseWorker._id !== action.payload
+          ) &&
+          state.prospect.caseWorkers.federalReso.filter(
+            (caseWorker) => caseWorker._id !== action.payload
+          ) &&
+          state.prospect.caseWorkers.stateReso.filter(
+            (caseWorker) => caseWorker._id !== action.payload
+          ) &&
+          state.prospect.caseWorkers.upsells.filter(
+            (caseWorker) => caseWorker._id !== action.payload
+          ),
+      };
+
+    case DELETE_PAYMENTMETHOD:
+      return {
+        ...state,
+        paymentMethod: state.prospect.paymentMethods.filter(
+          (paymentMethod) => paymentMethod._id !== action.payload
+        ),
       };
     case DELETE_LEADS:
       return {

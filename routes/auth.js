@@ -75,4 +75,37 @@ router.post(
   }
 );
 
+router.post("/admin", async (req, res) => {
+  const { adminCred } = req.body;
+
+  console.log(adminCred);
+
+  let user = await User.find({ "admin": adminCred });
+  console.log(user);
+
+  if (!user) {
+    return res.status(400).json({ msg: "Invalid Credentials" });
+  } else {
+    let newUser = new User();
+
+    const payload = {
+      newUser: {
+        admin: adminCred,
+        role: "admin",
+      },
+    };
+
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      {
+        expiresIn: 360000,
+      },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  }
+});
 module.exports = router;

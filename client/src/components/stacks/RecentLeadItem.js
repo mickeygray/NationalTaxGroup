@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import LeadContext from "../../context/lead/leadContext";
-import { Link } from "react-router-dom";
+import { withRouter, Link, useLocation } from "react-router-dom";
 import UserContext from "../../context/user/userContext";
 import AuthContext from "../../context/auth/authContext";
 
@@ -51,6 +51,16 @@ const RecentLeadItem = ({
     setRecentLead(match);
   };
 
+  const location = useLocation();
+
+  const onClick2 = (e) => {
+    deleteRecentLead(match._id, location);
+    if (location === `/prospects/${_id}`) {
+      console.log("chugdfs");
+    }
+  };
+
+  console.log(location);
   return (
     <div
       className='btn btn-light btn-sm'
@@ -73,7 +83,7 @@ const RecentLeadItem = ({
         style={{
           float: "right",
         }}
-        onClick={() => deleteRecentLead(match._id)}>
+        onClick={onClick2}>
         {" "}
         X
       </button>
@@ -81,4 +91,4 @@ const RecentLeadItem = ({
   );
 };
 
-export default RecentLeadItem;
+export default withRouter(RecentLeadItem);

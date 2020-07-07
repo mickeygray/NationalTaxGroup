@@ -7,6 +7,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
+  VERIFY_SUCCESS,
 } from "../types";
 
 export default (state, action) => {
@@ -36,6 +37,13 @@ export default (state, action) => {
         isAuthenticated: false,
         user: null,
         error: action.payload,
+      };
+    case VERIFY_SUCCESS:
+      localStorage.setItem("token", action.payload.token);
+      return {
+        ...state,
+        ...action.payload,
+        isVerified: true,
       };
     case CLEAR_ERRORS:
       return {

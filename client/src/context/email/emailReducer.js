@@ -38,14 +38,6 @@ export default (state, action) => {
           (campaign) => campaign._id !== action.payload
         ),
       };
-    case DELETE_TEMPLATE:
-      return {
-        ...state,
-        emailLibrary: state.emailLibrary.filter(
-          (email) => email._id !== action.payload
-        ),
-      };
-
     case PUT_LIST:
       return {
         ...state,

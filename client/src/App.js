@@ -29,6 +29,7 @@ import FileAComplaint from "./components/pages/splash/FileAComplaint";
 import LienViewer from "./components/pages/website/pages/LienViewer";
 import IGetYourMoneyBack from "./components/pages/website/pages/IGetYourMoneyBack";
 import Free1040Filler from "./components/pages/website/pages/Free1040Filler";
+import PPsPalace from "./components/pages/app/PPsPalace";
 const App = () => {
   return (
     <AuthState>
@@ -53,6 +54,11 @@ const App = () => {
                         <PrivateRoute exact path='/' component={DangerZone} />
                         <PrivateRoute exact path='/eyore' component={Eyore} />
                         <PrivateRoute exact path='/shipem' component={ShipEm} />
+                        <PrivateRoute
+                          exact
+                          path='/PPsPalace'
+                          component={PPsPalace}
+                        />
                       </Switch>
                     </Fragment>
                     <Fragment>

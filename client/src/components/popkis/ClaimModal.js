@@ -6,55 +6,70 @@ import UserModal from "./UserModal";
 import { v4 as uuidv4 } from "uuid";
 
 const ClaimModal = (props) => {
-  const userContext = useContext(UserContext);
+  const authContext = useContext(AuthContext);
   const leadContext = useContext(LeadContext);
+  const userContext = useContext(UserContext);
 
-  const { user } = userContext;
+  const { pushWorker } = leadContext;
+  const { user } = authContext;
 
+  const { prospect } = props;
   const { role } = user;
 
-  const onChange = (e) => {};
   const onSubmit = (e) => {
     e.preventDefault();
   };
   const onClick = (e) => {};
+  console.log(user);
 
+  console.log(props);
+
+  const [group, setGroup] = useState("");
+
+  const onChange = (e) => {
+    setGroup({ ...group, [e.target.name]: e.target.value });
+  };
+
+  console.log(group);
   return (
     <>
       <div className='card container'>
         <form onSubmit={onSubmit}>
-          <button onClick={props.toggleVisibility}>X</button>
+          <button onClick={props.toggleClaimModal}>X</button>
 
           <h3>Select your Role </h3>
-          <select name='role' onChange={onChange}>
-            <option selected={role === ""} value=''></option>
-            <option selected={role === "stateReso"} value='stateReso'>
-              State Resolution
-            </option>
-            <option selected={role === "fedReso"} value='fedReso'>
-              Federal Resolution
-            </option>
-            <option selected={role === "taxPrep"} value='taxPrep'>
-              Tax Preparation
-            </option>
-            <option selected={role === "corp"} value='taxPrep'>
-              Corp / Annuity
-            </option>
-            <option selected={role === "docProcess"} value='docProcess'>
-              Document Processor
-            </option>
-            <option selected={role === "loanProcess"} value='loanProcess'>
-              Loan Processor
-            </option>
-            <option selected={role === "originator"} value='originator'>
+          <select name='caseWorkers' onChange={onChange}>
+            <option></option>
+            <option selected={group === "originators"} value='originators'>
               Originator
             </option>
-            <option selected={role === "upsell"} value='upsell'>
+            <option selected={group === "upsells"} value='upsells'>
               Upsell Agent
+            </option>
+            <option
+              selected={group === "documentProcessors"}
+              value='documentProcessors'>
+              Document Preparation
+            </option>
+            <option
+              selected={group === "loanProcessors"}
+              value='loanProcessors'>
+              Loan Preparation
+            </option>
+            <option selected={group === "taxPreparers"} value='taxPreparers'>
+              Tax Preparation
+            </option>
+            <option selected={group === "federalReso"} value='federalReso'>
+              Federal Resolution
+            </option>
+            <option selected={group === "stateReso"} value='stateReso'>
+              State Resolution
             </option>
           </select>
 
-          <button>Add Me To The Case</button>
+          <button onClick={() => pushWorker(user, prospect, group)}>
+            Add Me To The Case
+          </button>
         </form>
       </div>
     </>

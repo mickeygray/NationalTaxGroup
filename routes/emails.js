@@ -204,46 +204,88 @@ router.delete("/templates/:id", auth, async (req, res) => {
 router.post("/", async (req, res) => {
   const { letter, list } = req.body;
 
+  const status = list[0].status;
+
+  console.log(status);
+
   fs.writeFile("./views/template.hbs", letter.html, (err) => {
     if (err) throw err;
     console.log("thefilehasbeensaved");
   });
-  /*
-  const transporter = nodemailer.createTransport({
-    host: "email-smtp.us-west-2.amazonaws.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "AKIAR5SSN3BFSGQEGYWG",
-      pass: "BLwzfKIh/KRGwqwZofltXC5jgkMrpGW1M8ZGuQlgM6w/",
-    },
-  });
-*/
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.sendgrid.net",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "apikey",
-      pass:
-        "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",
-    },
-  });
+  let transporter;
 
-  /*
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      type: "OAuth2",
-      user: "lienunit@nattaxgroup.com",
-      serviceClient: key.client_id,
-      privateKey: key.private_key,
-    },
-  });
-*/
+  switch (status) {
+    case "new":
+      transporter = nodemailer.createTransport({
+        host: "email-smtp.us-west-2.amazonaws.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: "AKIAR5SSN3BFSGQEGYWG",
+          pass: "BLwzfKIh/KRGwqwZofltXC5jgkMrpGW1M8ZGuQlgM6w/",
+        },
+      });
+      break;
+    case "form":
+      transporter = nodemailer.createTransport({
+        host: "email-smtp.us-west-2.amazonaws.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: "AKIAR5SSN3BFSGQEGYWG",
+          pass: "BLwzfKIh/KRGwqwZofltXC5jgkMrpGW1M8ZGuQlgM6w/",
+        },
+      });
+      break;
+    case "lexis":
+      transporter = nodemailer.createTransport({
+        host: "email-smtp.us-west-2.amazonaws.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: "AKIAR5SSN3BFSGQEGYWG",
+          pass: "BLwzfKIh/KRGwqwZofltXC5jgkMrpGW1M8ZGuQlgM6w/",
+        },
+      });
+      break;
+    case "lead":
+      transporter = nodemailer.createTransport({
+        host: "smtp.sendgrid.net",
+        port: 465,
+        secure: true,
+        auth: {
+          user: "apikey",
+          pass:
+            "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",
+        },
+      });
+      break;
+    case "prospect":
+      transporter = nodemailer.createTransport({
+        host: "smtp.sendgrid.net",
+        port: 465,
+        secure: true,
+        auth: {
+          user: "apikey",
+          pass:
+            "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",
+        },
+      });
+      break;
+    case "client":
+      transporter = nodemailer.createTransport({
+        host: "smtp.sendgrid.net",
+        port: 465,
+        secure: true,
+        auth: {
+          user: "apikey",
+          pass:
+            "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",
+        },
+      });
+  }
+
   const options = {
     viewEngine: {
       extName: ".hbs",

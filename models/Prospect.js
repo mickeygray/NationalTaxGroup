@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
+const CaseWorker = require("./CaseWorker");
+const PaymentMethod = require("./PaymentMethod");
 
 const ProspectSchema = mongoose.Schema({
+  status: {
+    type: String,
+  },
   fullName: {
     type: String,
   },
-  address: {
+  deliveryAddress: {
     type: String,
   },
   phone: {
@@ -58,55 +63,65 @@ const ProspectSchema = mongoose.Schema({
       },
     ],
   },
-  tasks: {
-    type: [],
-  },
   createdate: {
     type: Date,
     default: Date.now(),
   },
-  claimedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
+
   caseWorkers: {
-    originator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    loanProcessors: [
-      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
-    ],
-    documentProcessors: [
-      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
-    ],
-    upsells: [{ _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } }],
-    primaryReso: [
-      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
-    ],
-    secondaryReso: [
-      { _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" } },
-    ],
+    originators: [CaseWorker.schema],
+    loanProcessors: [CaseWorker.schema],
+    documentProcessors: [CaseWorker.schema],
+    upsells: [CaseWorker.schema],
+    federalReso: [CaseWorker.schema],
+    taxPreparers: [CaseWorker.schema],
+    stateReso: [CaseWorker.schema],
   },
   resoStatus: {
-    federalFile: { type: String },
-    stateFile: { type: String },
-    hardship: { type: String },
-    payment: { type: String },
-    offer: { type: String },
-    corp: { type: String },
-  },
-  paymentId: {
-    type: String,
+    federalFile: { type: String, default: "unfiled" },
+    stateFile: {
+      type: String,
+      default: "unfiled",
+    },
+    hardship: {
+      type: String,
+      default: "nohardship",
+    },
+    paymentPlan: {
+      type: String,
+      default: "nopaymentplan",
+    },
+    offer: {
+      type: String,
+      default: "noic",
+    },
+    corp: {
+      type: String,
+      default: "nocorp",
+    },
   },
   paymentStatus: {
     quote: { type: Number },
+    lastPayment: { type: Number },
     gross: { type: Number },
     initial: { type: Number },
     total: { type: Number },
     loans: { type: String },
+    dealId: { type: String },
+    upsellId: { type: String },
+    initialPaymentDate: { type: Date },
+    initialUpsellDate: { type: Date },
+    lastPaymentDate: { type: Date },
   },
-  status: {
-    type: String,
-    default: "prospect",
-  },
+  paymentSchedule: [
+    {
+      paymentMethod: { type: String },
+      paymentAmount: { type: Number },
+      paymentDate: { type: Date },
+      paymentId: { type: String },
+    },
+  ],
+  paymentMethods: [PaymentMethod.schema],
   name2: {
     type: String,
     default: "",
@@ -138,7 +153,7 @@ const ProspectSchema = mongoose.Schema({
     type: String,
     default: "",
   },
-  lexId2: {
+  lexId: {
     type: String,
     default: "",
   },

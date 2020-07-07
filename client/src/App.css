@@ -230,6 +230,11 @@ img {
   grid-template-columns: 2fr 1fr;
 }
 
+.grid-deal {
+  display: grid;
+  grid-template-columns: 1fr 5fr 1fr;
+}
+
 .grid-strategy {
   display: grid;
   grid-template-columns: 2fr 1fr;
