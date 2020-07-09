@@ -1,38 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
-import LeadContext from "../../../context/lead/leadContext";
-import TodaysLeadItem from "../stacks/TodaysLeadItem";
+import React, { useContext, useEffect } from "react";
+import PaymentProcessingSearch from "./PaymentProcessingSearch";
+import PaymentProcessingItem from "./PaymentProcessingItem";
+import StatContext from "../../context/stat/statContext";
 
-const TodaysLeads = () => {
-  const leadContext = useContext(LeadContext);
-  const { addLead, current, todaysLeads, getLead } = leadContext;
-  const { status } = prospect;
+const PaymentProcessing = () => {
+  const statContext = useContext(StatContext);
+  const { payments, today, getTodaysPayments, filtered } = statContext;
+
+  const { todaysLeads } = today;
 
   useEffect(() => {
-    if (!todaysLeads) {
-      localStorage.setItem("todaysLeads", todaysLeads);
-    } else if (todaysLeads.length > 2) {
-      const distinct = (value, index, self) => {
-        return self.indexOf(value) === index;
-      };
-      todaysLeads.filter(distinct);
-    }
+    getTodaysLeads();
   }, []);
 
-  useEffect(() => {
-    todaysLeads.push(prospect);
-  }, [addLead, prospect]);
-
-  console.log(todaysLeads);
+  console.log(today);
 
   return (
     <div style={leadStyle}>
       {todaysLeads.length > 0
-        ? todaysLeads.map(
-            (prospect) =>
-              prospect.isClaimed === false && (
-                <TodaysLeadItem key={prospect._id} prospect={prospect} />
-              )
-          )
+        ? todaysLeads.map((lead) => (
+            <TodaysLeadItem key={lead._id} lead={lead} />
+          ))
         : ""}
     </div>
   );

@@ -45,6 +45,10 @@ import {
   DELETE_PAYMENTSCHEDULEITEM,
   SET_CURRENTMETHOD,
   DELETE_WORKER,
+  GET_PAYMENTMETHOD,
+  SET_CURRENTCLIENT,
+  CLEAR_CURRENTCLIENT,
+  CLEAR_CURRENTMETHOD,
 } from "../types";
 
 export default (state, action) => {
@@ -70,6 +74,11 @@ export default (state, action) => {
         newPayment: action.payload,
       };
 
+    case GET_PAYMENTMETHOD:
+      return {
+        ...state,
+        paymentMethod: action.payload,
+      };
     case POST_NOTE:
       return {
         ...state,
@@ -110,6 +119,22 @@ export default (state, action) => {
       return {
         ...state,
         currentMethod: action.payload,
+      };
+    case SET_CURRENTCLIENT:
+      return {
+        ...state,
+        currentClient: action.payload,
+      };
+
+    case CLEAR_CURRENTMETHOD:
+      return {
+        ...state,
+        currentMethod: null,
+      };
+    case CLEAR_CURRENTCLIENT:
+      return {
+        ...state,
+        currentClient: null,
       };
     case SET_NOTE:
       return {

@@ -78,9 +78,62 @@ router.get("/calls", auth, async (req, res, next) => {
   res.json(call);
 });
 
-router.get("/payments/search/", auth, async (req, res) => {
-  console.log(req.query.q);
+router.get("/calls/today/", auth, async (req, res) => {
+  const calls = await Call.find();
 
+  res.json(calls);
+});
+
+router.get("/today/", auth, async (req, res) => {
+  const prospects = await Prospect.find();
+
+  res.json(prospects);
+});
+
+router.get("/payments/searchDates", auth, async (req, res) => {
+  const ranges = JSON.parse(req.query.q);
+
+  const { startDate, endDate } = ranges;
+
+  const date1 = new Date(startDate);
+  const date2 = new Date(endDate);
+  const prospects = await Prospect.find().sort({
+    "paymentSchedule.paymentDate": -1,
+  });
+
+  var payments = [];
+  function getPayments(prospects) {
+    for (var i = 0; i < prospects.length; i++) {
+      payments.push(prospects[i].paymentSchedule);
+    }
+    return payments;
+  }
+
+  getPayments(prospects);
+
+  let merged = [].concat.apply([], payments);
+
+  var filtered = merged.filter(function (el) {
+    return el != null;
+  });
+
+  let paymentArray = [];
+  for (var i = 0; i < filtered.length; i++) {
+    if (filtered[i].paymentAmount != null) {
+      paymentArray.push(filtered[i]);
+    }
+  }
+
+  console.log(paymentArray);
+
+  var dateFilter = paymentArray.filter((a) => {
+    var date = new Date(a.paymentDate);
+    return date >= date1 && date <= date2;
+  });
+  res.json(dateFilter);
+});
+
+router.get("/payments/today/", auth, async (req, res) => {
   const prospects = await Prospect.find().sort({
     "paymentSchedule.paymentDate": -1,
   });
@@ -110,10 +163,90 @@ router.get("/payments/search/", auth, async (req, res) => {
 
   res.json(paymentArray);
 });
+
+router.get("/paymentMethods/", auth, async (req, res) => {
+  const prospect = await Prospect.findOne({
+    "paymentSchedule._id": req.query.q,
+  });
+
+  const payment = prospect.paymentSchedule.filter(
+    (payment) => payment._id == req.query.q
+  );
+
+  const p = payment.pop();
+
+  const regex = new RegExp(`/${p.paymentMethod}/`, "gi");
+  let paymentData = {};
+  const clientId = prospect._id;
+  if (prospect.paymentMethods.length > 1) {
+    paymentData = prospect.paymentMethods.find(
+      (paymentMethod) => paymentMethod.name === p.paymentMethod
+    );
+
+    const paymentMethod = {
+      clientId,
+      paymentData,
+    };
+    console.log(paymentMethod);
+    res.json(paymentMethod);
+  } else {
+    paymentData = prospect.paymentMethods.pop();
+    const paymentMethod = {
+      clientId,
+      paymentData,
+    };
+    console.log(paymentMethod);
+    res.json(paymentMethod);
+  }
+});
 router.get("/:id", auth, async (req, res) => {
   // console.log(req);
   const prospect = await Prospect.findById(req.params.id);
 
+  res.json(prospect);
+});
+
+router.get("/:id/paymentSchedule", auth, async (req, res) => {
+  // console.log(req);
+  const prospect = await Prospect.findById(req.params.id);
+
+  const { paymentSchedule } = prospect;
+
+  let totalPay = [];
+  let redPay = [];
+  let refPay = [];
+
+  function groupBy(paymentSchedule, paymentId) {
+    return paymentSchedule.reduce(function (memo, x) {
+      if (!memo[x[paymentId]]) {
+        memo[x[paymentId]] = [];
+      }
+      memo[x[paymentId]].push(x);
+      return memo;
+    }, {});
+  }
+
+  let quotePay = groupBy(paymentSchedule, "");
+
+  console.log(quotePay);
+});
+
+router.put("/:id/paymentSchedule/:id/paymentId", auth, async (req, res) => {
+  const payid = Object.values(req.body).toString();
+
+  const prospect = await Prospect.findOneAndUpdate(
+    {
+      "paymentSchedule._id": req.params.id,
+    },
+    {
+      "$set": {
+        "paymentSchedule.$.paymentId": payid,
+      },
+    },
+    { new: true }
+  );
+
+  console.log(prospect);
   res.json(prospect);
 });
 
@@ -191,6 +324,16 @@ router.post("/", auth, async (req, res) => {
   let closerId;
   let _id;
 */
+  let dateDisplay1 = new Date(Date.now());
+  let createDate = Intl.DateTimeFormat(
+    "fr-CA",
+    { timeZone: "America/Los_Angeles" },
+    {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    }
+  ).format(dateDisplay1);
   const newProspect = new Prospect({
     fullName,
     deliveryAddress,
@@ -207,6 +350,7 @@ router.post("/", auth, async (req, res) => {
     filingStatus,
     cpa,
     ssn,
+    createDate,
   });
 
   const prospect = await newProspect.save();

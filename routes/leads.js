@@ -25,6 +25,12 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+router.get("/today", auth, async (req, res) => {
+  const leads = await Lead.find();
+
+  res.json(leads);
+});
+
 router.put("/:id", auth, async (req, res) => {
   const string = Object.keys(req.body).toString();
   const distinct = (value, index, self) => {

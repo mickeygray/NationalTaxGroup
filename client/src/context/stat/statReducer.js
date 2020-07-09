@@ -16,6 +16,8 @@ import {
   CLEAR_FILTER,
   FILTER_PAYMENTS,
   UPDATE_PAYMENTSTATUS,
+  GET_TODAYS,
+  GET_CLIENTPAYMENTS,
 } from "../types";
 
 export default (state, action) => {
@@ -24,6 +26,11 @@ export default (state, action) => {
       return {
         ...state,
         payments: action.payload,
+      };
+    case GET_CLIENTPAYMENTS:
+      return {
+        ...state,
+        billingStatus: action.payload,
       };
     case FILTER_PAYMENTS:
       return {
@@ -45,7 +52,12 @@ export default (state, action) => {
     case SEARCH_PAYMENTDATES:
       return {
         ...state,
-        todaysPayments: action.payload,
+        filtered: action.payload,
+      };
+    case GET_TODAYS:
+      return {
+        ...state,
+        today: action.payload,
       };
     case UPDATE_PAYMENTSTATUS:
       return {

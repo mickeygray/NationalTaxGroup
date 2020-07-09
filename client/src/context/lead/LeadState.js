@@ -46,9 +46,13 @@ import {
   PUT_PAYMENTINFO,
   PUT_PAYMENTSCHEDULEITEM,
   SET_CURRENTMETHOD,
+  SET_CURRENTCLIENT,
+  CLEAR_CURRENTMETHOD,
+  CLEAR_CURRENTCLIENT,
   DELETE_PAYMENTMETHOD,
   DELETE_PAYMENTSCHEDULEITEM,
   DELETE_WORKER,
+  GET_PAYMENTMETHOD,
 } from "../types";
 
 const LeadState = (props) => {
@@ -76,6 +80,7 @@ const LeadState = (props) => {
     note: {},
     current: null,
     currentMethod: null,
+    currentClient: null,
     call: {},
     calls: [],
     note: {},
@@ -85,6 +90,7 @@ const LeadState = (props) => {
     recentLeads: [],
     todaysLeads: [],
     fullName: null,
+    paymentMethod: null,
   };
 
   const [state, dispatch] = useReducer(LeadReducer, initialState);
@@ -179,6 +185,18 @@ const LeadState = (props) => {
     dispatch({ type: CLEAR_LEADFIELDS });
   };
 
+  const clearCurrentMethod = () => {
+    dispatch({
+      type: CLEAR_CURRENTMETHOD,
+    });
+  };
+
+  const clearCurrentClient = () => {
+    dispatch({
+      type: CLEAR_CURRENTCLIENT,
+    });
+  };
+
   const clearRecentLead = () => {
     dispatch({ type: CLEAR_RECENTLEAD });
   };
@@ -197,6 +215,26 @@ const LeadState = (props) => {
       type: GET_NAME,
       payload: fullName,
     });
+  };
+
+  const getPaymentMethod = async (payment) => {
+    console.log(payment);
+    const res = await axios.get(
+      `/api/prospects/paymentMethods?q=${payment._id}`
+    );
+
+    dispatch({
+      type: GET_PAYMENTMETHOD,
+      payload: res.data,
+    });
+
+    console.log(res.data);
+
+    const { paymentData, clientId } = res.data;
+
+    const paymentMethod = paymentData;
+    setCurrentMethod(paymentMethod);
+    setCurrentClient(clientId);
   };
 
   const { user } = useContext(AuthContext);
@@ -326,6 +364,10 @@ const LeadState = (props) => {
 
   const setCurrentMethod = (paymentMethod) => {
     dispatch({ type: SET_CURRENTMETHOD, payload: paymentMethod });
+  };
+
+  const setCurrentClient = (clientId) => {
+    dispatch({ type: SET_CURRENTCLIENT, payload: clientId });
   };
 
   // Set Lien in Ship Em Form
@@ -748,29 +790,56 @@ const LeadState = (props) => {
 
     let sched = [];
 
+    let dateDisplay1 = new Date(scheduleItem.initialPaymentDate);
+    let formattedPostedDate = Intl.DateTimeFormat(
+      "en-US",
+      { timeZone: "America/Los_Angeles" },
+      {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+      }
+    ).format(dateDisplay1);
+    console.log(scheduleItem.initialPaymentDate, "THISSSS NIGGGGGER");
+
+    let dateDisplay2 = new Date(scheduleItem.secondPaymentDate);
+    let formattedPostedDate2 = Intl.DateTimeFormat(
+      "en-US",
+      { timeZone: "America/Los_Angeles" },
+      {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+      }
+    ).format(dateDisplay2);
+
     const scheduleItem1 = {
       paymentMethod: scheduleItem.initialPaymentMethod,
       paymentAmount: scheduleItem.initialPaymentAmount,
-      paymentDate: Date.parse(scheduleItem.initialPaymentDate),
+      paymentDate: scheduleItem.initialPaymentDate,
       paymentId: "",
     };
 
     const scheduleItem2 = {
       paymentMethod: scheduleItem.secondPaymentMethod,
       paymentAmount: scheduleItem.secondPaymentAmount,
-      paymentDate: Date.parse(scheduleItem.secondPaymentDate),
+      paymentDate: scheduleItem.secondPaymentDate,
       paymentId: "",
     };
 
-    sched.push(scheduleItem1);
-    sched.push(scheduleItem2);
-    const startDate = Date.parse(scheduleItem.thirdPaymentDate);
+    sched.push(scheduleItem1, scheduleItem2);
+
+    console.log(sched);
+
+    let startDate;
     let it = parseInt(iteration.installments);
     let int;
     let arr;
-    if (iteration.interval === "single") {
-      int = 0 * 86400000;
-    } else if (iteration.interval === "weekly") {
+    if (iteration.interval != "") {
+      startDate = Date.parse(scheduleItem.secondPaymentDate);
+    }
+
+    if (iteration.interval === "weekly") {
       int = 7 * 86400000; // int is in millisseconds
     } else if (iteration.interval === "biweekly") {
       int = 14 * 86400000; // int is in millisseconds
@@ -781,19 +850,25 @@ const LeadState = (props) => {
 
     for (let i = 0; i < it; i++)
       arr[i] = {
-        paymentDate: new Date(startDate + i * int),
+        paymentDate: Intl.DateTimeFormat(
+          "en-US",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(startDate + i * int)),
         paymentMethod: iteration.initialPaymentMethod,
         paymentAmount: iteration.installmentAmount,
         paymentId: "",
       };
 
-    console.log(arr);
-
-    const paymentSchedule = sched.concat(arr);
+    const paySched = sched.concat(arr);
 
     const res = await axios.put(
       `/api/prospects/${prospect._id}/paymentSchedule`,
-      paymentSchedule,
+      paySched,
       config
     );
 
@@ -845,7 +920,7 @@ const LeadState = (props) => {
   return (
     <LeadContext.Provider
       value={{
-        dncArray: [],
+        dncArray: state.dncArray,
         liens: state.liens,
         fullName: state.fullName,
         lien: state.lien,
@@ -875,11 +950,14 @@ const LeadState = (props) => {
         mailList: state.mailList,
         dncArray: state.dncArray,
         caseWorkers: state.caseWorkers,
+        currentClient: state.currentClient,
+        setCurrentClient,
         addLexis,
         setCurrentMethod,
         putPaymentMethod,
         deletePaymentMethod,
         deletePaymentScheduleItem,
+        getPaymentMethod,
         putPaymentScheduleItem,
         pushWorker,
         getProspectName,
@@ -918,6 +996,8 @@ const LeadState = (props) => {
         getProspect,
         postLogics,
         putPaymentSchedule,
+        clearCurrentMethod,
+        clearCurrentClient,
       }}>
       {props.children}
     </LeadContext.Provider>

@@ -63,7 +63,7 @@ const ProspectSchema = mongoose.Schema({
       },
     ],
   },
-  createdate: {
+  createDate: {
     type: Date,
     default: Date.now(),
   },

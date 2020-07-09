@@ -13,6 +13,7 @@ import ClaimModal from "./ClaimModal";
 import CaseWorkers from "./CaseWorkers";
 import LexisModal from "../shipem/LexisModal";
 import DealModal from "./DealModal";
+import BillingStatus from "./BillingStatus";
 import { v4 as uuidv4 } from "uuid";
 
 const StatusBox = (props) => {
@@ -22,8 +23,6 @@ const StatusBox = (props) => {
   const { notifyUser, getUserNames } = useContext(UserContext);
   const {
     putResoStatus,
-    getPaymentStatus,
-    putPaymentStatus,
     addLexis,
     updateProspect,
     updateProspectStatus,
@@ -294,31 +293,7 @@ const StatusBox = (props) => {
               </div>
             </div>
             <div>
-              <div style={{ width: "250px" }}>
-                <h3>Billing Status</h3>
-                <select
-                  name='status'
-                  id='status'
-                  value={status}
-                  onChange={() => updateProspectStatus()}>
-                  <option value='prospect'>Prospect</option>
-                  <option value='client'>Client</option>
-                  <option value='upsellable'>Upsellable</option>
-                  <option value='highdollar'>Highdollar</option>
-                  <option value='noupsell'>No Upsell</option>
-                </select>
-                <label htmlFor='quote'>Quoted Fee</label>
-                <input type='text' value={quote} name='quote' />
-                <label htmlFor='quote'>Gross Fees</label>
-                <input type='text' value={gross} name='gross' />
-                <label htmlFor='quote'>Initial Payment</label>
-                <input type='text' value={initial} name='initial' />
-                <label htmlFor='quote'>Total Payment</label>
-                <input type='text' value={total} name='total' />
-                <label htmlFor='quote'>Loan Information</label>
-                <input type='text' value={loans} name='total' />
-                <button onClick={() => putPaymentStatus()}></button>
-              </div>
+              <BillingStatus prospect={prospect} />
             </div>
             <div className='card bg-light'>
               {claimModal ? (

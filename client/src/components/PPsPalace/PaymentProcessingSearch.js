@@ -1,12 +1,32 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
 import StatContext from "../../context/stat/statContext";
+import { DateRangePicker, Calendar } from "react-date-range";
 import PaymentProcessing from "./PaymentProcessing";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
 
 const PaymentProcessingSearch = () => {
   const statContext = useContext(StatContext);
   const text = useRef("");
 
-  const { filterPayments, clearFilter, filtered } = statContext;
+  const {
+    filterPayments,
+    clearFilter,
+    filtered,
+    searchPaymentDates,
+  } = statContext;
+  const today = new Date(Date.now());
+
+  console.log(today);
+
+  let formattedToday = Intl.DateTimeFormat("fr-CA", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).format(today);
+
+  const date1 = useRef(formattedToday);
+  const date2 = useRef(formattedToday);
 
   useEffect(() => {
     if (filtered === null && searchState === true) {
@@ -20,12 +40,6 @@ const PaymentProcessingSearch = () => {
     setSearchState((prevState) => !prevState);
   };
 
-  const [period, setPeriod] = useState({
-    periodStart: Date.now(),
-    periodEnd: Date.now(),
-  });
-
-  const { periodStart, periodEnd } = period;
   const onChange = (e) => {
     if (text.current.value !== "") {
       filterPayments(e.target.value);
@@ -33,6 +47,17 @@ const PaymentProcessingSearch = () => {
       clearFilter();
     }
   };
+
+  const handleSelect = (ranges) => {
+    searchPaymentDates(ranges);
+  };
+
+  const selectionRange = {
+    startDate: today,
+    endDate: today,
+    key: "selection",
+  };
+  console.log();
 
   return (
     <form>
@@ -64,28 +89,8 @@ const PaymentProcessingSearch = () => {
           />
         </div>
       ) : (
-        <div className='grid-2'>
-          {" "}
-          <div className=''>
-            {" "}
-            <input
-              ref={text}
-              type='date'
-              name='periodStart'
-              value={periodStart}
-              onChange={onChange}
-            />{" "}
-          </div>
-          <div className=''>
-            {" "}
-            <input
-              ref={text}
-              type='date'
-              name='periodEnd'
-              value={periodEnd}
-              onChange={onChange}
-            />
-          </div>
+        <div>
+          <DateRangePicker ranges={[selectionRange]} onChange={handleSelect} />
         </div>
       )}
     </form>

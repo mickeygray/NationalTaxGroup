@@ -17,7 +17,7 @@ const leadSchema = new Schema(
     amount: String,
     email: String,
     filingDate: String,
-    loadDate: String,
+    loadDate: Date,
     fiveAmount: String,
     nineAmount: String,
     loadDatePlusSeven: String,

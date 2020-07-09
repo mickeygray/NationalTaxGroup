@@ -10,10 +10,12 @@ import AuthContext from "../../context/auth/authContext";
 import LeadContext from "../../context/lead/leadContext";
 import UserModal from "./UserModal";
 import { v4 as uuidv4 } from "uuid";
-import Calendar from "react-calendar";
+import { DateRangePicker, Calendar } from "react-date-range";
 import PaymentMethods from "./PaymentMethods";
 import PaymentScheduleModal from "./PaymentScheduleModal";
 import PaymentModal from "./PaymentModal";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
 
 const DealModal = (props) => {
   const authContext = useContext(AuthContext);
@@ -44,11 +46,10 @@ const DealModal = (props) => {
     setScheduleItem({
       initialPaymentMethod: "",
       initialPaymentAmount: 0,
-      initialPaymentDate: Date.now(),
+      initialPaymentDate: null,
       secondPaymentMethod: "",
       secondPaymentAmount: 0,
-      secondPaymentDate: Date.now(),
-      thirdPaymentDate: Date.now(),
+      secondPaymentDate: null,
     });
     setIteration({
       installments: "",
@@ -60,11 +61,10 @@ const DealModal = (props) => {
   const [scheduleItem, setScheduleItem] = useState({
     initialPaymentMethod: "",
     initialPaymentAmount: 0,
-    initialPaymentDate: Date.now(),
+    initialPaymentDate: null,
     secondPaymentMethod: "",
     secondPaymentAmount: 0,
-    secondPaymentDate: Date.now(),
-    thirdPaymentDate: Date.now(),
+    secondPaymentDate: null,
   });
 
   const [method, setMethod] = useState({
@@ -166,6 +166,27 @@ const DealModal = (props) => {
     setPaymentModal((prevState) => !prevState);
   }, []);
 
+  const handleSelect1 = (date) => {
+    setScheduleItem({
+      initialPaymentMethod: initialPaymentMethod,
+      initialPaymentAmount: initialPaymentAmount,
+      initialPaymentDate: date,
+      secondPaymentMethod: secondPaymentMethod,
+      secondPaymentAmount: secondPaymentAmount,
+      secondPaymentDate: secondPaymentDate,
+    });
+  };
+
+  const handleSelect2 = (date) => {
+    setScheduleItem({
+      initialPaymentMethod: initialPaymentMethod,
+      initialPaymentAmount: initialPaymentAmount,
+      initialPaymentDate: initialPaymentDate,
+      secondPaymentMethod: secondPaymentMethod,
+      secondPaymentAmount: secondPaymentAmount,
+      secondPaymentDate: date,
+    });
+  };
   return (
     <>
       <div className='card grid-deal'>
@@ -292,7 +313,7 @@ const DealModal = (props) => {
                     name='ccExp'
                   />
                   <label htmlFor='quote'>Debit Card Pin</label>
-                  <inputd
+                  <input
                     onChange={onChange}
                     type='text'
                     value={ccPin}
@@ -391,15 +412,16 @@ const DealModal = (props) => {
             <div>
               <h3> Set Payment Schedule</h3>
               Schedule
-              <div className='grid-3'>
+              <div className='grid-2'>
                 <div>
                   <label htmlFor='quote'>Initial Payment Date</label>
-                  <input
-                    type='date'
+                  <Calendar
                     name='initialPaymentDate'
+                    date={initialPaymentDate}
                     value={initialPaymentDate}
-                    onChange={onChange}
-                  />{" "}
+                    onChange={handleSelect1}
+                  />
+                  <br />
                   <label htmlFor='quote'>Initial Payment Amount</label>
                   <input
                     onChange={onChange}
@@ -414,6 +436,14 @@ const DealModal = (props) => {
                     value={initialPaymentMethod}
                     name='initialPaymentMethod'
                   />
+                  <label htmlFor='quote'>Installments</label>
+                  <input
+                    onChange={onChange}
+                    type='text'
+                    value={installments}
+                    name='installments'
+                  />
+
                   <button
                     className='btn btn-block btn-success'
                     onClick={() => setPaymentScheduleState(true)}>
@@ -422,12 +452,13 @@ const DealModal = (props) => {
                 </div>
                 <div>
                   <label htmlFor='quote'>Second Payment Date</label>
-                  <input
-                    type='date'
+                  <Calendar
                     name='secondPaymentDate'
+                    date={secondPaymentDate}
                     value={secondPaymentDate}
-                    onChange={onChange}
-                  />{" "}
+                    onChange={handleSelect2}
+                  />
+                  <br />
                   <label htmlFor='quote'>Second Payment Amount</label>
                   <input
                     onChange={onChange}
@@ -442,27 +473,6 @@ const DealModal = (props) => {
                     value={secondPaymentMethod}
                     name='secondPaymentMethod'
                   />
-                  <button
-                    className='btn btn-block btn-danger'
-                    onClick={onClick2}>
-                    Set Payment Schedule
-                  </button>{" "}
-                </div>
-                <div>
-                  <label htmlFor='quote'>Remaining Installments Start</label>
-                  <input
-                    type='date'
-                    name='thirdPaymentDate'
-                    value={thirdPaymentDate}
-                    onChange={onChange}
-                  />
-                  <label htmlFor='quote'>Number of Installments</label>
-                  <input
-                    onChange={onChange}
-                    type='text'
-                    value={installments}
-                    name='installments'
-                  />
                   <label htmlFor='quote'>Installment Amount</label>
                   <input
                     onChange={onChange}
@@ -470,38 +480,45 @@ const DealModal = (props) => {
                     value={installmentAmount}
                     name='installmentAmount'
                   />
-                  <select
-                    name='interval'
-                    id='interval'
-                    value={interval}
-                    onChange={onChange}>
-                    <option>Select A payment Interval</option>
-                    <option
-                      value='single'
-                      checked={interval === "single"}
-                      onChange={onChange}>
-                      One Time
-                    </option>
-                    <option
-                      value='weekly'
-                      checked={interval === "weekly"}
-                      onChange={onChange}>
-                      Weekly
-                    </option>
-                    <option
-                      onChange={onChange}
-                      value='biweekly'
-                      checked={interval === "biweekly"}>
-                      Bi-Weekly
-                    </option>
-                    <option
-                      onChange={onChange}
-                      value='monthly'
-                      checked={interval === "monthly"}>
-                      Monthly
-                    </option>
-                  </select>
+                  <button
+                    className='btn btn-block btn-danger'
+                    onClick={onClick2}>
+                    Set Payment Schedule
+                  </button>{" "}
                 </div>
+              </div>
+              <div>
+                <select
+                  name='interval'
+                  id='interval'
+                  value={interval}
+                  onChange={onChange}>
+                  <option>Select A payment Interval</option>
+                  <option
+                    value='single'
+                    checked={interval === "single"}
+                    onChange={onChange}>
+                    One Time
+                  </option>
+                  <option
+                    value='weekly'
+                    checked={interval === "weekly"}
+                    onChange={onChange}>
+                    Weekly
+                  </option>
+                  <option
+                    onChange={onChange}
+                    value='biweekly'
+                    checked={interval === "biweekly"}>
+                    Bi-Weekly
+                  </option>
+                  <option
+                    onChange={onChange}
+                    value='monthly'
+                    checked={interval === "monthly"}>
+                    Monthly
+                  </option>
+                </select>
               </div>
             </div>
           )}

@@ -20,7 +20,7 @@ const Prospects = () => {
 const leadStyle = {
   display: "grid",
   gridTemplateRows: "repeat(10, 1fr)",
-  gridGap: ".5rem",
+  gridGap: ".15rem",
 };
 
 export default Prospects;

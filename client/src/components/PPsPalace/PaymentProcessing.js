@@ -5,20 +5,16 @@ import StatContext from "../../context/stat/statContext";
 
 const PaymentProcessing = () => {
   const statContext = useContext(StatContext);
-  const { payments, todaysPayments, getTodaysPayments, filtered } = statContext;
+  const { payments, today, getTodaysPayments, filtered } = statContext;
+
+  const { todaysPayments } = today;
 
   useEffect(() => {
     getTodaysPayments();
   }, []);
-  let dateDisplay1 = new Date(Date.now());
-  let today = Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-  }).format(dateDisplay1);
+
+  console.log(today);
+
   return (
     <div className='grid-2'>
       <div>
@@ -33,9 +29,11 @@ const PaymentProcessing = () => {
       <div>
         <h3>Process Today's Payments</h3>
         {todaysPayments
-          ? todaysPayments.map((payment) => (
-              <PaymentProcessingItem key={payment._id} payment={payment} />
-            ))
+          ? todaysPayments
+              .filter((payment) => payment.paymentId === "")
+              .map((payment) => (
+                <PaymentProcessingItem key={payment._id} payment={payment} />
+              ))
           : ""}
       </div>
     </div>
