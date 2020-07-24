@@ -4,6 +4,8 @@ import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
 import UserContext from "../../context/user/userContext";
 import CallContext from "../../context/call/callContext";
+import Moment from "react-moment";
+import { Fragment } from "react";
 
 const PopkisForm = () => {
   const leadContext = useContext(LeadContext);
@@ -38,6 +40,8 @@ const PopkisForm = () => {
         pinCode: "",
         compliant: "",
         filingStatus: "",
+        real: {},
+        bankruptcy: {},
         cpa: "",
         ssn: "",
         phone: "",
@@ -68,9 +72,12 @@ const PopkisForm = () => {
         income1Value: "",
         income2Type: "",
         income2Value: "",
+        prac: "",
         income3Type: "",
         income3Value: "",
         otherIncomeType: "",
+        emailAddresses: [],
+        phones: [],
         otherIncomeValue: "",
         creditScore: "",
         availableCredit: "",
@@ -93,6 +100,7 @@ const PopkisForm = () => {
         city: "",
         state: "",
         zip4: "",
+        prac: "",
         plaintiff: "",
         amount: "",
         emailAddress: "",
@@ -115,6 +123,10 @@ const PopkisForm = () => {
         phone2: "",
         phone3: "",
         email2: "",
+        real: {},
+        bankruptcy: {},
+        emailAddresses: [],
+        phones: [],
         email3: "",
         prac: "",
         problem1: "",
@@ -185,6 +197,8 @@ const PopkisForm = () => {
     home: "",
     homePay: "",
     wages: "",
+    phones: [],
+    emailAddresses: [],
     income1Type: "",
     income1Value: "",
     income2Type: "",
@@ -196,6 +210,7 @@ const PopkisForm = () => {
     creditScore: "",
     availableCredit: "",
     totalCredit: "",
+    prac: "",
     employerName: "",
     employerPhone: "",
     employerTime: "",
@@ -205,6 +220,7 @@ const PopkisForm = () => {
   const clearLead = () => {
     setLead({
       fullName: "",
+      prac: "",
       dob: "",
       dob2: "",
       deliveryAddress: "",
@@ -242,6 +258,8 @@ const PopkisForm = () => {
       home: "",
       homePay: "",
       wages: "",
+      phones: [],
+      emailAddresses: [],
       income1Type: "",
       income1Value: "",
       income2Type: "",
@@ -290,28 +308,31 @@ const PopkisForm = () => {
     phone3,
     email2,
     email3,
-    prac,
     problem1,
     problem2,
     problem3,
+    bankruptcy,
     resSold,
     resSold2,
+    prac,
     home,
     homePay,
     wages,
     age,
-    noteSpace2,
     income1Type,
     income1Value,
     income2Type,
+    emailAddresses,
     income2Value,
     income3Type,
     income3Value,
     otherIncomeType,
+    real,
     otherIncomeValue,
     creditScore,
     availableCredit,
     totalCredit,
+    phones,
     employerName,
     employerPhone,
     status,
@@ -322,8 +343,11 @@ const PopkisForm = () => {
     setLead({ leadFields, [e.target.name]: e.target.value });
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+  };
   return (
-    <form className='container'>
+    <form onSubmit={onSubmit} className='container'>
       <button
         className='btn-dark btn-block btn m-1 all-center'
         style={{ width: "200px", marginTop: "30px" }}
@@ -384,12 +408,12 @@ const PopkisForm = () => {
             onChange={onChange}
           />
 
-          <label htmlFor='Lex Id'>Pin Code</label>
+          <label htmlFor='Lex Id'>Age</label>
           <input
             type='text'
-            placeholder='Pin Code'
+            placeholder='Age'
             name='pinCode'
-            value={pinCode}
+            value={age ? age : ""}
             onChange={onChange}
           />
           <label htmlFor='dob'>Date of Birth</label>
@@ -537,7 +561,7 @@ const PopkisForm = () => {
             type='text'
             placeholder='Phone Number'
             name='phone2'
-            value={phone2}
+            value={phones ? phones[0] : phone2}
             onChange={onChange}
           />
           <br />
@@ -548,7 +572,7 @@ const PopkisForm = () => {
             type='text'
             placeholder='Phone Number'
             name='phone3'
-            value={phone3}
+            value={phones ? phones[1] : phone2}
             onChange={onChange}
           />
         </div>
@@ -560,7 +584,7 @@ const PopkisForm = () => {
             type='text'
             placeholder='E-Mail'
             name='email'
-            value={emailAddress}
+            value={emailAddresses ? emailAddresses[0] : emailAddress}
             onChange={onChange}
           />
           <br />
@@ -570,7 +594,7 @@ const PopkisForm = () => {
             type='text'
             placeholder='E-Mail'
             name='email2'
-            value={email2}
+            value={emailAddresses ? emailAddresses[1] : email2}
             onChange={onChange}
           />
           <br />
@@ -580,7 +604,7 @@ const PopkisForm = () => {
             type='text'
             placeholder='E-Mail'
             name='email3'
-            value={email3}
+            value={emailAddresses ? emailAddresses[2] : email3}
             onChange={onChange}
           />
         </div>
@@ -613,7 +637,7 @@ const PopkisForm = () => {
           <label htmlFor='prac'>Prac Call Info</label>
           <br />
           <textarea
-            value={noteSpace2}
+            value={prac}
             placeholder='Prac Call Notes (please include date)'
             style={{ width: "12rem" }}></textarea>
           <br />
@@ -745,6 +769,52 @@ const PopkisForm = () => {
             />{" "}
             Rents{"   "}
           </div>
+
+          {real ? (
+            <Fragment>
+              <label htmlFor='homePay'>Property Loan - Enriched</label>
+              <input
+                type='text'
+                placeholder='Mortgage'
+                name='homePay'
+                value={real.amount}
+                onChange={onChange}
+              />
+              <label htmlFor='homePay'>Property Address - Enriched</label>
+              <input
+                type='text'
+                placeholder='Property Owned'
+                name='homePay'
+                value={real.address}
+                onChange={onChange}
+              />
+            </Fragment>
+          ) : (
+            ""
+          )}
+          {bankruptcy ? (
+            <Fragment>
+              <label htmlFor='homePay'>Bankruptcy Type - Enriched</label>
+              <input
+                type='text'
+                placeholder='Mortgage'
+                name='homePay'
+                value={bankruptcy.filingType}
+                onChange={onChange}
+              />
+              <label htmlFor='homePay'>Bankruptcy Court - Enriched</label>
+              <input
+                type='text'
+                placeholder='Property Owned'
+                name='homePay'
+                value={bankruptcy.court}
+                onChange={onChange}
+              />
+            </Fragment>
+          ) : (
+            ""
+          )}
+
           <label htmlFor='homePay'>Monthly Housing Payment</label>
           <input
             type='text'

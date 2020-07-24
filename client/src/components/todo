@@ -1,6 +1,6 @@
-Popkis: popkis form update , delete docs, pop phones and emailAddresses from popkis
+Popkis: delete docs, pop phones and emailAddresses from popkis, email client docs , credit card validation and available balance and total balance, generate invoice, 
 
-Stacks: create filters based on document array lengths
+Stacks: filter by caseWorker, delete all other prospects with lienid after accepted payment.
 
 Dangerzone: Last 50 , my money
 
@@ -10,17 +10,12 @@ the big guns: make the infinite lead machine, turn reports into csv, do report m
 
 Ship Em: get the unique call id to slap in prospect, add marketing source to prospect item 
 
-Pdf population and generatation
-
 ths api, ytel api, microbilt api, lexis api
 
-route email service to all aspects of the application. 
 
-copy about 501-c3 advantages 
 
-delete all other prospects with lienid after accepted payment.
 
-credit card validation and available balance and total balance
+
 
 
 

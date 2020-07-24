@@ -25,11 +25,7 @@ const TaskItem = ({
   const { getProspect } = leadContext;
 
   console.log(assigned);
-  const duration = parseInt(
-    <Moment diff={Date.now()} unit='days'>
-      {assignedDate}
-    </Moment>
-  );
+  const duration = parseInt(<Moment fromNow></Moment>);
 
   useEffect(() => {
     if (duration < 3) {
@@ -63,10 +59,7 @@ const TaskItem = ({
 
   return (
     <div className='card' style={colorStyle}>
-      <Moment diff={Date.now()} unit='days'>
-        {assignedDate}
-      </Moment>{" "}
-      Days Since Assigned
+      Assigned <Moment fromNow>{assignedDate}</Moment>
       <Link
         to={`/prospects/${clientId}`}
         onClick={() => getProspect(clientId)}

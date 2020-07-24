@@ -934,7 +934,11 @@ const LeadState = (props) => {
       paymentId: "",
     };
 
-    sched.push(scheduleItem1, scheduleItem2);
+    sched.push(scheduleItem1);
+
+    if (scheduleItem2.secondPaymentDate) {
+      sched.push(scheduleItem2);
+    }
 
     console.log(sched);
 
@@ -962,6 +966,8 @@ const LeadState = (props) => {
         paymentAmount: iteration.installmentAmount,
         paymentId: "",
       };
+
+    arr.pop();
 
     const paySched = sched.concat(arr);
 
