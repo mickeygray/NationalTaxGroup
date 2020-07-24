@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto");
+@import "~@pdftron/webviewer-react-toolkit/dist/css/style.css";
+@import url("https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i&display=swap");
 
 /* Global Styles */
 :root {
@@ -554,6 +556,12 @@ img {
 .grid-2a {
   display: grid;
   grid-template-columns: 1fr 2fr;
+  grid-gap: 1rem;
+}
+
+.grid-2b {
+  display: grid;
+  grid-template-columns: 1fr 6fr;
   grid-gap: 1rem;
 }
 

@@ -14,6 +14,7 @@ const PopkisForm = () => {
     prospect,
     setRecent,
     note,
+    updateProspect,
     recentLead,
   } = leadContext;
 
@@ -138,6 +139,7 @@ const PopkisForm = () => {
         employerName: "",
         employerPhone: "",
         employerTime: "",
+        noteSpace2: "",
         status: "",
       });
     }
@@ -151,6 +153,7 @@ const PopkisForm = () => {
     city: "",
     state: "",
     zip4: "",
+    noteSpace2: "",
     plaintiff: "",
     amount: "",
     emailAddress: "",
@@ -220,6 +223,7 @@ const PopkisForm = () => {
       name2: "",
       address2: "",
       city2: "",
+      noteSpace2: "",
       state2: "",
       zip2: "",
       ssn2: "",
@@ -258,7 +262,6 @@ const PopkisForm = () => {
 
   const {
     dob,
-    noteSpace2,
     dob2,
     fullName,
     deliveryAddress,
@@ -281,7 +284,7 @@ const PopkisForm = () => {
     zip2,
     employerTime,
     ssn2,
-    lexId2,
+    lexId,
     relation,
     phone2,
     phone3,
@@ -296,6 +299,8 @@ const PopkisForm = () => {
     home,
     homePay,
     wages,
+    age,
+    noteSpace2,
     income1Type,
     income1Value,
     income2Type,
@@ -314,65 +319,17 @@ const PopkisForm = () => {
 
   const onChange = (e) => {
     //setDate({...dob,dob2, [e.target.name]: e.target.value })
-    setLead({
-      ...fullName,
-      deliveryAddress,
-      city,
-      state,
-      zip4,
-      plaintiff,
-      amount,
-      emailAddress,
-      pinCode,
-      compliant,
-      filingStatus,
-      cpa,
-      noteSpace2,
-      ssn,
-      phone,
-      name2,
-      address2,
-      city2,
-      state2,
-      zip2,
-      employerTime,
-      ssn2,
-      lexId2,
-      dob,
-      dob2,
-      relation,
-      phone2,
-      phone3,
-      email2,
-      email3,
-      prac,
-      problem1,
-      problem2,
-      problem3,
-      resSold,
-      resSold2,
-      home,
-      homePay,
-      wages,
-      income1Type,
-      income1Value,
-      income2Type,
-      income2Value,
-      income3Type,
-      income3Value,
-      otherIncomeType,
-      otherIncomeValue,
-      creditScore,
-      availableCredit,
-      totalCredit,
-      employerName,
-      employerPhone,
-      [e.target.name]: e.target.value,
-    });
+    setLead({ leadFields, [e.target.name]: e.target.value });
   };
 
   return (
     <form className='container'>
+      <button
+        className='btn-dark btn-block btn m-1 all-center'
+        style={{ width: "200px", marginTop: "30px" }}
+        onClick={() => updateProspect(leadFields, prospect)}>
+        Save
+      </button>
       <div className='container grid-2 '>
         <div className='card'>
           {/* contact info panel */}
@@ -526,8 +483,8 @@ const PopkisForm = () => {
           <input
             type='text'
             placeholder='Lex Id'
-            name='lexId2'
-            value={lexId2}
+            name='lexId'
+            value={lexId}
             onChange={onChange}
           />
           <label htmlFor='dob2'>Date of Birth</label>

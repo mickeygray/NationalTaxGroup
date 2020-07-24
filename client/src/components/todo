@@ -1,30 +1,26 @@
-Popkis: enrichment modal, Deal Closing interface, popkis form update 
+Popkis: popkis form update , delete docs, pop phones and emailAddresses from popkis
 
-Stacks: Design and here search prospects in one part, search clients in another part, array of leads created in shipem in another. 
+Stacks: create filters based on document array lengths
 
-Dangerzone populate last 10 prospects created on my leads allow search for specific leads call tick refinement (select)
+Dangerzone: Last 50 , my money
 
-Eyore: get and process reports from sendgrid amazon and google loop campaign phone numbers as buttons with modals. Email address cleaning Regex develop in depth piece libarary 
+Eyore: get and process reports from sendgrid amazon and google. Email address cleaning Regex develop in depth piece libarary 
 
 the big guns: make the infinite lead machine, turn reports into csv, do report math, parse invoices, pop in tableau frame, report call database.  
 
-Ship Em: Lead enrichment put request get the unique call id to slap in prospect.
+Ship Em: get the unique call id to slap in prospect, add marketing source to prospect item 
 
 Pdf population and generatation
 
-dropbox api, ths api,fine tune callrail api for eyore 
+ths api, ytel api, microbilt api, lexis api
 
 route email service to all aspects of the application. 
 
-implement json to csv  
-
 copy about 501-c3 advantages 
 
+delete all other prospects with lienid after accepted payment.
 
-
-
-
-
+credit card validation and available balance and total balance
 
 
 

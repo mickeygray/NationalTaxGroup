@@ -1,32 +1,329 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
+const upload = require("../middleware/upload");
 const Call = require("../models/Call.js");
 const Prospect = require("../models/Prospect.js");
-const CaseWorker = require("../models/CaseWorker");
-const PaymentMethod = require("../models/PaymentMethod");
-const axios = require("axios");
 const uuidv4 = require("uuid/v4");
+const crypto = require("crypto");
+const config = require("config");
+const path = require("path");
+const mongodb = require("mongodb");
+const MongoClient = require("mongodb").MongoClient;
+const ObjectID = require("mongodb").ObjectID;
+const db = config.get("mongoURI");
+const Grid = require("gridfs-stream");
+const multer = require("multer");
+const pdfFiller = require("pdffiller");
+const moment = require("moment");
+var hummus = require("hummus"),
+  PDFDigitalForm = require("../middleware/PDFDigitalForm");
+let fs = require("fs");
+var util = require("util");
+
+router.put("/:id/pdfs", auth, async (req, res) => {
+  const string = Object.keys(req.body).toString();
+
+  const distinct = (value, index, self) => {
+    return self.indexOf(value) === index;
+  };
+  String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+  let reg1 = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/; // Get emails
+  let reg2 = /^(\(\d{3}\))?[\s-]?\d{3}[\s-]?\d{4}/gim;
+  let liens = string.match(/(?<=Debtor Information\s*).*?(?=\s*Number)/gs);
+  let emails = (string.match(reg1) || []).map((e) => e.replace(reg1, "$1"));
+  let phone1 = string.match(reg2).filter(distinct);
+  let bankruptcy1 = string.match(
+    /(?<=Petitioner Information\s*).*?(?=\s*Meeting Date)/gs
+  );
+  let real1 = string.match(/(?<=Deed Record for\s*).*?(?=\s*Loan Type)/gs);
+
+  const leadString = liens.shift();
+  const leadBody =
+    "{" +
+    leadString
+      .replace(/[\s,]+/g, " ")
+      .trim()
+      .replace("Name:", '"fullName":"')
+      .replace("SSN:", '", "ssn":"')
+      .replace("Address:", '", "deliveryAddress":"')
+      .replace("Creditor Information Name:", '", "plaintiff":"')
+      .replace("Jurisdiction", '", "state":"')
+      .replace("Filing Information", "")
+      .replace("Amount", '", "amount":"')
+      .replace("Filing Date", '", "filingDate":"')
+      .concat('", "emailAddresses":"' + emails) +
+    '"}';
+
+  let lead = JSON.parse(leadBody);
+
+  lead.county = lead.deliveryAddress
+    .match(/(?<=(\d+)(?!.*\d)\s*).*?(?=\s*COUNTY)/gs)
+    .toString();
+
+  lead.phones = phone1.filter((str) => str.includes("("));
+  lead.amount = lead.amount.replace(":", "");
+  lead.filingDate = lead.filingDate.replace(": ", "");
+  lead.state = lead.state.replace(": ", "");
+  lead.plaintiff = lead.plaintiff
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString()
+    .replace(",", " ")
+    .replace(",", " ")
+    .toProperCase();
+  lead.zip4 = lead.deliveryAddress
+    .substring(
+      lead.deliveryAddress.lastIndexOf(lead.state),
+      lead.deliveryAddress.lastIndexOf(lead.county)
+    )
+    .split(" ")
+    .splice(-1)
+    .toString();
+
+  lead.city = lead.deliveryAddress
+    .substring(0, lead.deliveryAddress.indexOf(lead.state))
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .splice(-1)
+    .toString();
+
+  lead.ssn = lead.ssn
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString();
+
+  lead.amount = lead.amount
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString();
+
+  lead.deliveryAddress = lead.deliveryAddress
+    .substring(0, lead.deliveryAddress.indexOf(lead.city))
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString()
+    .replace(",", " ")
+    .replace(",", " ")
+    .replace(",", " ")
+    .toProperCase();
+
+  lead.city = lead.city.toProperCase();
+  lead.county = lead.county
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString()
+    .toProperCase();
+  lead.state = lead.state
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })
+    .toString();
+
+  lead.firstName = lead.fullName
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })[1]
+    .toString()
+    .toProperCase();
+
+  lead.lastName = lead.fullName
+    .split(" ")
+    .filter(function (el) {
+      return el != "";
+    })[0]
+    .toString()
+    .toProperCase();
+
+  lead.fullName = lead.fullName.replace(
+    lead.fullName,
+    lead.firstName + " " + lead.lastName
+  );
+
+  let realIndex1 = real1.toString().search(/Name/);
+  let realIndex2 = real1.toString().search(/Address/);
+  let realIndex3 = real1.toString().search(/County\/FIPS/);
+  let realIndex4 = real1.toString().search(/Mortgage Information/);
+
+  const realField1 = real1.toString().slice(realIndex1, realIndex2);
+  const realField2 = real1.toString().slice(realIndex2, realIndex3);
+  const realField3 = real1
+    .toString()
+    .slice(realIndex4, real1.toString().length);
+
+  const colon1 = realField1.search(":");
+  const colon2 = realField2.search(":");
+
+  const name =
+    '"' +
+    realField1.slice(0, colon1).toLowerCase() +
+    '"' +
+    ':"' +
+    realField1.slice(colon1 + 1, realField1.length) +
+    '",';
+
+  const address =
+    '"' +
+    realField2.slice(0, colon2).toLowerCase() +
+    '"' +
+    ':"' +
+    realField2.slice(colon2 + 1, realField2.length) +
+    '",';
+
+  const loan =
+    '"' + realField3.slice(realField3.length - 16, realField3.length) + '"';
+
+  const colon3 = loan.search(":");
+
+  const bone =
+    loan.slice(0, colon3) + '"' + ':"' + loan.slice(colon3 + 1, loan.length);
+
+  const stone = bone.toLowerCase().trim();
+
+  const realBody = "{" + name + address + stone + "}";
+
+  lead.real = JSON.parse(realBody.replace(/\s{2,10}/g, " "));
+
+  let bankIndex1 = bankruptcy1.toString().search(/Bankruptcy Information/);
+  let bankIndex2 = bankruptcy1.toString().search(/Court/);
+  let bankIndex3 = bankruptcy1.toString().search(/Filing Date/);
+  let bankIndex4 = bankruptcy1.toString().search(/Filing Type/);
+
+  const bankField1 = bankruptcy1.toString().slice(bankIndex1, bankIndex2);
+  const bankField2 = bankruptcy1.toString().slice(bankIndex2, bankIndex3);
+  const bankField3 = bankruptcy1
+    .toString()
+    .slice(bankIndex4, bankruptcy1.toString().length);
+
+  const colon4 = bankField1.search(":");
+  const colon5 = bankField2.search(":");
+  const colon6 = bankField3.search(":");
+
+  const loc =
+    '"' +
+    bankField2.slice(0, colon5).toLowerCase().trim() +
+    '"' +
+    ':"' +
+    bankField2.slice(colon5 + 1, bankField2.length - 1).trim() +
+    '",';
+
+  const gock = loc.replace(/\r?\n|\r/g, "");
+
+  const negro =
+    '"' +
+    bankField3.slice(0, colon6).toLowerCase().trim() +
+    '"' +
+    ':"' +
+    bankField3.slice(colon6 + 1, bankField3.length).trim() +
+    '"';
+
+  const begro = negro.replace(" type", "Type");
+
+  const bankBody = "{" + gock + begro + "}";
+
+  lead.bankruptcy = JSON.parse(bankBody);
+  lead.age = string.match(/(?<=[(]Age:\s*).*?(?=\s*[)])/gs)[0].toString();
+  lead.dob = string
+    .match(/(?<=[-]XXXX\s*).*?(?=\s*[(]Age:)/gs)[0]
+    .toString()
+    .trim();
+
+  const regex = new RegExp("/((^[A-Z][,][A-Z]))/", "g");
+
+  lead.emailAddresses = lead.emailAddresses.split(",").filter(distinct);
+
+  const {
+    fullName,
+    ssn,
+    deliveryAddress,
+    plaintiff,
+    state,
+    amount,
+    filingDate,
+    emailAddresses,
+    county,
+    phones,
+    zip4,
+    city,
+    firstName,
+    lastName,
+    real,
+    bankruptcy,
+    age,
+    dob,
+  } = lead;
+
+  const enriched = await Prospect.findByIdAndUpdate(
+    req.params.id,
+    {
+      "$set": {
+        "fullName": fullName,
+        "ssn": ssn,
+        "deliveryAddress": deliveryAddress,
+        "plaintiff": plaintiff,
+        "state": state,
+        "amount": amount,
+        "filingDate": filingDate,
+        "county": county,
+        "zip4": zip4,
+        "city": city,
+        "firstName": firstName,
+        "lastName": lastName,
+        "age": age,
+        "dob": dob,
+        "bankruptcy": bankruptcy,
+        "real.name": real.name,
+        "real.address": real.address,
+        "real.amount": real.amount,
+      },
+      "$push": {
+        "phones": phones,
+        "emailAddresses": emailAddresses,
+      },
+    },
+    { new: true, upsert: true }
+  );
+  res.json(enriched);
+  console.log(enriched);
+});
+
+router.post("/form", auth, async (req, res) => {
+  var pdfParser = hummus.createReader("/f1040");
+  var digitalForm = new PDFDigitalForm(pdfParser);
+  // save form values into fields.json
+  if (digitalForm.hasForm()) {
+    fs.writeFileSync(
+      "./fields.json",
+      JSON.stringify(digitalForm.fields, null, 4)
+    );
+  }
+});
 
 router.get("/status", auth, async (req, res) => {
-  const statusa = Object.values(req.query.q)
-    .toString()
-    .replace(",", "")
-    .replace(",", "")
-    .replace(",", "")
-    .replace(",", "")
-    .replace(",", "")
-    .replace(",", "")
-    .replace(",", "")
-    .replace(",", "");
-
-  const prospects = await Prospect.find({ "status": statusa });
+  const regex = new RegExp(`${req.query.q}`, "gi");
+  const prospects = await Prospect.find({ status: req.query.q });
 
   console.log(prospects);
   res.json(prospects);
-
-  //const prospects = await Prospect.find(query);
-  //res.json(prospects);
 });
 
 router.post("/calls", auth, async (req, res, next) => {
@@ -82,12 +379,6 @@ router.get("/calls/today/", auth, async (req, res) => {
   const calls = await Call.find();
 
   res.json(calls);
-});
-
-router.get("/today/", auth, async (req, res) => {
-  const prospects = await Prospect.find();
-
-  res.json(prospects);
 });
 
 router.get("/payments/searchDates", auth, async (req, res) => {
@@ -199,55 +490,21 @@ router.get("/paymentMethods/", auth, async (req, res) => {
     res.json(paymentMethod);
   }
 });
-router.get("/:id", auth, async (req, res) => {
+
+router.get("/today", auth, async (req, res) => {
   // console.log(req);
-  const prospect = await Prospect.findById(req.params.id);
 
-  res.json(prospect);
-});
+  const today = moment().startOf("day");
 
-router.get("/:id/paymentSchedule", auth, async (req, res) => {
-  // console.log(req);
-  const prospect = await Prospect.findById(req.params.id);
-
-  const { paymentSchedule } = prospect;
-
-  let totalPay = [];
-  let redPay = [];
-  let refPay = [];
-
-  function groupBy(paymentSchedule, paymentId) {
-    return paymentSchedule.reduce(function (memo, x) {
-      if (!memo[x[paymentId]]) {
-        memo[x[paymentId]] = [];
-      }
-      memo[x[paymentId]].push(x);
-      return memo;
-    }, {});
-  }
-
-  let quotePay = groupBy(paymentSchedule, "");
-
-  console.log(quotePay);
-});
-
-router.put("/:id/paymentSchedule/:id/paymentId", auth, async (req, res) => {
-  const payid = Object.values(req.body).toString();
-
-  const prospect = await Prospect.findOneAndUpdate(
-    {
-      "paymentSchedule._id": req.params.id,
+  const prospects = await Prospect.find({
+    createDate: {
+      $gte: today.toDate(),
+      $lte: moment(today).endOf("day").toDate(),
     },
-    {
-      "$set": {
-        "paymentSchedule.$.paymentId": payid,
-      },
-    },
-    { new: true }
-  );
+  });
 
-  console.log(prospect);
-  res.json(prospect);
+  console.log(prospects);
+  res.json(prospects);
 });
 
 router.get("/", auth, async (req, res) => {
@@ -265,7 +522,7 @@ router.get("/", auth, async (req, res) => {
 });
 
 router.post("/", auth, async (req, res) => {
-  console.log(req.body);
+  console.log(req.body, "sdfsdfdsfdsf");
   const {
     phone,
     fullName,
@@ -282,6 +539,12 @@ router.post("/", auth, async (req, res) => {
     filingStatus,
     cpa,
     ssn,
+    real,
+    age,
+    dob,
+    emailAddresses,
+    phones,
+    bankruptcy,
   } = req.body;
   /*
   let name2;
@@ -351,6 +614,12 @@ router.post("/", auth, async (req, res) => {
     cpa,
     ssn,
     createDate,
+    real,
+    age,
+    dob,
+    emailAddresses,
+    phones,
+    bankruptcy,
   });
 
   const prospect = await newProspect.save();
@@ -358,10 +627,74 @@ router.post("/", auth, async (req, res) => {
   res.json(prospect);
 });
 
+router.get("/:_id/resoStatus", auth, async (req, res) => {
+  const id = req.query.q;
+
+  console.log(req.query.q);
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  const prospect = await Prospect.findById(req.params._id);
+  const { resoStatus } = prospect;
+
+  const {
+    representation,
+    federalFile,
+    stateFile,
+    hardship,
+    offer,
+    paymentPlan,
+    appeal,
+    corp,
+    annuity,
+  } = resoStatus;
+
+  const docs = representation.concat(
+    federalFile,
+    stateFile,
+    hardship,
+    offer,
+    paymentPlan,
+    appeal,
+    corp,
+    annuity
+  );
+
+  console.log(docs);
+
+  function search(nameKey, myArray) {
+    for (var i = 0; i < myArray.length; i++) {
+      if (myArray[i].id === nameKey) {
+        return myArray[i];
+      }
+    }
+  }
+  var file = search(id, docs);
+
+  console.log(file);
+  const fileName = file.document;
+
+  gfs.files.find({ filename: fileName }).toArray(function (err, files) {
+    if (err) {
+      res.json(err);
+    }
+
+    console.log(files);
+    if (files.length > 0) {
+      var mime = files[0].contentType;
+      var filename = files[0].filename;
+      res.set("Content-Type", mime);
+      res.set("Content-Disposition", "inline; filename=" + filename);
+      var read_stream = gfs.createReadStream({ filename: filename });
+      read_stream.pipe(res);
+    } else {
+      res.json("File Not Found");
+    }
+  });
+});
+
 router.put("/:id", auth, async (req, res) => {
   const {
     quote,
-    note,
     createdBy,
     closerId,
     fullName,
@@ -416,9 +749,9 @@ router.put("/:id", auth, async (req, res) => {
     employerName,
     employerPhone,
   } = req.body;
-  const notes = [];
+
   const leadFields = {};
-  if (notes) leadFields.notes = [notes];
+
   if (dob) leadFields.dob = dob;
   if (quote) leadFields.quote = quote;
   if (dob2) leadFields.dob2 = dob2;
@@ -477,33 +810,16 @@ router.put("/:id", auth, async (req, res) => {
   if (employerName) leadFields.employerTime = employerTime;
 
   try {
-    let prospect = await Prospect.findById(req.params.id);
-
-    if (!prospect) return res.status(404).json({ msg: "lead not found" });
-
-    if (note) {
-      prospect = await Prospect.findByIdAndUpdate(
-        req.params.id,
-        { $push: { notes: note } },
-        { "new": true }
-      );
-    } else {
-      prospect = await Prospect.findByIdAndUpdate(
-        req.params.id,
-        { $set: leadFields },
-        { new: true }
-      );
-    }
+    let prospect = await Prospect.findByIdAndUpdate(
+      req.params.id,
+      { $set: leadFields },
+      { new: true }
+    );
     res.json(prospect);
     console.log(prospect);
   } catch (err) {
     console.log(err);
   }
-});
-
-router.delete("/:id", auth, async (req, res) => {
-  const prospect = req.params._id;
-  const noteId = req.body.id;
 });
 
 router.post("/:_id/notes", auth, async (req, res) => {
@@ -548,6 +864,13 @@ router.put("/:_id/notes", auth, async (req, res) => {
       },
     },
   });
+
+  res.json(prospect);
+});
+
+router.get("/:id", auth, async (req, res) => {
+  // console.log(req);
+  const prospect = await Prospect.findById(req.params.id);
 
   res.json(prospect);
 });
@@ -695,16 +1018,6 @@ router.put("/:_id/paymentMethods", auth, async (req, res) => {
   console.log(prospect);
 });
 
-router.put("/:_id/paymentSchedule", auth, async (req, res) => {
-  console.log(req.body);
-
-  const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
-    "$push": { "paymentSchedule": req.body },
-  });
-  res.json(prospect);
-  console.log(prospect);
-});
-
 router.put("/:_id/paymentSchedule/:_id", auth, async (req, res) => {
   console.log(req.body);
 
@@ -728,11 +1041,11 @@ router.put("/:_id/paymentSchedule/:_id", auth, async (req, res) => {
     },
     { new: true }
   );
+
   res.json(prospect);
-  console.log(prospect);
 });
 
-router.put("/:id/resoStatus", auth, async (req, res) => {
+/*
   const {
     federalFile,
     stateFile,
@@ -758,7 +1071,7 @@ router.put("/:id/resoStatus", auth, async (req, res) => {
   );
 
   res.json(prospect);
-});
+  */
 
 router.get("/:_id/notes", auth, async (req, res) => {
   const prospect = await Prospect.findById(req.params.id);
@@ -825,9 +1138,9 @@ router.delete("/:_id/caseWorkers/", auth, async (req, res) => {
 });
 
 router.delete("/:_id/paymentSchedule/", auth, async (req, res) => {
-  console.log(req.query.q);
+  console.log(req.params._id);
   try {
-    const prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    let prospect = await Prospect.findByIdAndUpdate(req.params._id, {
       $pull: { "paymentSchedule": { "_id": req.query.q } },
     });
 
@@ -836,5 +1149,557 @@ router.delete("/:_id/paymentSchedule/", auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
+});
+
+router.get("/:id/paymentStatus", auth, async (req, res) => {
+  let prospect = await Prospect.findById(req.params.id);
+
+  res.json(prospect.paymentStatus);
+});
+
+router.put("/:_id/paymentSchedule", auth, async (req, res) => {
+  let prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$push": { "paymentSchedule": req.body },
+  });
+
+  res.json(prospect);
+
+  console.log(prospect);
+});
+
+router.put("/:_id/status", auth, async (req, res) => {
+  console.log(req.body, "111111");
+
+  const { val } = req.body;
+  const status = Object.values(val)
+    .toString()
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "")
+    .replace(",", "");
+
+  console.log(status, "11111111111111111111111111111111111111111");
+
+  let prospect = await Prospect.findByIdAndUpdate(req.params._id, {
+    "$set": {
+      "status": status,
+    },
+  });
+
+  res.json(prospect);
+
+  console.log(prospect);
+});
+
+router.put("/:id/paymentSchedule/:id/paymentId", auth, async (req, res) => {
+  const payid = Object.values(req.body).toString();
+
+  const prospect = await Prospect.findOneAndUpdate(
+    {
+      "paymentSchedule._id": req.params.id,
+    },
+    {
+      "$set": {
+        "paymentSchedule.$.paymentId": payid,
+      },
+    },
+    { new: true }
+  );
+
+  console.log(prospect);
+  res.json(prospect);
+});
+
+router.get("/:id", auth, async (req, res) => {
+  // console.log(req);
+  const prospect = await Prospect.findById(req.params.id);
+
+  res.json(prospect);
+});
+
+router.get("/:id/paymentStatus", auth, async (req, res) => {
+  let prospect = await Prospect.findById(req.params.id);
+
+  res.json(prospect.paymentStatus);
+});
+
+router.get("/:id/paymentSchedule", auth, async (req, res) => {
+  let prospect = await Prospect.findById(req.params.id);
+  console.log(req.params.id, "111111");
+  const { paymentSchedule } = prospect;
+
+  let totalPay = [];
+  let redPay = [];
+  let refPay = [];
+  let paymentsLeft = [];
+
+  console.log(paymentSchedule);
+
+  paymentSchedule.forEach((payment) => {
+    switch (true) {
+      case payment.paymentId.length > 30:
+        totalPay.push(payment);
+        break;
+      case payment.paymentId.length === 18:
+        redPay.push(payment);
+        break;
+      case payment.paymentId.length === 19:
+        refPay.push(payment);
+        break;
+      case payment.paymentId.length === 0:
+        paymentsLeft.push(payment);
+        break;
+    }
+  });
+
+  const paymentArrays = {
+    totalPay,
+    redPay,
+    refPay,
+    paymentsLeft,
+  };
+
+  const quoteArray = paymentsLeft.map(function (payment) {
+    return payment.paymentAmount;
+  });
+
+  const payArray = totalPay.map(function (payment) {
+    return payment.paymentAmount;
+  });
+
+  const redArray = redPay.map(function (payment) {
+    return payment.paymentAmount;
+  });
+
+  const refArray = refPay.map(function (payment) {
+    return payment.paymentAmount;
+  });
+
+  redArray.push(0);
+  refArray.push(0);
+  payArray.push(0);
+  quoteArray.push(0);
+
+  const paymentsRemaining = paymentsLeft.length;
+
+  console.log(paymentsLeft.length);
+  console.log(totalPay.length);
+  console.log(paymentsRemaining);
+
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+  const total = payArray.reduce(reducer).toFixed(2);
+  const redLine = redArray.reduce(reducer).toFixed(2);
+  const refunded = refArray.reduce(reducer).toFixed(2);
+  const balance = quoteArray.reduce(reducer).toFixed(2);
+
+  const quote = parseFloat(total) + parseFloat(balance);
+
+  if (redLine < 1) redArray.pop();
+  if (refArray < 1) refArray.pop();
+  if (payArray < 1) payArray.pop();
+
+  let gross = 0;
+  let initialPaymentDate = 0;
+  let lastPaymentDate = 0;
+  let lastPayment = 0;
+  let initial = 0;
+  let percentPaid = 0;
+
+  if (total > 0)
+    initialPayment = totalPay.reduce((r, o) =>
+      o.paymentDate < r.paymentDate ? o : r
+    );
+
+  if (total > 0)
+    lastPayment = totalPay.reduce((r, o) =>
+      o.paymentDate > r.paymentDate ? o : r
+    );
+  if (total > 0) gross = quote - refunded;
+  if (total > 0) initialPaymentDate = initialPayment.paymentDate;
+  if (total > 0) lastPaymentDate = lastPayment.paymentDate;
+  if (total > 0) initial = initialPayment.paymentAmount;
+  if (total > 0) lastPayment = lastPayment.paymentAmount;
+  if (total > 0) percentPaid = total / gross;
+
+  const paymentStatus = {
+    quote,
+    gross,
+    initial,
+    total,
+    redLine,
+    refunded,
+    balance,
+    initialPaymentDate,
+    lastPaymentDate,
+    lastPayment,
+    percentPaid,
+    paymentsRemaining,
+  };
+
+  console.log(paymentStatus);
+
+  const prospect2 = await Prospect.findByIdAndUpdate(
+    req.params.id,
+    {
+      "$set": {
+        "paymentStatus.quote": paymentStatus.quote,
+        "paymentStatus.gross": paymentStatus.gross,
+        "paymentStatus.initial": paymentStatus.initial,
+        "paymentStatus.total": paymentStatus.total,
+        "paymentStatus.redLine": paymentStatus.redLine,
+        "paymentStatus.refunded": paymentStatus.refunded,
+        "paymentStatus.balance": paymentStatus.balance,
+        "paymentStatus.initialPaymentDate": paymentStatus.initialPaymentDate,
+        "paymentStatus.lastPaymentDate": paymentStatus.lastPaymentDate,
+        "paymentStatus.lastPayment": paymentStatus.lastPayment,
+        "paymentStatus.percentPaid": paymentStatus.percentPaid,
+        "paymentStatus.paymentsRemaining": paymentStatus.paymentsRemaining,
+      },
+    },
+    { new: true }
+  );
+
+  console.log(prospect2.paymentStatus);
+
+  res.json(prospect2);
+});
+
+router.put(
+  "/:id/resoStatus/representation/:id",
+  upload,
+  auth,
+  async (req, res) => {
+    console.log(req.params.id);
+    const prospect = await Prospect.findOneAndUpdate(
+      { "_id": req.body.prospectId },
+      {
+        "$set": {
+          "resoStatus.representation.$[].document": req.file.filename,
+          "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+          "resoStatus.representation.$[].id": req.body.id,
+        },
+        new: true,
+        arrayFilters: [{ "_id": req.params.id }],
+      },
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+
+    console.log(prospect.resoStatus.representation);
+    res.status(200).json(prospect);
+  }
+);
+
+router.put("/:id/resoStatus/representation/", auth, async (req, res) => {
+  console.log(req.body);
+
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.representation": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/federalFile/", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.federalFile": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put(
+  "/:id/resoStatus/federalFile/:id",
+  upload,
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "_id": req.body.prospectId },
+      {
+        "$set": {
+          "resoStatus.representation.$[].document": req.file.filename,
+          "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+          "resoStatus.representation.$[].id": req.body.id,
+        },
+        new: true,
+        arrayFilters: [{ "_id": req.params.id }],
+      },
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+    console.log(prospect);
+  }
+);
+
+router.put("/:id/resoStatus/stateFile/", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.stateFile": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/stateFile/:id", upload, auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    { "_id": req.body.prospectId },
+    {
+      "$set": {
+        "resoStatus.representation.$[].document": req.file.filename,
+        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+        "resoStatus.representation.$[].id": req.body.id,
+      },
+      new: true,
+      arrayFilters: [{ "_id": req.params.id }],
+    },
+    (err) => {
+      if (err) res.status(400).json(err);
+    }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/hardship/:id", upload, auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    { "_id": req.body.prospectId },
+    {
+      "$set": {
+        "resoStatus.representation.$[].document": req.file.filename,
+        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+        "resoStatus.representation.$[].id": req.body.id,
+      },
+      new: true,
+      arrayFilters: [{ "_id": req.params.id }],
+    },
+    (err) => {
+      if (err) res.status(400).json(err);
+    }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+router.put("/:id/resoStatus/hardship/", auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    { "_id": req.body.prospectId },
+    {
+      "$set": {
+        "resoStatus.representation.$[].document": req.file.filename,
+        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+        "resoStatus.representation.$[].id": req.body.id,
+      },
+      new: true,
+      arrayFilters: [{ "_id": req.params.id }],
+    },
+    (err) => {
+      if (err) res.status(400).json(err);
+    }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put(
+  "/:id/resoStatus/paymentPlan/:id",
+  upload,
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "_id": req.body.prospectId },
+      {
+        "$set": {
+          "resoStatus.representation.$[].document": req.file.filename,
+          "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+          "resoStatus.representation.$[].id": req.body.id,
+        },
+        new: true,
+        arrayFilters: [{ "_id": req.params.id }],
+      },
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+    console.log(prospect);
+  }
+);
+router.put("/:id/resoStatus/paymentPlan/", auth, async (req, res) => {
+  console.log(req.file);
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.paymentPlan": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/offer/:id", upload, auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    { "_id": req.body.prospectId },
+    {
+      "$set": {
+        "resoStatus.representation.$[].document": req.file.filename,
+        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+        "resoStatus.representation.$[].id": req.body.id,
+      },
+      new: true,
+      arrayFilters: [{ "_id": req.params.id }],
+    },
+    (err) => {
+      if (err) res.status(400).json(err);
+    }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+router.put("/:id/resoStatus/offer/", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.offer": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/appeal/:id", upload, auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    { "_id": req.body.prospectId },
+    {
+      "$set": {
+        "resoStatus.representation.$[].document": req.file.filename,
+        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+        "resoStatus.representation.$[].id": req.body.id,
+      },
+      new: true,
+      arrayFilters: [{ "_id": req.params.id }],
+    },
+    (err) => {
+      if (err) res.status(400).json(err);
+    }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/appeal/", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.appeal": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/corp/:id", upload, auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    { "_id": req.body.prospectId },
+    {
+      "$set": {
+        "resoStatus.representation.$[].document": req.file.filename,
+        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+        "resoStatus.representation.$[].id": req.body.id,
+      },
+      new: true,
+      arrayFilters: [{ "_id": req.params.id }],
+    },
+    (err) => {
+      if (err) res.status(400).json(err);
+    }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/corp/", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.corp": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
+});
+
+router.put("/:id/resoStatus/annuity/:id", upload, auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    { "_id": req.body.prospectId },
+    {
+      "$set": {
+        "resoStatus.representation.$[].document": req.file.filename,
+        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
+        "resoStatus.representation.$[].id": req.body.id,
+      },
+      new: true,
+      arrayFilters: [{ "_id": req.params.id }],
+    },
+    (err) => {
+      if (err) res.status(400).json(err);
+    }
+  );
+  res.json(prospect);
+  console.log(prospect);
+});
+router.put("/:id/resoStatus/annuity/", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.annuity": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
+    },
+  });
+  res.json(prospect);
+  console.log(prospect);
 });
 module.exports = router;

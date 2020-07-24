@@ -6,7 +6,7 @@ const config = require("config");
 const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const moment = require("moment");
-
+const Prospect = require("../models/Prospect");
 const User = require("../models/User");
 
 // @route     POST api/users
@@ -96,18 +96,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/:_id/name", auth, async (req, res) => {
-  console.log(req.params._id);
+router.get("/search", auth, async (req, res) => {
+  const reqObj = JSON.parse(req.query.q);
 
-  let user = await User.findById(req.params._id);
+  const { endpoint, id, clientId } = reqObj;
 
-  res.json(user);
-});
+  try {
+    const user = await User.find({
+      "tasks.id": id,
+    });
 
-router.get("/:_id", auth, async (req, res) => {
-  const user = await User.findById(req.params.id);
+    let prospect = await Prospect.findById(clientId);
 
-  res.json(user);
+    function search(nameKey, myArray) {
+      for (var i = 0; i < myArray.length; i++) {
+        if (myArray[i].name === nameKey) {
+          return myArray[i];
+        }
+      }
+    }
+
+    const searchedArray = eval("prospect.resoStatus." + endpoint);
+
+    const assignments = search(reqObj.name, searchedArray);
+
+    console.log(assignments);
+    res.json(assignments);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
 router.put("/:id/reminders", auth, async (req, res) => {
@@ -143,7 +161,7 @@ router.put("/:id/reminders", auth, async (req, res) => {
 // @access    Private
 router.delete("/:id/reminders", auth, async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.params.id, {
+    const user = await User.findByIdAndUpdate(req.params.id, {
       $pull: { "reminders": { "id": req.query.q } },
     });
 
@@ -152,6 +170,63 @@ router.delete("/:id/reminders", auth, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
+  }
+});
+
+router.delete("/:id/tasks", auth, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, {
+      $pull: { "tasks": { "id": req.query.q } },
+    });
+
+    console.log(user);
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/:_id/name", auth, async (req, res) => {
+  console.log(req.params._id);
+
+  let user = await User.findById(req.params._id);
+
+  res.json(user);
+});
+
+router.get("/:_id", auth, async (req, res) => {
+  console.log(req.params._id);
+
+  const user = await User.findById(req.params._id);
+
+  console.log(user);
+
+  res.json(user);
+});
+
+router.put("/:_id/tasks", auth, async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { name: req.body.assigned },
+      {
+        $push: {
+          "tasks": {
+            clientName: req.body.clientName,
+            assignedDate: req.body.assignedDate,
+            updatedDate: req.body.updatedDate,
+            clientId: req.body.clientId,
+            id: req.body.id,
+            assigned: req.body.assigned,
+            assignment: req.body.assignment,
+          },
+        },
+      }
+    );
+    res.json(user);
+    console.log(user);
+  } catch (err) {
+    console.log(err);
   }
 });
 

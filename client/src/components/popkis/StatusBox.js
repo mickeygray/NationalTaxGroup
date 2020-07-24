@@ -14,6 +14,9 @@ import CaseWorkers from "./CaseWorkers";
 import LexisModal from "../shipem/LexisModal";
 import DealModal from "./DealModal";
 import BillingStatus from "./BillingStatus";
+import StatusBar from "./StatusBar";
+
+import ResoModal from "./ResoModal";
 import { v4 as uuidv4 } from "uuid";
 
 const StatusBox = (props) => {
@@ -23,51 +26,66 @@ const StatusBox = (props) => {
   const { notifyUser, getUserNames } = useContext(UserContext);
   const {
     putResoStatus,
-    addLexis,
+
+    addLexisProspect,
     updateProspect,
+    getResoStatus,
     updateProspectStatus,
     claimProspect,
   } = leadContext;
 
-  const { prospect } = props;
+  const { prospect, togglePdfState } = props;
 
-  const {
-    _id,
-    status,
-    caseWorkers,
-    resoStatus,
-    paymentStatus,
-    originator,
-  } = prospect;
-  useEffect(() => {
-    if (resoStatus) {
-      setReso(resoStatus);
-    }
-  }, [resoStatus]);
-
-  console.log(prospect);
-
-  const [money, setMoney] = useState({
-    initial: 0,
-    total: 0,
-    gross: 0,
-    loan: 0,
-    lastPayment: 0,
-    lastPaymentDate: Date.now(),
-    initialPaymentDate: Date.now(),
-    dealId: uuidv4(),
-    upsellId: uuidv4(),
-  });
+  const { _id, status, caseWorkers, paymentStatus, originator } = prospect;
 
   const [reso, setReso] = useState({
-    federalFile: "",
-    stateFile: "",
-    hardship: "",
-    paymentPlan: "",
-    offer: "",
-    corp: "",
+    representation1: false,
+    federalFile1: false,
+    stateFile1: false,
+    hardship1: false,
+    paymentPlan1: false,
+    offer1: false,
+    corp1: false,
+    annuity1: false,
   });
 
+  const {
+    representation1,
+    federalFile1,
+    stateFile1,
+    hardship1,
+    paymentPlan1,
+    offer1,
+    corp1,
+    annuity1,
+  } = reso;
+
+  const onChange = (e) => {
+    setReso({
+      representation1,
+      [e.target.name]: e.target.checked,
+      federalFile1,
+      [e.target.name]: e.target.checked,
+      stateFile1,
+      [e.target.name]: e.target.checked,
+      hardship1,
+      [e.target.name]: e.target.checked,
+      paymentPlan1,
+      [e.target.name]: e.target.checked,
+      offer1,
+      [e.target.name]: e.target.checked,
+      corp1,
+      [e.target.name]: e.target.checked,
+      annuity1,
+      [e.target.name]: e.target.checked,
+    });
+  };
+
+  const [resoState, setResoState] = useState(false);
+
+  const toggleResoModal = useCallback(() => {
+    setResoState((prevState) => !prevState);
+  });
   const [claimModal, setClaimModal] = useState(false);
   const toggleClaimModal = useCallback(() => {
     setClaimModal((prevState) => !prevState);
@@ -79,235 +97,205 @@ const StatusBox = (props) => {
 
   const [showModal, setModalState] = useState(false);
 
+  const [file, setFile] = useState("");
+
   const [dealModal, setDealModal] = useState(false);
   const toggleDealModal = useCallback(() => {
     setDealModal((prevState) => !prevState);
   }, []);
-  const onChange = (e) => {
-    setReso({ ...reso, [e.target.name]: e.target.value });
+
+  const onUpload = (e) => {
+    setFile(e.target.files[0]);
   };
-  const { federalFile, stateFile, hardship, paymentPlan, offer, corp } = reso;
 
   console.log(reso);
-  const { gross, initial, total, quote, loans } = money;
+
   return (
     <Fragment>
-      {dealModal ? (
-        <div>
-          <DealModal
-            paymentStatus={paymentStatus}
-            toggleDealModal={toggleDealModal}
-          />
-        </div>
+      {resoState ? (
+        <ResoModal
+          toggleResoModal={toggleResoModal}
+          prospect={prospect}
+          reso={reso}
+        />
       ) : (
         <Fragment>
-          <h3>Name : {prospect.fullName}</h3>
-
-          <div className='card leadStatus grid-3'>
+          {dealModal ? (
             <div>
-              <h3>Resolution Status</h3>
-              <div className='grid-2'>
+              <DealModal
+                paymentStatus={paymentStatus}
+                toggleDealModal={toggleDealModal}
+              />
+            </div>
+          ) : (
+            <Fragment>
+              <h3>Name : {prospect.fullName}</h3>
+              <StatusBar
+                paymentStatus={paymentStatus}
+                resoStatus={prospect.resoStatus}
+              />
+              <div className='card leadStatus grid-3'>
                 <div>
-                  <h5>Resolution Completed</h5>
-                  <ul>
-                    <li>
-                      {" "}
-                      <label htmlFor='filedFederal'>Filed Federal </label>
+                  <div>
+                    <ul>
+                      <li>
+                        {" "}
+                        <label htmlFor='filedFederal'>Representation</label>
+                        <input
+                          name='representation1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.representation1}
+                          value={representation1}
+                        />
+                      </li>
+
+                      <li>
+                        {" "}
+                        <label htmlFor='filedFederal'>
+                          Federal Tax Returns
+                        </label>
+                        <input
+                          name='federalFile1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.federalFile1}
+                          value={federalFile1}
+                        />
+                      </li>
+                      <li>
+                        <label htmlFor='filedState'>State Tax Returns</label>
+                        <input
+                          name='stateFile1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.stateFile1}
+                          value={stateFile1}
+                        />
+                      </li>
+                      <li>
+                        {" "}
+                        <label htmlFor='cnc'>Currently Non Collectible</label>
+                        <input
+                          name='hardship1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.hardship1}
+                          value={hardship1}
+                        />
+                      </li>
+                      <li>
+                        <label htmlFor='ddia'>Streamline / DDIA / State</label>
+                        <input
+                          name='paymentPlan1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.paymentPlan1}
+                          value={paymentPlan1}
+                        />
+                      </li>
+                      <li>
+                        {" "}
+                        <label htmlFor='oic'>Offer In Compromise</label>
+                        <input
+                          name='offer1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.offer1}
+                          value={offer1}
+                        />
+                      </li>
+                      <li>
+                        <label htmlFor='filedFederal'>Corporate</label>
+                        <input
+                          name='corp1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.corp1}
+                          value={corp1}
+                        />
+                      </li>
+
+                      <li>
+                        <label htmlFor='filedFederal'>Annuity</label>
+                        <input
+                          name='annuity1'
+                          type='checkbox'
+                          onChange={onChange}
+                          checked={reso.annuity1}
+                          value={annuity1}
+                        />
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className='grid-2'>
+                    {showModal && (
+                      <LexisModal toggleVisibility={toggleVisibility} />
+                    )}
+                    <div className=''>
                       <input
-                        name='federalFile'
-                        type='checkbox'
-                        checked={federalFile === "filed"}
-                        value='filed'
-                        onChange={onChange}
+                        type='file'
+                        onChange={onUpload}
+                        style={{ width: "200px" }}
                       />
-                    </li>
-                    <li>
-                      <label htmlFor='filedState'>Filed State </label>
-                      <input
-                        name='stateFile'
-                        type='checkbox'
-                        checked={stateFile === "filed"}
-                        value='filed'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      {" "}
-                      <label htmlFor='cnc'>Currently Non Collectible</label>
-                      <input
-                        name='hardship'
-                        type='checkbox'
-                        checked={hardship === "hardship"}
-                        value='hardship'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      <label htmlFor='ddia'>Streamline / DDIA / State</label>
-                      <input
-                        name='paymentPlan'
-                        type='checkbox'
-                        checked={paymentPlan === "paymentplan"}
-                        value='paymentplan'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      {" "}
-                      <label htmlFor='oic'>Offer In Compromise</label>
-                      <input
-                        name='offer'
-                        type='checkbox'
-                        checked={offer === "oic"}
-                        value='oic'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      <label htmlFor='filedFederal'>Corporate / Annuity</label>
-                      <input
-                        name='corp'
-                        type='checkbox'
-                        checked={corp === "corp"}
-                        value='corp'
-                        onChange={onChange}
-                      />
-                    </li>
-                  </ul>
+                      <button
+                        className='btn-dark btn-block btn m-1 all-center'
+                        style={{ width: "200px" }}
+                        onClick={() => addLexisProspect(file, prospect)}>
+                        Enrich Prospect
+                      </button>
+
+                      <button
+                        className='btn-dark btn-block btn m-1 all-center'
+                        style={{ width: "200px" }}
+                        onClick={() => setModalState(true)}>
+                        Open Lexis
+                      </button>
+                    </div>
+                    <div className=''>
+                      <button
+                        className='btn-dark btn-block btn m-1 all-center'
+                        style={{ width: "200px" }}
+                        onClick={() => setResoState(true)}>
+                        View Resolution
+                      </button>
+
+                      <button
+                        className='btn-dark btn-block btn m-1 all-center'
+                        style={{ width: "200px" }}
+                        onClick={() => setClaimModal(true)}>
+                        Claim Lead
+                      </button>
+
+                      <button
+                        className='btn-dark btn-block btn m-1 all-center'
+                        style={{ width: "200px" }}
+                        onClick={() => setDealModal(true)}>
+                        Open Deal Panel
+                      </button>
+                    </div>
+                  </div>
                 </div>
+
                 <div>
-                  <h5>Resolution Needed</h5>
-                  <ul>
-                    <li>
-                      {" "}
-                      <label htmlFor='filedFederal'>Filed Federal </label>
-                      <input
-                        name='federalFile'
-                        type='checkbox'
-                        checked={federalFile === "unfiled"}
-                        value='unfiled'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      <label htmlFor='filedState'>Filed State </label>
-                      <input
-                        name='stateFile'
-                        type='checkbox'
-                        checked={stateFile === "unfiled"}
-                        value='unfiled'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      {" "}
-                      <label htmlFor='cnc'>Currently Non Collectible</label>
-                      <input
-                        name='hardship'
-                        type='checkbox'
-                        checked={hardship === "nohardship"}
-                        value='nohardship'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      <label htmlFor='ddia'>Streamline / DDIA / State</label>
-                      <input
-                        name='paymentPlan'
-                        type='checkbox'
-                        checked={paymentPlan === "nopaymentplan"}
-                        value='nopaymentplan'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      {" "}
-                      <label htmlFor='oic'>Offer In Compromise</label>
-                      <input
-                        name='offer'
-                        type='checkbox'
-                        checked={offer === "noic"}
-                        value='noic'
-                        onChange={onChange}
-                      />
-                    </li>
-                    <li>
-                      <label htmlFor='filedFederal'>Corporate / Annuity</label>
-                      <input
-                        name='corp'
-                        type='checkbox'
-                        checked={corp === "nocorp"}
-                        value='nocorp'
-                        onChange={onChange}
-                      />
-                    </li>
-                  </ul>
+                  <BillingStatus paymentStatus={paymentStatus} />
                 </div>
-              </div>
-              <div className='grid-2'>
-                <div>
-                  <button
-                    className='btn-light btn-block btn m-1 all-center'
-                    style={{ width: "200px" }}
-                    onClick={() => putResoStatus(reso, prospect)}>
-                    Update Resolution
-                  </button>
-                  {showModal && (
-                    <LexisModal toggleVisibility={toggleVisibility} />
+                <div className='card bg-light'>
+                  {claimModal ? (
+                    <ClaimModal
+                      prospect={prospect}
+                      caseWorkers={caseWorkers}
+                      toggleClaimModal={toggleClaimModal}
+                    />
+                  ) : (
+                    ""
                   )}
-                  <button
-                    className='btn-dark btn-block btn m-1 all-center'
-                    style={{ width: "200px" }}
-                    onClick={() => setModalState(true)}>
-                    Open Lexis
-                  </button>
-                  <button
-                    className='btn-dark btn-block btn m-1 all-center'
-                    style={{ width: "200px" }}
-                    onClick={() => addLexis(prospect)}>
-                    Enrich Lead
-                  </button>
-                </div>
-                <div>
-                  <button
-                    className='btn-dark btn-block btn m-1 all-center'
-                    style={{ width: "200px" }}
-                    onClick={() => updateProspect()}>
-                    Save Lead
-                  </button>
-
-                  <button
-                    className='btn-dark btn-block btn m-1 all-center'
-                    style={{ width: "200px" }}
-                    onClick={() => setClaimModal(true)}>
-                    Claim Lead
-                  </button>
-
-                  <button
-                    className='btn-dark btn-block btn m-1 all-center'
-                    style={{ width: "200px" }}
-                    onClick={() => setDealModal(true)}>
-                    Open Deal Panel
-                  </button>
+                  <CaseWorkers {...caseWorkers} />
                 </div>
               </div>
-            </div>
-            <div>
-              <BillingStatus prospect={prospect} />
-            </div>
-            <div className='card bg-light'>
-              {claimModal ? (
-                <ClaimModal
-                  prospect={prospect}
-                  caseWorkers={caseWorkers}
-                  toggleClaimModal={toggleClaimModal}
-                />
-              ) : (
-                ""
-              )}
-              <CaseWorkers {...caseWorkers} />
-            </div>
-          </div>
+            </Fragment>
+          )}
         </Fragment>
       )}
     </Fragment>

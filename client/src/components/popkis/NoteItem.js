@@ -19,7 +19,7 @@ const NoteItem = ({
     day: "numeric",
   }).format(dateDisplay1);
 
-  let dateDisplay2 = new Date(postedDate);
+  let dateDisplay2 = new Date(updatedDate);
   let formattedUpdatedDate = Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "numeric",

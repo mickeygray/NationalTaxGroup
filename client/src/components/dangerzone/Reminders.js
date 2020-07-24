@@ -13,7 +13,9 @@ const Reminders = () => {
   const { user } = authContext;
 
   useEffect(() => {
-    getUser();
+    if (user != null) {
+      getUser(user._id);
+    }
   }, []);
 
   console.log(user);

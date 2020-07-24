@@ -196,7 +196,7 @@ const ListFilter = () => {
                 className='btn btn-sm btn-danger py-2'
                 onClick={() =>
                   setQuery({
-                    status: "upsellable",
+                    status: "client",
                   })
                 }>
                 Clients

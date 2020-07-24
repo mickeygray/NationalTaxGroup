@@ -1,31 +1,28 @@
 import React, { useContext, useEffect } from "react";
 import TodaysProspectItem from "./TodaysProspectItem";
-import StatContext from "../../context/stat/statContext";
+import LeadContext from "../../context/lead/leadContext";
 
 const TodaysProspects = () => {
-  const statContext = useContext(StatContext);
-  const { today, getTodaysProspects } = statContext;
-
-  const { todaysProspects } = today;
+  const leadContext = useContext(LeadContext);
+  const { todaysLeads, getTodaysProspects } = leadContext;
 
   useEffect(() => {
     getTodaysProspects();
   }, []);
 
-  console.log(today);
+  console.log(todaysLeads);
 
   return (
     <div style={leadStyle}>
-      {todaysProspects
-        ? todaysProspects.map((prospect) => (
-            <TodaysProspectItem key={prospect._id} propsect={prospect} />
+      {todaysLeads.length > 0
+        ? todaysLeads.map((prospect) => (
+            <TodaysProspectItem key={prospect._id} prospect={prospect} />
           ))
         : ""}
     </div>
   );
 };
 const leadStyle = {
-  height: "75px",
   display: "grid",
   gridTemplateRows: "repeat(10, 1fr)",
   gridGap: ".1rem",

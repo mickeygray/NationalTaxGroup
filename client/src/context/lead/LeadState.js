@@ -14,6 +14,7 @@ import {
   DELETE_LEADS,
   MAKE_DNC,
   UPDATE_CLIENT,
+  ADD_LEXISPROSPECT,
   ADD_LEXIS,
   SUBMIT_LEAD,
   GET_LIEN,
@@ -53,6 +54,13 @@ import {
   DELETE_PAYMENTSCHEDULEITEM,
   DELETE_WORKER,
   GET_PAYMENTMETHOD,
+  UPDATE_PAYMENTSTATUS,
+  UPDATE_CLIENTSTATUS,
+  GET_TODAYSPROSPECTS,
+  GET_FILE,
+  POP_DOC,
+  SET_DOC,
+  SET_WORKERS,
 } from "../types";
 
 const LeadState = (props) => {
@@ -63,6 +71,7 @@ const LeadState = (props) => {
     currentNote: null,
     bcc: [],
     vars: [],
+    doc: null,
     mailList: [],
     list: [],
     mailObject: null,
@@ -85,6 +94,8 @@ const LeadState = (props) => {
     calls: [],
     note: {},
     notes: [],
+    worker: null,
+    workers: [],
     text: "",
     number: null,
     recentLeads: [],
@@ -124,14 +135,30 @@ const LeadState = (props) => {
       type: ADD_LEXIS,
       payload: res.data,
     });
+
+    setCurrent(res.data);
   };
-  const addLead = async (prospect) => {
+
+  const addLexisProspect = async (file, prospect) => {
+    const res = await axios.put(`/api/prospects/${prospect._id}/pdfs`, file);
+
+    dispatch({
+      type: ADD_LEXISPROSPECT,
+      payload: res.data,
+    });
+
+    getProspect(prospect._id);
+  };
+
+  const addLead = async (current) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    console.log(prospect);
+
+    console.log(current, "111111");
+
     const {
       phone,
       fullName,
@@ -142,13 +169,19 @@ const LeadState = (props) => {
       plaintiff,
       amount,
       lienid,
-      email,
+      emailAddress,
       pinCode,
       compliant,
       filingStatus,
+      age,
+      dob,
       cpa,
+      emailAddresses,
+      phones,
       ssn,
-    } = prospect;
+      bankruptcy,
+      real,
+    } = current;
 
     const steve = {
       phone,
@@ -160,12 +193,18 @@ const LeadState = (props) => {
       plaintiff,
       amount,
       lienid,
-      email,
+      emailAddress,
       pinCode,
       compliant,
+      age,
+      dob,
+      emailAddresses,
+      phones,
       filingStatus,
       cpa,
       ssn,
+      bankruptcy,
+      real,
     };
 
     const res = await axios.post("/api/prospects/", steve, config);
@@ -203,6 +242,37 @@ const LeadState = (props) => {
 
   const clearNumber = () => {
     dispatch({ type: CLEAR_NUMBER });
+  };
+
+  const getTodaysProspects = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await axios.get(`/api/prospects/today`);
+
+    dispatch({
+      type: GET_TODAYSPROSPECTS,
+      payload: res.data,
+    });
+  };
+  const popDoc = async (prospect) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    console.log(prospect);
+
+    const res = await axios.post(`/api/prospects/form`, prospect, config);
+    dispatch({
+      type: POP_DOC,
+      payload: res.data,
+    });
+
+    setDoc(res.data);
   };
 
   const getProspectName = async (clientId) => {
@@ -342,6 +412,7 @@ const LeadState = (props) => {
       payload: _id,
     });
     getProspect(prospect._id);
+    updatePaymentStatus(prospect);
   };
 
   const deleteWorker = async (caseWorker, prospect) => {
@@ -476,7 +547,8 @@ const LeadState = (props) => {
   */
 
   // Update Lead
-  const updateClient = async (leadFields, _id) => {
+
+  const updateProspect = async (leadFields, prospect) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -485,29 +557,10 @@ const LeadState = (props) => {
 
     try {
       const res = await axios.put(
-        `/api/prospects/clientId/}`,
+        `/api/prospects/${prospect._id}`,
         leadFields,
         config
       );
-
-      dispatch({
-        type: UPDATE_PROSPECT,
-        payload: res.data,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const updateProspect = async (leadFields, _id) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    try {
-      const res = await axios.put(`/api/prospects/${_id}`, leadFields, config);
 
       dispatch({
         type: UPDATE_PROSPECT,
@@ -711,15 +764,11 @@ const LeadState = (props) => {
     });
   };
 
-  const putResoStatus = async (reso, prospect) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+  const postResoStatus = async (prospect, formData, endpoint, config) => {
+    console.log(formData);
     const res = await axios.put(
-      `/api/prospects/${prospect._id}/resoStatus`,
-      reso,
+      `/api/prospects/${prospect._id}/resoStatus/${endpoint}`,
+      formData,
       config
     );
 
@@ -729,6 +778,62 @@ const LeadState = (props) => {
     });
 
     getProspect(prospect._id);
+  };
+
+  const putResoStatus = async (prospect, formData, endpoint, config, doc) => {
+    function search(nameKey, myArray) {
+      for (var i = 0; i < myArray.length; i++) {
+        if (myArray[i].name === nameKey) {
+          return myArray[i];
+        }
+      }
+    }
+
+    const searchedArray = eval("prospect.resoStatus." + endpoint);
+
+    const assignment = search(doc.name, searchedArray);
+
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/resoStatus/${endpoint}/${assignment._id}`,
+      formData,
+      config
+    );
+
+    dispatch({
+      type: PUT_RESO,
+      payload: res.data,
+    });
+
+    getProspect(prospect._id);
+  };
+
+  const getResoStatus = async (prospect, doc) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      responseType: "blob",
+    };
+
+    const string = doc.id;
+
+    console.log(string);
+
+    const res = await axios.get(
+      `/api/prospects/${prospect._id}/resoStatus?q=${string}`,
+      config
+    );
+
+    dispatch({
+      type: GET_FILE,
+      payload: res.data,
+    });
+
+    setDoc(res.data);
+  };
+
+  const setDoc = (document) => {
+    dispatch({ type: SET_DOC, payload: document });
   };
 
   const putPaymentMethod = async (method, prospect) => {
@@ -779,6 +884,8 @@ const LeadState = (props) => {
     });
 
     getProspect(prospect._id);
+
+    updatePaymentStatus(prospect);
   };
 
   const putPaymentSchedule = async (iteration, scheduleItem, prospect) => {
@@ -850,15 +957,7 @@ const LeadState = (props) => {
 
     for (let i = 0; i < it; i++)
       arr[i] = {
-        paymentDate: Intl.DateTimeFormat(
-          "en-US",
-          { timeZone: "America/Los_Angeles" },
-          {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-          }
-        ).format(new Date(startDate + i * int)),
+        paymentDate: new Date(startDate + i * int),
         paymentMethod: iteration.initialPaymentMethod,
         paymentAmount: iteration.installmentAmount,
         paymentId: "",
@@ -878,8 +977,56 @@ const LeadState = (props) => {
     });
     getProspect(prospect._id);
     console.log(res.data);
+
+    updatePaymentStatus(prospect);
   };
 
+  const setWorkers = (worker) => {
+    let workers = [];
+    workers.push(worker);
+    dispatch({
+      type: SET_WORKERS,
+      payload: workers,
+    });
+  };
+
+  const updatePaymentStatus = async (prospect) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await axios.get(
+      `/api/prospects/${prospect._id}/paymentSchedule`,
+      config
+    );
+    dispatch({
+      type: UPDATE_PAYMENTSTATUS,
+      payload: res.data,
+    });
+  };
+
+  const updateProspectStatus = async (prospect, status) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const statReq = {
+      val: status,
+    };
+
+    const res = await axios.put(
+      `/api/prospects/${prospect._id}/status`,
+      statReq,
+      config
+    );
+    dispatch({
+      type: UPDATE_CLIENTSTATUS,
+      payload: res.data,
+    });
+  };
   const getLead = async (lead) => {
     const config = {
       headers: {
@@ -927,6 +1074,8 @@ const LeadState = (props) => {
         lead: state.lead,
         call: state.call,
         calls: state.calls,
+        worker: state.worker,
+        workers: state.workers,
         note: state.note,
         notes: state.notes,
         currentNote: state.currentNote,
@@ -947,6 +1096,7 @@ const LeadState = (props) => {
         bcc: state.bcc,
         leads: state.leads,
         mailObject: state.mailObject,
+        doc: state.doc,
         mailList: state.mailList,
         dncArray: state.dncArray,
         caseWorkers: state.caseWorkers,
@@ -955,29 +1105,35 @@ const LeadState = (props) => {
         addLexis,
         setCurrentMethod,
         putPaymentMethod,
+        updatePaymentStatus,
         deletePaymentMethod,
         deletePaymentScheduleItem,
         getPaymentMethod,
         putPaymentScheduleItem,
         pushWorker,
+        getTodaysProspects,
         getProspectName,
         setProspect,
         deleteLeads,
         deleteWorker,
         addLead,
+        updateProspectStatus,
         setSelectedFile,
         uploadFile,
         parseDb,
         getLead,
         setCalls,
         submitLead,
+        popDoc,
         updateLead,
-        updateClient,
+        getResoStatus,
+
         makeDNC,
         searchLeads,
         putResoStatus,
         clearLead,
         clearLeadFields,
+        addLexisProspect,
         clearRecentLead,
         clearNumber,
         putNote,
@@ -986,8 +1142,11 @@ const LeadState = (props) => {
         setNotes,
         setCurrentNote,
         deleteNote,
+        setDoc,
         setRecentLead,
+        postResoStatus,
         setCurrent,
+        setWorkers,
         letCall,
         clearLiens,
         updateProspect,

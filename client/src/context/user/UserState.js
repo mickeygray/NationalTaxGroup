@@ -18,6 +18,9 @@ import {
   GET_USERNAME,
   GET_USERREMINDED,
   SET_USER,
+  POST_TASK,
+  GET_ASSIGNED,
+  DELETE_TASK,
 } from "../types";
 
 const UserState = (props) => {
@@ -28,6 +31,7 @@ const UserState = (props) => {
     reminders: [],
     reminder: {},
     reminded: null,
+    assignments: null,
     prospects: [],
     recentLeads: [],
     prospect: {},
@@ -63,6 +67,8 @@ const UserState = (props) => {
   };
 
   const getUserReminded = async (query) => {
+    console.log(query);
+
     const q = Object.values(query);
     const res = await axios.get(`/api/users?q=${q}`);
     dispatch({
@@ -73,7 +79,7 @@ const UserState = (props) => {
     console.log(res.data);
   };
 
-  // load my dashboard
+  //  load my dashboard
 
   // populate my recent leads
   const getMyLeads = async (text) => {
@@ -140,6 +146,17 @@ const UserState = (props) => {
     getUser(userReminded);
   };
 
+  const deleteTask = async (user, id) => {
+    await axios.delete(`/api/users/${user._id}/tasks?q=${id}`);
+
+    dispatch({
+      type: DELETE_TASK,
+      payload: id,
+    });
+
+    getUser(user._id);
+  };
+
   const deleteRecentLead = (_id, location) => {
     dispatch({
       type: DELETE_RECENTLEAD,
@@ -169,12 +186,71 @@ const UserState = (props) => {
     } catch (err) {
       console.log(err);
     }
+    getUser(reminder.userReminded);
+  };
+
+  const postTask = async (assignment, reminded) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.put(
+        `/api/users/${reminded._id}/tasks`,
+        assignment,
+        config
+      );
+
+      dispatch({
+        type: POST_TASK,
+        payload: res.data,
+      });
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+
+    getUser(reminded._id);
+  };
+
+  const getAssigned = async (prospect, doc) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const reqObj = {
+      clientId: prospect._id,
+      id: doc.id,
+      name: doc.name,
+      endpoint: doc.endpoint,
+    };
+
+    console.log(reqObj, "11111dasdszds");
+
+    const q = JSON.stringify(reqObj);
+    const res = await axios.get(
+      `/api/users/search?q=${q}`,
+
+      config
+    );
+
+    dispatch({
+      type: GET_ASSIGNED,
+      payload: res.data,
+    });
+
+    console.log(res.data);
   };
 
   return (
     <UserContext.Provider
       value={{
         user: state.user,
+        assignment: state.assignment,
         name: state.name,
         users: state.users,
         tasks: state.tasks,
@@ -189,9 +265,12 @@ const UserState = (props) => {
         getMyLeads,
         setRecent,
         getUser,
+        deleteTask,
+        postTask,
         setUser,
         getUserName,
         getUserReminded,
+        getAssigned,
         postReminder,
         deleteReminder,
         deleteRecentLead,

@@ -41,6 +41,17 @@ const UserSchema = mongoose.Schema({
       clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Prospect" },
     },
   ],
+  tasks: [
+    {
+      clientName: { type: String },
+      clientId: { type: String },
+      id: { type: String },
+      assignedDate: { type: String },
+      updatedDate: { type: String },
+      assigned: { type: String },
+      assignment: { type: String },
+    },
+  ],
 });
 
 module.exports = mongoose.model("user", UserSchema);

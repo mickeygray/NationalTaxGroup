@@ -31,8 +31,9 @@ router.get("/today", auth, async (req, res) => {
   res.json(leads);
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id/pdfs", auth, async (req, res) => {
   const string = Object.keys(req.body).toString();
+
   const distinct = (value, index, self) => {
     return self.indexOf(value) === index;
   };
@@ -45,13 +46,12 @@ router.put("/:id", auth, async (req, res) => {
   let reg2 = /^(\(\d{3}\))?[\s-]?\d{3}[\s-]?\d{4}/gim;
   let liens = string.match(/(?<=Debtor Information\s*).*?(?=\s*Number)/gs);
   let emails = (string.match(reg1) || []).map((e) => e.replace(reg1, "$1"));
-  let phones = string.match(reg2).filter(distinct);
-  let bankruptcy = string.match(
+  let phone1 = string.match(reg2).filter(distinct);
+  let bankruptcy1 = string.match(
     /(?<=Petitioner Information\s*).*?(?=\s*Meeting Date)/gs
   );
-  let real = string.match(/(?<=Deed Record for\s*).*?(?=\s*Loan Type)/gs);
+  let real1 = string.match(/(?<=Deed Record for\s*).*?(?=\s*Loan Type)/gs);
 
-  console.log(real);
   const leadString = liens.shift();
   const leadBody =
     "{" +
@@ -69,14 +69,13 @@ router.put("/:id", auth, async (req, res) => {
       .concat('", "emailAddresses":"' + emails) +
     '"}';
 
-  const lead = JSON.parse(leadBody);
+  let lead = JSON.parse(leadBody);
 
-  const age = string.substring();
   lead.county = lead.deliveryAddress
     .match(/(?<=(\d+)(?!.*\d)\s*).*?(?=\s*COUNTY)/gs)
     .toString();
 
-  lead.phones = phones;
+  lead.phones = phone1.filter((str) => str.includes("("));
   lead.amount = lead.amount.replace(":", "");
   lead.filingDate = lead.filingDate.replace(": ", "");
   lead.state = lead.state.replace(": ", "");
@@ -169,8 +168,88 @@ router.put("/:id", auth, async (req, res) => {
     lead.firstName + " " + lead.lastName
   );
 
-  lead.real = real;
+  let realIndex1 = real1.toString().search(/Name/);
+  let realIndex2 = real1.toString().search(/Address/);
+  let realIndex3 = real1.toString().search(/County\/FIPS/);
+  let realIndex4 = real1.toString().search(/Mortgage Information/);
 
+  const realField1 = real1.toString().slice(realIndex1, realIndex2);
+  const realField2 = real1.toString().slice(realIndex2, realIndex3);
+  const realField3 = real1
+    .toString()
+    .slice(realIndex4, real1.toString().length);
+
+  const colon1 = realField1.search(":");
+  const colon2 = realField2.search(":");
+
+  const name =
+    '"' +
+    realField1.slice(0, colon1).toLowerCase() +
+    '"' +
+    ':"' +
+    realField1.slice(colon1 + 1, realField1.length) +
+    '",';
+
+  const address =
+    '"' +
+    realField2.slice(0, colon2).toLowerCase() +
+    '"' +
+    ':"' +
+    realField2.slice(colon2 + 1, realField2.length) +
+    '",';
+
+  const loan =
+    '"' + realField3.slice(realField3.length - 16, realField3.length) + '"';
+
+  const colon3 = loan.search(":");
+
+  const bone =
+    loan.slice(0, colon3) + '"' + ':"' + loan.slice(colon3 + 1, loan.length);
+
+  const stone = bone.toLowerCase().trim();
+
+  const realBody = "{" + name + address + stone + "}";
+
+  lead.real = JSON.parse(realBody.replace(/\s{2,10}/g, " "));
+
+  let bankIndex1 = bankruptcy1.toString().search(/Bankruptcy Information/);
+  let bankIndex2 = bankruptcy1.toString().search(/Court/);
+  let bankIndex3 = bankruptcy1.toString().search(/Filing Date/);
+  let bankIndex4 = bankruptcy1.toString().search(/Filing Type/);
+
+  const bankField1 = bankruptcy1.toString().slice(bankIndex1, bankIndex2);
+  const bankField2 = bankruptcy1.toString().slice(bankIndex2, bankIndex3);
+  const bankField3 = bankruptcy1
+    .toString()
+    .slice(bankIndex4, bankruptcy1.toString().length);
+
+  const colon4 = bankField1.search(":");
+  const colon5 = bankField2.search(":");
+  const colon6 = bankField3.search(":");
+
+  const loc =
+    '"' +
+    bankField2.slice(0, colon5).toLowerCase().trim() +
+    '"' +
+    ':"' +
+    bankField2.slice(colon5 + 1, bankField2.length - 1).trim() +
+    '",';
+
+  const gock = loc.replace(/\r?\n|\r/g, "");
+
+  const negro =
+    '"' +
+    bankField3.slice(0, colon6).toLowerCase().trim() +
+    '"' +
+    ':"' +
+    bankField3.slice(colon6 + 1, bankField3.length).trim() +
+    '"';
+
+  const begro = negro.replace(" type", "Type");
+
+  const bankBody = "{" + gock + begro + "}";
+
+  lead.bankruptcy = JSON.parse(bankBody);
   lead.age = string.match(/(?<=[(]Age:\s*).*?(?=\s*[)])/gs)[0].toString();
   lead.dob = string
     .match(/(?<=[-]XXXX\s*).*?(?=\s*[(]Age:)/gs)[0]
@@ -179,27 +258,61 @@ router.put("/:id", auth, async (req, res) => {
 
   const regex = new RegExp("/((^[A-Z][,][A-Z]))/", "g");
 
-  lead.family = string
-    .match(/(?<=Household Members\s*).*?(?=\s*Other Associates)/gs)
-    .filter(function (el) {
-      return el != "\r\n\r\nNone Listed";
-    })
-    .filter(function (el) {
-      return el != "\r\nNone Listed";
-    })
-    .toString()
-    .replace("\r\n", "")
-    .replace("\r\n +", "")
-    .split("+");
-
   lead.emailAddresses = lead.emailAddresses.split(",").filter(distinct);
 
-  lead.bankruptcy = bankruptcy;
-  console.log(lead);
-});
+  const {
+    fullName,
+    ssn,
+    deliveryAddress,
+    plaintiff,
+    state,
+    amount,
+    filingDate,
+    emailAddresses,
+    county,
+    phones,
+    zip4,
+    city,
+    firstName,
+    lastName,
+    real,
+    bankruptcy,
+    age,
+    dob,
+  } = lead;
 
-router.get("/lexis", auth, async (req, res) => {
-  const call = await Call.find().limit(1).sort({ $natural: -1 });
+  const enriched = await Lead.findByIdAndUpdate(
+    req.params.id,
+    {
+      "$set": {
+        "fullName": fullName,
+        "ssn": ssn,
+        "deliveryAddress": deliveryAddress,
+        "plaintiff": plaintiff,
+        "state": state,
+        "amount": amount,
+        "filingDate": filingDate,
+        "county": county,
+        "zip4": zip4,
+        "city": city,
+        "firstName": firstName,
+        "lastName": lastName,
+        "age": age,
+        "dob": dob,
+        "bankruptcy": bankruptcy,
+        "real.name": real.name,
+        "real.address": real.address,
+        "real.amount": real.amount,
+      },
+      "$push": {
+        "phones": phones,
+        "emailAddresses": emailAddresses,
+      },
+    },
+    { new: true, upsert: true }
+  );
+  res.json(enriched);
+  console.log(enriched);
 });
 
 router.post("/lexis", auth, async (req, res) => {
@@ -209,6 +322,10 @@ router.post("/lexis", auth, async (req, res) => {
 
   let matches = (string.match(reg) || []).map((e) => e.replace(reg, "$1"));
   console.log(matches);
+});
+
+router.get("/calls", auth, async (req, res) => {
+  const call = await Call.find().limit(1).sort({ $natural: -1 });
 });
 
 router.post("/forms", async (req, res) => {

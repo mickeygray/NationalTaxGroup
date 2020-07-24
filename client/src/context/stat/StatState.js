@@ -23,6 +23,7 @@ import {
   GET_TODAYS,
   CLEAR_FILTER,
   GET_CLIENTPAYMENTS,
+  GET_PAYMENTSTATUS,
   UPDATE_PAYMENTSTATUS,
 } from "../types";
 
@@ -166,9 +167,17 @@ const StatState = (props) => {
     });
   };
 
-  const getPayments = async (prospect) => {
+  const getPaymentStatus = async (prospect) => {
+    const res = await axios.get(`/api/prospects/${prospect._id}/paymentStatus`);
+    dispatch({
+      type: GET_PAYMENTSTATUS,
+      payload: res.data,
+    });
+  };
+
+  const getPayments = async (currentClient) => {
     const res = await axios.get(
-      `/api/propspects/${prospect._id}/paymentSchedule`
+      `/api/prospects/${currentClient}/paymentSchedule`
     );
 
     dispatch({
@@ -198,6 +207,8 @@ const StatState = (props) => {
       type: UPDATE_PAYMENTSTATUS,
       payload: res.data,
     });
+
+    getPayments(currentClient);
   };
 
   //make report
@@ -339,6 +350,7 @@ const StatState = (props) => {
         idArray: state.idArray,
         getListLength,
         clearFilter,
+        getPaymentStatus,
         updatePayment,
         getTodaysCalls,
         getFilterSelected,
@@ -348,6 +360,7 @@ const StatState = (props) => {
         getIdArray,
         updateReports,
         getReport,
+        getPayments,
         makeCSV,
         getTodaysPayments,
         getTodaysProspects,

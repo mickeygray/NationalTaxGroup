@@ -14,6 +14,12 @@ const LeadItem = ({ lead }) => {
     emailAddress,
     plaintiff,
     amount,
+    bankruptcy,
+    real,
+    emailAddresses,
+    phones,
+    age,
+    dob,
   } = lead;
   const lienid = _id.toString();
 
@@ -28,6 +34,12 @@ const LeadItem = ({ lead }) => {
     pinCode,
     plaintiff,
     amount,
+    bankruptcy,
+    real,
+    emailAddresses,
+    phones,
+    age,
+    dob,
   };
 
   const { setCurrent, makeDNC } = leadContext;

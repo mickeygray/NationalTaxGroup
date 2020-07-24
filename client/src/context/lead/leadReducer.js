@@ -43,12 +43,19 @@ import {
   PUT_PAYMENTSCHEDULEITEM,
   DELETE_PAYMENTMETHOD,
   DELETE_PAYMENTSCHEDULEITEM,
+  GET_TODAYSPROSPECTS,
   SET_CURRENTMETHOD,
   DELETE_WORKER,
   GET_PAYMENTMETHOD,
   SET_CURRENTCLIENT,
   CLEAR_CURRENTCLIENT,
+  UPDATE_PAYMENTSTATUS,
   CLEAR_CURRENTMETHOD,
+  ADD_LEXISPROSPECT,
+  GET_FILE,
+  SET_DOC,
+  SET_WORKERS,
+  POP_DOC,
 } from "../types";
 
 export default (state, action) => {
@@ -58,11 +65,54 @@ export default (state, action) => {
         ...state,
         notes: state.notes.filter((note) => note.id !== action.payload),
       };
+    case UPDATE_PAYMENTSTATUS:
+      return {
+        ...state,
+        prospect: action.payload,
+      };
     case PUSH_WORKER:
       return {
         ...state,
         caseWorkers: action.payload,
       };
+
+    case GET_FILE:
+      return {
+        ...state,
+        file: action.payload,
+      };
+    case SET_WORKERS:
+      return {
+        ...state,
+        workers: action.payload,
+      };
+    case ADD_LEXIS:
+      return {
+        ...state,
+        lead: action.payload,
+      };
+    case ADD_LEXISPROSPECT:
+      return {
+        ...state,
+        prospect: action.payload,
+      };
+    case SET_DOC:
+      return {
+        ...state,
+        doc: action.payload,
+      };
+
+    case POP_DOC:
+      return {
+        ...state,
+        doc: action.payload,
+      };
+    case GET_TODAYSPROSPECTS:
+      return {
+        ...state,
+        todaysLeads: action.payload,
+      };
+
     case PUT_PAYMENTSCHEDULE:
       return {
         ...state,
@@ -92,7 +142,7 @@ export default (state, action) => {
     case PUT_RESO:
       return {
         ...state,
-        resoStatus: action.payload,
+        formData: action.payload,
       };
     case PUT_PAYMENTINFO:
       return {

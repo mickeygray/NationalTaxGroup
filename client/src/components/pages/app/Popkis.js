@@ -1,4 +1,10 @@
-import React, { useEffect, useContext, Fragment } from "react";
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useCallback,
+  Fragment,
+} from "react";
 import LeadCalls from "../../calls/LeadCalls";
 import Notes from "../../popkis/Notes";
 import NotePad from "../../popkis/NotePad";
@@ -7,15 +13,24 @@ import Navbar from "../../layout/Navbar";
 import PopkisForm from "../../popkis/PopkisForm";
 
 import leadContext from "../../../context/lead/leadContext";
+import PDFviewer from "../../popkis/PDFviewer";
 
 const Popkis = ({ match }) => {
-  const { setProspect, getProspect, prospect, notes, setNotes } = useContext(
-    leadContext
-  );
+  const {
+    setProspect,
+    getProspect,
+    prospect,
+    notes,
+    setNotes,
+    doc,
+  } = useContext(leadContext);
 
   useEffect(() => {
     getProspect(match.params.id);
   }, []);
+
+  console.log(doc);
+  const [pdfState, setPdfState] = useState(false);
 
   return (
     <Fragment>
@@ -29,16 +44,24 @@ const Popkis = ({ match }) => {
         <div className='grid-6'>
           <div className='grid-popkis'>
             <div>
-              <Notes prospect={prospect} />
-              <hr />
-              <NotePad prospect={prospect} />
+              {doc ? (
+                ""
+              ) : (
+                <Fragment>
+                  <Notes prospect={prospect} />
+                  <hr />
+                  <NotePad prospect={prospect} />
+                </Fragment>
+              )}
             </div>
             <div>
-              <PopkisForm prospect={prospect} />
+              {doc ? (
+                <PDFviewer doc={doc} />
+              ) : (
+                <PopkisForm prospect={prospect} />
+              )}
             </div>
-            <div>
-              <LeadCalls prospect={prospect} />
-            </div>
+            <div>{doc ? "" : <LeadCalls prospect={prospect} />}</div>
           </div>
         </div>
       </div>

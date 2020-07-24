@@ -36,6 +36,7 @@ const LeadForm = () => {
         zip4: "",
         plaintiff: "",
         amount: "",
+        ssn: "",
         lienid: "",
         pinCode: "",
         emailAddress: "",
@@ -62,6 +63,7 @@ const LeadForm = () => {
     lienid: "",
     pinCode: "",
     emailAddress: "",
+    ssn: "",
   });
 
   const [call, setCall] = useState({
@@ -72,7 +74,6 @@ const LeadForm = () => {
     compliant: "filed",
     filingStatus: "married",
     cpa: "cpa",
-    ssn: "",
   });
 
   const onChange = (e) => {
@@ -104,12 +105,13 @@ const LeadForm = () => {
     state,
     zip4,
     plaintiff,
+    ssn,
     amount,
     lienid,
     pinCode,
   } = record;
   const { phone } = call;
-  const { compliant, filingStatus, cpa, ssn } = open;
+  const { compliant, filingStatus, cpa } = open;
 
   const prospect = {
     phone,
@@ -138,20 +140,20 @@ const LeadForm = () => {
       city: "",
       state: "",
       zip4: "",
+      emailAddress: "",
       plaintiff: "",
       taxAmount: "",
       lienid: "",
+      ssn: "",
     });
     setCall({
       phone: "",
     });
 
     setOpen({
-      email: "",
       compliant: "filed",
       filingStatus: "m",
       cpa: "cpa",
-      ssn: "",
     });
   };
 
@@ -162,7 +164,7 @@ const LeadForm = () => {
   const [showModal, setModalState] = useState(false);
 
   const onSubmit = (e) => {
-    addLead(prospect);
+    addLead(current);
     clearAll();
   };
 

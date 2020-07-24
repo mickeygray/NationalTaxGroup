@@ -8,6 +8,9 @@ import {
   GET_USERNAME,
   GET_USERREMINDED,
   SET_USER,
+  POST_TASK,
+  DELETE_TASK,
+  GET_ASSIGNED,
 } from "../types";
 
 export default (state, action) => {
@@ -32,6 +35,11 @@ export default (state, action) => {
         ...state,
         reminded: action.payload,
       };
+    case GET_ASSIGNED:
+      return {
+        ...state,
+        assignments: action.payload,
+      };
     case GET_USERREMINDED:
       return {
         ...state,
@@ -46,6 +54,16 @@ export default (state, action) => {
       return {
         ...state,
         reminder: action.payload,
+      };
+    case POST_TASK:
+      return {
+        ...state,
+        task: action.payload,
+      };
+    case DELETE_TASK:
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task._id !== action.payload),
       };
     case DELETE_REMINDER:
       return {
