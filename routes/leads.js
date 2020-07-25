@@ -42,43 +42,82 @@ router.put("/:id/pdfs", auth, async (req, res) => {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   };
+
   let reg1 = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/; // Get emails
   let reg2 = /^(\(\d{3}\))?[\s-]?\d{3}[\s-]?\d{4}/gim;
   let liens = string.match(/(?<=Debtor Information\s*).*?(?=\s*Number)/gs);
   let emails = (string.match(reg1) || []).map((e) => e.replace(reg1, "$1"));
-  let phone1 = string.match(reg2).filter(distinct);
+  let phone1 = string.match(reg2);
+
+  if (phone1) {
+    phone1.filter(distinct);
+  }
   let bankruptcy1 = string.match(
     /(?<=Petitioner Information\s*).*?(?=\s*Meeting Date)/gs
   );
   let real1 = string.match(/(?<=Deed Record for\s*).*?(?=\s*Loan Type)/gs);
 
   const leadString = liens.shift();
-  const leadBody =
-    "{" +
-    leadString
-      .replace(/[\s,]+/g, " ")
-      .trim()
-      .replace("Name:", '"fullName":"')
-      .replace("SSN:", '", "ssn":"')
-      .replace("Address:", '", "deliveryAddress":"')
-      .replace("Creditor Information Name:", '", "plaintiff":"')
-      .replace("Jurisdiction", '", "state":"')
-      .replace("Filing Information", "")
-      .replace("Amount", '", "amount":"')
-      .replace("Filing Date", '", "filingDate":"')
-      .concat('", "emailAddresses":"' + emails) +
-    '"}';
+
+  leadString.replace(leadString.substring(leadString.indexOf("Debtor 2")), "");
+
+  const S =
+    leadString.substring(0, leadString.indexOf("Debtor 2")) +
+    leadString.substring(leadString.indexOf("Creditor Information"));
+
+  let leadBody;
+
+  if (leadString.includes("Debtor 2")) {
+    leadBody =
+      "{" +
+      S.replace(/[\s,]+/g, " ")
+        .trim()
+        .replace("Debtor 1", "")
+        .replace("Debtor 2", "")
+        .replace("Filing 1", "")
+        .replace("Name:", '"fullName":"')
+        .replace("SSN:", '", "ssn":"')
+        .replace("Address:", '", "deliveryAddress":"')
+        .replace("Creditor Information Name:", '", "plaintiff":"')
+        .replace("Jurisdiction", '", "state":"')
+        .replace("Filing Information", "")
+        .replace("Amount", '", "amount":"')
+        .replace("Filing Date", '", "filingDate":"')
+        .concat('", "emailAddresses":"' + emails) +
+      '"}';
+  } else {
+    leadBody =
+      "{" +
+      leadString
+        .replace(/[\s,]+/g, " ")
+        .trim()
+        .replace("Debtor 1", "")
+        .replace("Debtor 2", "")
+        .replace("Filing 1", "")
+        .replace("Name:", '"fullName":"')
+        .replace("SSN:", '", "ssn":"')
+        .replace("Address:", '", "deliveryAddress":"')
+        .replace("Creditor Information Name:", '", "plaintiff":"')
+        .replace("Jurisdiction", '", "state":"')
+        .replace("Filing Information", "")
+        .replace("Amount", '", "amount":"')
+        .replace("Filing Date", '", "filingDate":"')
+        .concat('", "emailAddresses":"' + emails) +
+      '"}';
+  }
 
   let lead = JSON.parse(leadBody);
-
+  console.log(lead.deliveryAddress, "1111111111111");
   lead.county = lead.deliveryAddress
     .match(/(?<=(\d+)(?!.*\d)\s*).*?(?=\s*COUNTY)/gs)
     .toString();
+  if (phone1) {
+    lead.phones = phone1.filter((str) => str.includes("("));
+  }
 
-  lead.phones = phone1.filter((str) => str.includes("("));
   lead.amount = lead.amount.replace(":", "");
   lead.filingDate = lead.filingDate.replace(": ", "");
-  lead.state = lead.state.replace(": ", "");
+  lead.state = lead.state.replace(":", "").replace(": ", "");
   lead.plaintiff = lead.plaintiff
     .split(" ")
     .filter(function (el) {
@@ -131,6 +170,8 @@ router.put("/:id/pdfs", auth, async (req, res) => {
     .replace(",", " ")
     .replace(",", " ")
     .toProperCase();
+
+  console.log(lead.city, "1111111111111");
 
   lead.city = lead.city.toProperCase();
   lead.county = lead.county
@@ -212,49 +253,55 @@ router.put("/:id/pdfs", auth, async (req, res) => {
 
   lead.real = JSON.parse(realBody.replace(/\s{2,10}/g, " "));
 
-  let bankIndex1 = bankruptcy1.toString().search(/Bankruptcy Information/);
-  let bankIndex2 = bankruptcy1.toString().search(/Court/);
-  let bankIndex3 = bankruptcy1.toString().search(/Filing Date/);
-  let bankIndex4 = bankruptcy1.toString().search(/Filing Type/);
+  if (bankruptcy1) {
+    let bankIndex1 = bankruptcy1.toString().search(/Bankruptcy Information/);
+    let bankIndex2 = bankruptcy1.toString().search(/Court/);
+    let bankIndex3 = bankruptcy1.toString().search(/Filing Date/);
+    let bankIndex4 = bankruptcy1.toString().search(/Filing Type/);
 
-  const bankField1 = bankruptcy1.toString().slice(bankIndex1, bankIndex2);
-  const bankField2 = bankruptcy1.toString().slice(bankIndex2, bankIndex3);
-  const bankField3 = bankruptcy1
-    .toString()
-    .slice(bankIndex4, bankruptcy1.toString().length);
+    const bankField1 = bankruptcy1.toString().slice(bankIndex1, bankIndex2);
+    const bankField2 = bankruptcy1.toString().slice(bankIndex2, bankIndex3);
+    const bankField3 = bankruptcy1
+      .toString()
+      .slice(bankIndex4, bankruptcy1.toString().length);
 
-  const colon4 = bankField1.search(":");
-  const colon5 = bankField2.search(":");
-  const colon6 = bankField3.search(":");
+    const colon4 = bankField1.search(":");
+    const colon5 = bankField2.search(":");
+    const colon6 = bankField3.search(":");
 
-  const loc =
-    '"' +
-    bankField2.slice(0, colon5).toLowerCase().trim() +
-    '"' +
-    ':"' +
-    bankField2.slice(colon5 + 1, bankField2.length - 1).trim() +
-    '",';
+    const loc =
+      '"' +
+      bankField2.slice(0, colon5).toLowerCase().trim() +
+      '"' +
+      ':"' +
+      bankField2.slice(colon5 + 1, bankField2.length - 1).trim() +
+      '",';
 
-  const gock = loc.replace(/\r?\n|\r/g, "");
+    const gock = loc.replace(/\r?\n|\r/g, "");
 
-  const negro =
-    '"' +
-    bankField3.slice(0, colon6).toLowerCase().trim() +
-    '"' +
-    ':"' +
-    bankField3.slice(colon6 + 1, bankField3.length).trim() +
-    '"';
+    const negro =
+      '"' +
+      bankField3.slice(0, colon6).toLowerCase().trim() +
+      '"' +
+      ':"' +
+      bankField3.slice(colon6 + 1, bankField3.length).trim() +
+      '"';
 
-  const begro = negro.replace(" type", "Type");
+    const begro = negro.replace(" type", "Type");
 
-  const bankBody = "{" + gock + begro + "}";
+    const bankBody = "{" + gock + begro + "}";
 
-  lead.bankruptcy = JSON.parse(bankBody);
+    lead.bankruptcy = JSON.parse(bankBody);
+  }
   lead.age = string.match(/(?<=[(]Age:\s*).*?(?=\s*[)])/gs)[0].toString();
   lead.dob = string
     .match(/(?<=[-]XXXX\s*).*?(?=\s*[(]Age:)/gs)[0]
     .toString()
     .trim();
+
+  lead.filingDate = lead.filingDate.replace(":", "").trim();
+
+  lead.dob = lead.dob.substring(0, 7);
 
   const regex = new RegExp("/((^[A-Z][,][A-Z]))/", "g");
 
