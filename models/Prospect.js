@@ -54,6 +54,7 @@ const ProspectSchema = mongoose.Schema({
   ssn: {
     type: String,
   },
+  callids: [String],
   notes: {
     type: [
       {
@@ -324,6 +325,18 @@ const ProspectSchema = mongoose.Schema({
     default: "",
   },
   zip2: {
+    type: String,
+    default: "",
+  },
+  source: {
+    type: String,
+    default: "",
+  },
+  callid: {
+    type: String,
+    default: "",
+  },
+  tracking: {
     type: String,
     default: "",
   },

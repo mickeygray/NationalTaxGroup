@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useCallback, useState } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
@@ -6,6 +6,7 @@ import UserContext from "../../context/user/userContext";
 import CallContext from "../../context/call/callContext";
 import Moment from "react-moment";
 import { Fragment } from "react";
+import SendDocsModal from "./SendDocsModal";
 
 const PopkisForm = () => {
   const leadContext = useContext(LeadContext);
@@ -343,17 +344,56 @@ const PopkisForm = () => {
     setLead({ leadFields, [e.target.name]: e.target.value });
   };
 
+  const [email, setEmail] = useState(false);
+
+  const toggleEmail = useCallback(() => {
+    setEmail((prevState) => !prevState);
+  }, []);
+
   const onSubmit = (e) => {
     e.preventDefault();
   };
+
+  let total = 0;
+  let available = 0;
+
+  if (prospect.paymentMethods) {
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    total = prospect.paymentMethods
+      .map((account) => account.totalBalance)
+      .reduce(reducer);
+
+    available = prospect.paymentMethods
+      .map((account) => account.availableBalance)
+      .reduce(reducer);
+  }
+
   return (
     <form onSubmit={onSubmit} className='container'>
-      <button
-        className='btn-dark btn-block btn m-1 all-center'
-        style={{ width: "200px", marginTop: "30px" }}
-        onClick={() => updateProspect(leadFields, prospect)}>
-        Save
-      </button>
+      <div className='grid-3'>
+        <button
+          className='btn-dark btn-block btn m-1 all-center'
+          style={{ width: "200px", marginTop: "30px" }}
+          onClick={() => updateProspect(leadFields, prospect)}>
+          Save
+        </button>
+        <button
+          className='btn-dark btn-block btn m-1 all-center'
+          style={{ width: "200px", marginTop: "30px" }}
+          onClick={() => setEmail(true)}>
+          Email Docs
+        </button>
+        <button
+          className='btn-dark btn-block btn m-1 all-center'
+          style={{ width: "200px", marginTop: "30px" }}>
+          Generate Invoice
+        </button>
+      </div>
+      {email ? (
+        <SendDocsModal toggleEmail={toggleEmail} prospect={prospect} />
+      ) : (
+        ""
+      )}
       <div className='container grid-2 '>
         <div className='card'>
           {/* contact info panel */}
@@ -584,7 +624,11 @@ const PopkisForm = () => {
             type='text'
             placeholder='E-Mail'
             name='email'
-            value={emailAddresses ? emailAddresses[0] : emailAddress}
+            value={
+              emailAddresses && emailAddresses.length > 0
+                ? emailAddresses[0]
+                : emailAddress
+            }
             onChange={onChange}
           />
           <br />
@@ -636,11 +680,7 @@ const PopkisForm = () => {
           <br />
           <label htmlFor='prac'>Prac Call Info</label>
           <br />
-          <textarea
-            value={prac}
-            placeholder='Prac Call Notes (please include date)'
-            style={{ width: "12rem" }}></textarea>
-          <br />
+
           <label htmlFor='problem1'>Tax Problem 1</label>
           <br />
           <select name='problem1' value={problem1} onChange={onChange}>
@@ -921,7 +961,7 @@ const PopkisForm = () => {
       <div className='card grid-2 container mx-1'>
         <div>
           <h5>Credit</h5>
-          <label htmlFor='creditScore'>Credit score</label>
+          <label htmlFor='creditScore'>Credit Score</label>
 
           <input
             className='mx-1'
@@ -932,25 +972,25 @@ const PopkisForm = () => {
             onChange={onChange}
           />
           <br />
-          <label htmlFor='availableCredit'>Available Credit</label>
+          <label htmlFor='availableCredit'>Available Funds</label>
           <br />
           <input
             name='availableCredit'
-            value={availableCredit}
+            value={available ? available : availableCredit}
             className='mx-1'
             type='text'
             placeholder='Available Credit'
             onChange={onChange}
           />
           <br />
-          <label htmlFor='totalCredit'>Total Credit</label>
+          <label htmlFor='totalCredit'>Total Funds</label>
           <br />
           <input
             className='mx-1'
             type='text'
             placeholder='Total Credit'
             name='totalCredit'
-            value={totalCredit}
+            value={total ? total : totalCredit}
             onChange={onChange}
           />
         </div>

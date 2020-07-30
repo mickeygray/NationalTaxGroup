@@ -115,143 +115,178 @@ router.put("/:id/pdfs", auth, async (req, res) => {
     lead.phones = phone1.filter((str) => str.includes("("));
   }
 
-  lead.amount = lead.amount.replace(":", "");
+  if (lead.amount != null) {
+    lead.amount = lead.amount.replace(":", "");
+  }
+
   lead.filingDate = lead.filingDate.replace(": ", "");
   lead.state = lead.state.replace(":", "").replace(": ", "");
-  lead.plaintiff = lead.plaintiff
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString()
-    .replace(",", " ")
-    .replace(",", " ")
-    .toProperCase();
-  lead.zip4 = lead.deliveryAddress
-    .substring(
-      lead.deliveryAddress.lastIndexOf(lead.state),
-      lead.deliveryAddress.lastIndexOf(lead.county)
-    )
-    .split(" ")
-    .splice(-1)
-    .toString();
 
-  lead.city = lead.deliveryAddress
-    .substring(0, lead.deliveryAddress.indexOf(lead.state))
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .splice(-1)
-    .toString();
+  if (lead.plaintiff != null) {
+    lead.plaintiff = lead.plaintiff
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString()
+      .replace(",", " ")
+      .replace(",", " ")
+      .toProperCase();
+  }
 
-  lead.ssn = lead.ssn
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString();
+  if (lead.deliveryAddress)
+    lead.zip4 = lead.deliveryAddress
+      .substring(
+        lead.deliveryAddress.lastIndexOf(lead.state),
+        lead.deliveryAddress.lastIndexOf(lead.county)
+      )
+      .split(" ")
+      .splice(-1)
+      .toString();
 
-  lead.amount = lead.amount
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString();
+  if (lead.deliveryAddress != null) {
+    lead.city = lead.deliveryAddress
+      .substring(0, lead.deliveryAddress.indexOf(lead.state))
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .splice(-1)
+      .toString();
+  }
 
-  lead.deliveryAddress = lead.deliveryAddress
-    .substring(0, lead.deliveryAddress.indexOf(lead.city))
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString()
-    .replace(",", " ")
-    .replace(",", " ")
-    .replace(",", " ")
-    .toProperCase();
+  if (lead.ssn != null) {
+    lead.ssn = lead.ssn
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString();
+  }
 
-  console.log(lead.city, "1111111111111");
+  if (lead.amount != null) {
+    lead.amount = lead.amount
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString();
+  }
 
-  lead.city = lead.city.toProperCase();
-  lead.county = lead.county
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString()
-    .toProperCase();
-  lead.state = lead.state
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString();
+  if (lead.deliveryAddress != null) {
+    lead.deliveryAddress = lead.deliveryAddress
+      .substring(0, lead.deliveryAddress.indexOf(lead.city))
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString()
+      .replace(",", " ")
+      .replace(",", " ")
+      .replace(",", " ")
+      .toProperCase();
+  }
 
-  lead.firstName = lead.fullName
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })[1]
-    .toString()
-    .toProperCase();
+  if (lead.city != null) {
+    lead.city = lead.city.toProperCase();
+  }
 
-  lead.lastName = lead.fullName
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })[0]
-    .toString()
-    .toProperCase();
+  if (lead.county != null) {
+    lead.county = lead.county
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString()
+      .toProperCase();
+  }
 
-  lead.fullName = lead.fullName.replace(
-    lead.fullName,
-    lead.firstName + " " + lead.lastName
-  );
+  if (lead.state != null) {
+    lead.state = lead.state
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString();
+  }
 
-  let realIndex1 = real1.toString().search(/Name/);
-  let realIndex2 = real1.toString().search(/Address/);
-  let realIndex3 = real1.toString().search(/County\/FIPS/);
-  let realIndex4 = real1.toString().search(/Mortgage Information/);
+  if (lead.fullName != null) {
+    lead.firstName = lead.fullName
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })[1]
+      .toString()
+      .toProperCase();
+  }
 
-  const realField1 = real1.toString().slice(realIndex1, realIndex2);
-  const realField2 = real1.toString().slice(realIndex2, realIndex3);
-  const realField3 = real1
-    .toString()
-    .slice(realIndex4, real1.toString().length);
+  if (lead.fullName != null) {
+    lead.lastName = lead.fullName
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })[0]
+      .toString()
+      .toProperCase();
+  }
+  if (lead.fullName != null) {
+    lead.fullName = lead.fullName.replace(
+      lead.fullName,
+      lead.firstName + " " + lead.lastName
+    );
+  }
 
-  const colon1 = realField1.search(":");
-  const colon2 = realField2.search(":");
+  if (real1 != null) {
+    let realIndex1 = real1.toString().search(/Name/);
+    let realIndex2 = real1.toString().search(/Address/);
+    let realIndex3 = real1.toString().search(/County\/FIPS/);
+    let realIndex4 = real1.toString().search(/Mortgage Information/);
 
-  const name =
-    '"' +
-    realField1.slice(0, colon1).toLowerCase() +
-    '"' +
-    ':"' +
-    realField1.slice(colon1 + 1, realField1.length) +
-    '",';
+    const realField1 = real1.toString().slice(realIndex1, realIndex2);
+    const realField2 = real1.toString().slice(realIndex2, realIndex3);
+    const realField3 = real1
+      .toString()
+      .slice(realIndex4, real1.toString().length);
 
-  const address =
-    '"' +
-    realField2.slice(0, colon2).toLowerCase() +
-    '"' +
-    ':"' +
-    realField2.slice(colon2 + 1, realField2.length) +
-    '",';
+    const colon1 = realField1.search(":");
+    const colon2 = realField2.search(":");
 
-  const loan =
-    '"' + realField3.slice(realField3.length - 16, realField3.length) + '"';
+    const name =
+      '"' +
+      realField1.slice(0, colon1).toLowerCase() +
+      '"' +
+      ':"' +
+      realField1.slice(colon1 + 1, realField1.length) +
+      '",';
 
-  const colon3 = loan.search(":");
+    const address =
+      '"' +
+      realField2.slice(0, colon2).toLowerCase() +
+      '"' +
+      ':"' +
+      realField2.slice(colon2 + 1, realField2.length) +
+      '",';
 
-  const bone =
-    loan.slice(0, colon3) + '"' + ':"' + loan.slice(colon3 + 1, loan.length);
+    const loan =
+      '"' + realField3.slice(realField3.length - 16, realField3.length) + '"';
 
-  const stone = bone.toLowerCase().trim();
+    const colon3 = loan.search(":");
 
-  const realBody = "{" + name + address + stone + "}";
+    const bone =
+      loan.slice(0, colon3) + '"' + ':"' + loan.slice(colon3 + 1, loan.length);
 
-  lead.real = JSON.parse(realBody.replace(/\s{2,10}/g, " "));
+    const stone = bone.toLowerCase().trim();
+
+    const realBody = "{" + name + address + stone + "}";
+
+    lead.real = JSON.parse(realBody.replace(/\s{2,10}/g, " "));
+  } else {
+    lead.real = {
+      name: "",
+      address: "",
+      amount: "",
+    };
+  }
 
   if (bankruptcy1) {
     let bankIndex1 = bankruptcy1.toString().search(/Bankruptcy Information/);
@@ -381,6 +416,7 @@ router.post("/forms", async (req, res) => {
     fullName,
     emailAddress,
     status,
+    pinCode,
     years,
     employed,
     income,
@@ -398,6 +434,7 @@ router.post("/forms", async (req, res) => {
     years,
     employed,
     income,
+    pinCode,
     creditscore,
     phone,
     problem,

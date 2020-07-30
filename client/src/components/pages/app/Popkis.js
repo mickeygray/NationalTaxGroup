@@ -22,11 +22,16 @@ const Popkis = ({ match }) => {
     prospect,
     notes,
     setNotes,
+    deleteDups,
     doc,
   } = useContext(leadContext);
 
   useEffect(() => {
     getProspect(match.params.id);
+
+    if (prospect) {
+      deleteDups(prospect);
+    }
   }, []);
 
   console.log(doc);

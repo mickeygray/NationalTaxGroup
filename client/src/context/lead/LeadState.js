@@ -60,7 +60,9 @@ import {
   GET_FILE,
   POP_DOC,
   SET_DOC,
+  DELETE_DUPS,
   SET_WORKERS,
+  SEND_EMAIL,
 } from "../types";
 
 const LeadState = (props) => {
@@ -90,14 +92,13 @@ const LeadState = (props) => {
     current: null,
     currentMethod: null,
     currentClient: null,
-    call: {},
+    callIn: null,
     calls: [],
     note: {},
     notes: [],
     worker: null,
     workers: [],
     text: "",
-    number: null,
     recentLeads: [],
     todaysLeads: [],
     fullName: null,
@@ -150,64 +151,30 @@ const LeadState = (props) => {
     getProspect(prospect._id);
   };
 
-  const addLead = async (current) => {
+  const sendEmail = async (formData) => {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    const res = await axios.post(`/api/prospects/email`, formData, config);
+    dispatch({
+      type: SEND_EMAIL,
+      payload: res.data,
+    });
+  };
+
+  const addLead = async (prospect) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    console.log(current, "111111");
+    console.log(prospect, "1111111111");
 
-    const {
-      phone,
-      fullName,
-      deliveryAddress,
-      city,
-      st,
-      zip4,
-      plaintiff,
-      amount,
-      lienid,
-      emailAddress,
-      pinCode,
-      compliant,
-      filingStatus,
-      age,
-      dob,
-      cpa,
-      emailAddresses,
-      phones,
-      ssn,
-      bankruptcy,
-      real,
-    } = current;
-
-    const steve = {
-      phone,
-      fullName,
-      deliveryAddress,
-      city,
-      st,
-      zip4,
-      plaintiff,
-      amount,
-      lienid,
-      emailAddress,
-      pinCode,
-      compliant,
-      age,
-      dob,
-      emailAddresses,
-      phones,
-      filingStatus,
-      cpa,
-      ssn,
-      bankruptcy,
-      real,
-    };
-
-    const res = await axios.post("/api/prospects/", steve, config);
+    const res = await axios.post("/api/prospects/", prospect, config);
 
     dispatch({
       type: POST_LEAD,
@@ -306,8 +273,6 @@ const LeadState = (props) => {
     setCurrentMethod(paymentMethod);
     setCurrentClient(clientId);
   };
-
-  const { user } = useContext(AuthContext);
 
   const setNotes = (notes) => {
     console.log(notes);
@@ -480,7 +445,17 @@ const LeadState = (props) => {
     });
   };
 
-  const getMyLeads = async (text) => {
+  const deleteDups = async (match) => {
+    const lienid = match.lienid;
+    const res = await axios.delete(`/api/prospects/lienid?q=${lienid}`);
+
+    dispatch({
+      type: DELETE_DUPS,
+      payload: res.data,
+    });
+  };
+
+  const getMyLeads = async (text, user) => {
     const config = {
       params: {
         createdBy: `${user._id}`,
@@ -836,7 +811,7 @@ const LeadState = (props) => {
     dispatch({ type: SET_DOC, payload: document });
   };
 
-  const putPaymentMethod = async (method, prospect) => {
+  const putPaymentMethod = async (state, prospect) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -844,7 +819,7 @@ const LeadState = (props) => {
     };
     const res = await axios.put(
       `/api/prospects/${prospect._id}/paymentMethods`,
-      method,
+      state,
       config
     );
 
@@ -1078,7 +1053,7 @@ const LeadState = (props) => {
         fullName: state.fullName,
         lien: state.lien,
         lead: state.lead,
-        call: state.call,
+        callIn: state.callIn,
         calls: state.calls,
         worker: state.worker,
         workers: state.workers,
@@ -1133,7 +1108,7 @@ const LeadState = (props) => {
         popDoc,
         updateLead,
         getResoStatus,
-
+        sendEmail,
         makeDNC,
         searchLeads,
         putResoStatus,
@@ -1159,6 +1134,7 @@ const LeadState = (props) => {
         getProspects,
         getMyLeads,
         getProspect,
+        deleteDups,
         postLogics,
         putPaymentSchedule,
         clearCurrentMethod,

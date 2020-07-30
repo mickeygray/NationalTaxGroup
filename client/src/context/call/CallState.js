@@ -37,7 +37,7 @@ const CallState = (props) => {
   const getCalls = async () => {
     const config = {
       headers: {
-        "Authorization": `Token token=6c0dbe4e525e0bff243007882b40eb2b`,
+        "Authorization": `Token token=0308353ef587c7e0a52edb0383355f0a`,
       },
     };
     const res = await axios.get(
@@ -54,7 +54,7 @@ const CallState = (props) => {
   const getLeadCalls = async (number) => {
     const config = {
       headers: {
-        "Authorization": `Token token=6c0dbe4e525e0bff243007882b40eb2b`,
+        "Authorization": `Token token=0308353ef587c7e0a52edb0383355f0a`,
       },
     };
     const res = await axios.get(
@@ -113,7 +113,7 @@ const CallState = (props) => {
   const getEmailCalls = async (currentEmail) => {
     const config = {
       headers: {
-        "Authorization": `Token token=6c0dbe4e525e0bff243007882b40eb2b`,
+        "Authorization": `Token token=0308353ef587c7e0a52edb0383355f0a`,
       },
     };
 
@@ -132,7 +132,7 @@ const CallState = (props) => {
   const getCampaignCalls = async (currentCampaign) => {
     const config = {
       headers: {
-        "Authorization": `Token token=6c0dbe4e525e0bff243007882b40eb2b`,
+        "Authorization": `Token token=0308353ef587c7e0a52edb0383355f0a`,
       },
     };
 

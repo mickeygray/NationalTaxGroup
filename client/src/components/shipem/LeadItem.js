@@ -11,9 +11,13 @@ const LeadItem = ({ lead }) => {
     state,
     zip4,
     pinCode,
+    tracking,
+    callid,
+    source,
     emailAddress,
     plaintiff,
     amount,
+    phone,
     bankruptcy,
     real,
     emailAddresses,
@@ -21,15 +25,16 @@ const LeadItem = ({ lead }) => {
     age,
     dob,
   } = lead;
-  const lienid = _id.toString();
 
+  const lienid = _id.toString();
   const current = {
-    lienid,
     fullName,
+    lienid,
     deliveryAddress,
     city,
     state,
     zip4,
+    phone,
     emailAddress,
     pinCode,
     plaintiff,
@@ -39,8 +44,13 @@ const LeadItem = ({ lead }) => {
     emailAddresses,
     phones,
     age,
+    tracking,
+    callid,
+    source,
     dob,
   };
+
+  console.log(current, "1111111gbgfhfghgfhfh111");
 
   const { setCurrent, makeDNC } = leadContext;
 

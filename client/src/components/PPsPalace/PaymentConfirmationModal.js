@@ -4,6 +4,8 @@ import UserContext from "../../context/user/userContext";
 import StatContext from "../../context/stat/statContext";
 import EmailContext from "../../context/email/emailContext";
 import { v4 as uuidv4 } from "uuid";
+import { PaymentInputsWrapper, usePaymentInputs } from "react-payment-inputs";
+import images from "react-payment-inputs/images";
 const PaymentModal = (props) => {
   const leadContext = useContext(LeadContext);
   const userContext = useContext(UserContext);
@@ -16,7 +18,13 @@ const PaymentModal = (props) => {
     clearCurrentMethod,
   } = leadContext;
   const { user, getUserEmail } = userContext;
-
+  const {
+    wrapperProps,
+    getCardImageProps,
+    getCardNumberProps,
+    getExpiryDateProps,
+    getCVCProps,
+  } = usePaymentInputs();
   const { notifyCloser } = emailContext;
 
   const { updatePayment } = statContext;
@@ -35,85 +43,65 @@ const PaymentModal = (props) => {
 
   useEffect(() => {
     if (currentMethod != null) {
-      setMethod(currentMethod);
+      setState(currentMethod);
       setError(null);
       setId("");
     } else {
       setError("No payment found");
-      setMethod({
+      setState({
+        id: "",
+        cvc: "",
+        expiryDate: "",
         name: "",
-        type: "",
-        ccName: "",
-        ccType: "",
-        ccNo: "",
-        ccExp: "",
-        ccZip: "",
-        ccSec: "",
-        ccPin: "",
+        cardNumber: "",
         accBank: "",
         accType: "",
         accRouting: "",
         accNo: "",
-        contact: "",
       });
     }
   }, [currentMethod, leadContext]);
 
   const [error, setError] = useState("");
-  const [method, setMethod] = useState({
+  const [state, setState] = useState({
     name: "",
-    type: "",
-    ccName: "",
-    ccType: "",
-    ccNo: "",
-    ccExp: "",
-    ccZip: "",
-    ccSec: "",
-    ccPin: "",
+    id: "",
+    cvc: "",
+    expiryDate: "",
+    name: "",
+    cardNumber: "",
     accBank: "",
     accType: "",
     accRouting: "",
     accNo: "",
-    contact: "",
   });
-
   const onChange = (e) => {
-    setMethod({ ...method, [e.target.name]: e.target.value });
+    setState({ ...state, [e.target.name]: e.target.value });
   };
 
   const {
+    cvc,
+    expiryDate,
     name,
-    id,
-    type,
-    ccName,
-    ccType,
-    ccNo,
-    ccExp,
-    ccZip,
-    ccSec,
-    ccPin,
     accBank,
-    accType,
     accRouting,
     accNo,
-    contact,
-  } = method;
+    accType,
+    cardNumber,
+  } = state;
 
   const clearAll = () => {
-    setMethod({
+    setState({
       name: "",
       id: "",
-      type: "",
-      ccType: "",
-      ccNo: "",
-      ccExp: "",
-      ccZip: "",
-      ccSec: "",
+      cvc: "",
+      expiryDate: "",
+      name: "",
+      cardNumber: "",
       accBank: "",
       accType: "",
       accRouting: "",
       accNo: "",
-      contact: "",
     });
     setId("");
     clearCurrentClient();
@@ -156,8 +144,6 @@ const PaymentModal = (props) => {
         <h3> {name} </h3>
         <label htmlFor='quote'>Name</label>
         <input type='text' value={name} name='name' onChange={onChange} />
-        <label htmlFor='quote'>Contact</label>
-        <input type='text' value={contact} name='contact' onChange={onChange} />
       </div>
 
       <div className='grid-2'>
@@ -208,99 +194,24 @@ const PaymentModal = (props) => {
         </div>
 
         <div>
-          {type === "creditcard" ? (
+          {currentMethod && currentMethod.cvc ? (
             <Fragment>
-              <label htmlFor='quote'>Card Type</label>
-              <input
-                type='text'
-                value={ccType}
-                name='ccType'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Name on Card</label>
-              <input
-                type='text'
-                value={ccName}
-                name='ccName'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Credit Card Number</label>
-              <input type='text' value={ccNo} name='ccNo' onChange={onChange} />
-              <label htmlFor='quote'>Credit Card Expiry</label>
-              <input
-                type='text'
-                value={ccExp}
-                name='ccExp'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Credit Card Security Code</label>
-              <input
-                type='text'
-                value={ccSec}
-                name='ccExp'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Credit Card Zip</label>
-              <input
-                type='text'
-                value={ccZip}
-                name='ccZip'
-                onChange={onChange}
-              />
+              <PaymentInputsWrapper {...wrapperProps}>
+                <svg {...getCardImageProps({ images })} />
 
-              <button onClick={onClick5}>Update Payment</button>
+                <input
+                  {...getCardNumberProps({ onChange: onChange })}
+                  value={cardNumber}
+                />
+                <input
+                  {...getExpiryDateProps({ onChange: onChange })}
+                  value={expiryDate}
+                />
+                <input {...getCVCProps({ onChange: onChange })} value={cvc} />
+              </PaymentInputsWrapper>
             </Fragment>
           ) : (
-            ""
-          )}
-          {type === "debitcard" ? (
             <Fragment>
-              <label htmlFor='quote'>Card Type</label>
-              <input
-                type='text'
-                value={ccType}
-                name='ccType'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Name on Card</label>
-              <input
-                type='text'
-                value={ccName}
-                name='ccName'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Debit Card Number</label>
-              <input type='text' value={ccNo} name='ccNo' onChange={onChange} />
-              <label htmlFor='quote'>Debit Card Security Code</label>
-              <input
-                type='text'
-                value={ccSec}
-                name='ccExp'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Debit Card Expiry</label>
-              <input
-                type='text'
-                value={ccExp}
-                name='ccExp'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Debit Card Pin</label>
-              <input
-                type='text'
-                value={ccPin}
-                name='ccPin'
-                onChange={onChange}
-              />
-
-              <button onClick={onClick5}>Update Payment</button>
-            </Fragment>
-          ) : (
-            ""
-          )}
-          {type === "checkingaccount" ? (
-            <Fragment>
-              {error ? error : ""}
               <label htmlFor='quote'>Bank Name</label>
               <input
                 type='text'
@@ -330,44 +241,8 @@ const PaymentModal = (props) => {
                 onChange={onChange}
               />
 
-              <button onClick={onClick5}>Update Payment</button>
+              <button>Update Checking Account</button>
             </Fragment>
-          ) : (
-            ""
-          )}
-          {type === "savingsaccount" ? (
-            <Fragment>
-              <label htmlFor='quote'>Bank Name</label>
-              <input
-                type='text'
-                value={accBank}
-                name='accBank'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Savings Account Type</label>
-              <input
-                type='text'
-                value={accType}
-                name='accType'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Savings Account Number</label>
-              <input
-                type='text'
-                value={accNo}
-                name='accNo'
-                onChange={onChange}
-              />
-              <label htmlFor='quote'>Savings Account Routing</label>
-              <input
-                type='text'
-                value={accRouting}
-                name='accRouting'
-                onChange={onChange}
-              />
-            </Fragment>
-          ) : (
-            ""
           )}
         </div>
       </div>

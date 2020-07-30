@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect, Fragment } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import UserContext from "../../context/user/userContext";
+import { PaymentInputsWrapper, usePaymentInputs } from "react-payment-inputs";
+import images from "react-payment-inputs/images";
+
 const PaymentModal = (props) => {
   const leadContext = useContext(LeadContext);
   const userContext = useContext(UserContext);
@@ -15,9 +18,11 @@ const PaymentModal = (props) => {
 
   console.log(user);
   useEffect(() => {
-    setMethod(currentMethod);
+    setState(currentMethod);
   }, []);
 
+  console.log(currentMethod, "111111111111111111111111111111111111111111111");
+  /*
   const [method, setMethod] = useState({
     name: "",
     type: "",
@@ -74,61 +79,138 @@ const PaymentModal = (props) => {
       contact: "",
     });
   };
-
+*/
+  const [state, setState] = useState({
+    name: "",
+    id: "",
+    cvc: "",
+    expiryDate: "",
+    name: "",
+    cardNumber: "",
+    accBank: "",
+    accType: "",
+    accRouting: "",
+    totalBalance: 0,
+    availableBalance: 0,
+    accNo: "",
+  });
+  const onClick = (e) => {
+    putPaymentMethod(state, prospect);
+  };
+  const handleInputFocus = (e) => {
+    setState({ focus: e.target.name });
+  };
+  const onChange = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
+  const {
+    wrapperProps,
+    getCardImageProps,
+    getCardNumberProps,
+    getExpiryDateProps,
+    getCVCProps,
+  } = usePaymentInputs();
+  /*
   const onClick = (e) => {
     putPaymentMethod(method, prospect);
     clearAll();
   };
+
+  */
+  const {
+    cvc,
+    expiryDate,
+    name,
+    accBank,
+    accRouting,
+    accNo,
+    accType,
+    cardNumber,
+    totalBalance,
+    availableBalance,
+  } = state;
+
+  const [validate, setValidate] = useState(false);
+
+  if (validate === true) {
+    const luhn_checksum = (code) => {
+      var len = code.length;
+      var parity = len % 2;
+      var sum = 0;
+      for (var i = len - 1; i >= 0; i--) {
+        var d = parseInt(code.charAt(i));
+        if (i % 2 == parity) {
+          d *= 2;
+        }
+        if (d > 9) {
+          d -= 9;
+        }
+        sum += d;
+      }
+      return sum % 10;
+    };
+
+    /* luhn_caclulate
+     * Return a full code (including check digit), from the specified partial code (without check digit).
+     */
+    const luhn_caclulate = (partcode) => {
+      var checksum = luhn_checksum(partcode + "0");
+      return checksum == 0 ? 0 : 10 - checksum;
+    };
+
+    /* luhn_validate
+     * Return true if specified code (with check digit) is valid.
+     */
+    const luhn_validate = (fullcode) => {
+      return luhn_checksum(fullcode) == 0;
+    };
+
+    luhn_validate(parseInt(cardNumber));
+  }
+
   return (
-    <div>
+    <div id='PaymentForm'>
       <button onClick={props.togglePaymentModal}>X</button>
-      <h3> {name} </h3>
-      <label htmlFor='quote'>Name</label>
+
+      <label htmlFor='quote'>Name on Payment Method</label>
       <input type='text' value={name} name='name' onChange={onChange} />
-      <label htmlFor='quote'>Contact</label>
-      <input type='text' value={contact} name='contact' onChange={onChange} />
 
-      {type === "creditcard" ? (
+      {currentMethod.cvc ? (
         <Fragment>
-          <label htmlFor='quote'>Card Type</label>
-          <input type='text' value={ccType} name='ccType' onChange={onChange} />
-          <label htmlFor='quote'>Name on Card</label>
-          <input type='text' value={ccName} name='ccName' onChange={onChange} />
-          <label htmlFor='quote'>Credit Card Number</label>
-          <input type='text' value={ccNo} name='ccNo' onChange={onChange} />
-          <label htmlFor='quote'>Credit Card Expiry</label>
-          <input type='text' value={ccExp} name='ccExp' onChange={onChange} />
-          <label htmlFor='quote'>Credit Card Security Code</label>
-          <input type='text' value={ccSec} name='ccExp' onChange={onChange} />
-          <label htmlFor='quote'>Credit Card Zip</label>
-          <input type='text' value={ccZip} name='ccZip' onChange={onChange} />
+          <PaymentInputsWrapper {...wrapperProps}>
+            <svg {...getCardImageProps({ images })} />
 
-          <button onClick={onClick}>Update Credit Card</button>
+            <input
+              {...getCardNumberProps({ onChange: onChange })}
+              value={cardNumber}
+            />
+            <input
+              {...getExpiryDateProps({ onChange: onChange })}
+              value={expiryDate}
+            />
+            <input {...getCVCProps({ onChange: onChange })} value={cvc} />
+          </PaymentInputsWrapper>
+          <label htmlFor='quote'>Total Balance</label>
+          <input
+            type='text'
+            value={totalBalance}
+            name='totalBalance'
+            onChange={onChange}
+          />
+          <label htmlFor='quote'>Available Balance</label>
+          <input
+            type='text'
+            value={availableBalance}
+            name='availableBalance'
+            onChange={onChange}
+          />
+
+          <button onClick={() => setValidate((prevState) => !prevState)}>
+            Validate Credit Card
+          </button>
+          <button onClick={onClick}>Update Account</button>
         </Fragment>
       ) : (
-        ""
-      )}
-      {type === "debitcard" ? (
-        <Fragment>
-          <label htmlFor='quote'>Card Type</label>
-          <input type='text' value={ccType} name='ccType' onChange={onChange} />
-          <label htmlFor='quote'>Name on Card</label>
-          <input type='text' value={ccName} name='ccName' onChange={onChange} />
-          <label htmlFor='quote'>Debit Card Number</label>
-          <input type='text' value={ccNo} name='ccNo' onChange={onChange} />
-          <label htmlFor='quote'>Debit Card Security Code</label>
-          <input type='text' value={ccSec} name='ccExp' onChange={onChange} />
-          <label htmlFor='quote'>Debit Card Expiry</label>
-          <input type='text' value={ccExp} name='ccExp' onChange={onChange} />
-          <label htmlFor='quote'>Debit Card Pin</label>
-          <input type='text' value={ccPin} name='ccPin' onChange={onChange} />
-
-          <button onClick={onClick}>Update Debit Card</button>
-        </Fragment>
-      ) : (
-        ""
-      )}
-      {type === "checkingaccount" ? (
         <Fragment>
           <label htmlFor='quote'>Bank Name</label>
           <input
@@ -153,42 +235,20 @@ const PaymentModal = (props) => {
             name='accRouting'
             onChange={onChange}
           />
-
-          <button onClick={onClick}>Update Checking Account</button>
+          <input
+            type='text'
+            value={totalBalance}
+            name='totalBalance'
+            onChange={onChange}
+          />
+          <input
+            type='text'
+            value={availableBalance}
+            name='availableBalance'
+            onChange={onChange}
+          />
+          <button onClick={onClick}>Update Account</button>
         </Fragment>
-      ) : (
-        ""
-      )}
-      {type === "savingsaccount" ? (
-        <Fragment>
-          <label htmlFor='quote'>Bank Name</label>
-          <input
-            type='text'
-            value={accBank}
-            name='accBank'
-            onChange={onChange}
-          />
-          <label htmlFor='quote'>Savings Account Type</label>
-          <input
-            type='text'
-            value={accType}
-            name='accType'
-            onChange={onChange}
-          />
-          <label htmlFor='quote'>Savings Account Number</label>
-          <input type='text' value={accNo} name='accNo' onChange={onChange} />
-          <label htmlFor='quote'>Savings Account Routing</label>
-          <input
-            type='text'
-            value={accRouting}
-            name='accRouting'
-            onChange={onChange}
-          />
-
-          <button onClick={onClick}>Update Savings Account</button>
-        </Fragment>
-      ) : (
-        ""
       )}
     </div>
   );

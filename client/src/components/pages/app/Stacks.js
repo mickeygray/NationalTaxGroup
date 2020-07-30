@@ -1,14 +1,21 @@
-import React, { Fragment, useContext, useState, useCallback } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import Navbar from "../../layout/Navbar";
 import ProspectsSearch from "../../stacks/ProspectsSearch";
 import Prospects from "../../stacks/Prospects";
 import TodaysProspects from "../../stacks/TodaysProspects";
 import StatContext from "../../../context/stat/statContext";
+import LeadContext from "../../../context/lead/leadContext";
 import FieldSelect from "../../stacks/FieldSelect";
-import { useEffect } from "react";
 
 const Stacks = () => {
   const statContext = useContext(StatContext);
+  const leadContext = useContext(LeadContext);
 
   const {
     filterPayments,

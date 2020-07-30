@@ -40,7 +40,7 @@ const CallItem = ({
   const number = formatted_customer_phone_number;
   const onClick = (e) => {
     sendCall(call);
-    letCall(number);
+    letCall(call);
   };
 
   return (

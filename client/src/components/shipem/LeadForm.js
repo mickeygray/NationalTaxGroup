@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import LexisModal from "./LexisModal";
+import { v4 as uuidv4 } from "uuid";
 import FileUpload from "./FileUpload";
 const LeadForm = () => {
   const leadContext = useContext(LeadContext);
@@ -15,15 +16,20 @@ const LeadForm = () => {
     clearLiens,
     setCurrent,
     letCall,
-    number,
+    callIn,
     clearNumber,
     addLead,
+    submitLead,
     postLogics,
     current,
-
     addLexis,
   } = leadContext;
 
+  useEffect(() => {
+    setForm({
+      pinCode: "",
+    });
+  }, []);
   useEffect(() => {
     if (current !== null) {
       setRecord(current);
@@ -37,7 +43,6 @@ const LeadForm = () => {
         plaintiff: "",
         amount: "",
         ssn: "",
-        lienid: "",
         pinCode: "",
         emailAddress: "",
       });
@@ -45,12 +50,22 @@ const LeadForm = () => {
   }, [current, leadContext]);
 
   useEffect(() => {
-    if (number !== null) {
-      setCall({ phone: number });
+    if (callIn !== null) {
+      setCall({
+        phone: callIn.formatted_customer_phone_number,
+        callid: callIn.callid,
+        source: callIn.source_name,
+        tracking: callIn.tracking_phone_number,
+      });
     } else {
-      setCall({ phone: "" });
+      setCall({
+        phone: "",
+        callid: "",
+        source: "",
+        tracking: "",
+      });
     }
-  }, [number, leadContext]);
+  }, [callIn, leadContext]);
 
   const [record, setRecord] = useState({
     fullName: "",
@@ -60,7 +75,6 @@ const LeadForm = () => {
     zip4: "",
     plaintiff: "",
     amount: "",
-    lienid: "",
     pinCode: "",
     emailAddress: "",
     ssn: "",
@@ -68,6 +82,9 @@ const LeadForm = () => {
 
   const [call, setCall] = useState({
     phone: "",
+    callid: "",
+    tracking: "",
+    source: "",
   });
 
   const [open, setOpen] = useState({
@@ -107,11 +124,35 @@ const LeadForm = () => {
     plaintiff,
     ssn,
     amount,
-    lienid,
     pinCode,
   } = record;
-  const { phone } = call;
+  const { phone, callid, tracking, source } = call;
   const { compliant, filingStatus, cpa } = open;
+
+  let lienid;
+
+  if (current != null) {
+    lienid = current._id;
+  }
+
+  const [form, setForm] = useState({
+    pinCode: "",
+  });
+
+  const [code, setCode] = useState(false);
+
+  const onClick2 = (e) => {
+    setForm({
+      pinCode: uuidv4(),
+    });
+  };
+
+  useEffect(() => {
+    if (form.pinCode.length > 0) {
+      submitLead(form);
+      setCode(true);
+    }
+  }, [form]);
 
   const prospect = {
     phone,
@@ -129,6 +170,9 @@ const LeadForm = () => {
     filingStatus,
     cpa,
     ssn,
+    callid,
+    tracking,
+    source,
   };
   console.log(prospect);
   const clearLead = () => {
@@ -143,11 +187,13 @@ const LeadForm = () => {
       emailAddress: "",
       plaintiff: "",
       taxAmount: "",
-      lienid: "",
       ssn: "",
     });
     setCall({
       phone: "",
+      callid: "",
+      tracking: "",
+      source: "",
     });
 
     setOpen({
@@ -164,13 +210,15 @@ const LeadForm = () => {
   const [showModal, setModalState] = useState(false);
 
   const onSubmit = (e) => {
-    addLead(current);
+    addLead(prospect);
     clearAll();
   };
 
   const clearAll = () => {
     clearLiens();
     clearLead();
+    setCode(false);
+    setFile("");
   };
 
   const [file, setFile] = useState("");
@@ -204,6 +252,10 @@ const LeadForm = () => {
         <button className='btn btn-primary' onClick={onClick}>
           Enrich Lead
         </button>
+        <button className='btn btn-success' onClick={onClick2}>
+          Generate Blank
+        </button>
+        {code ? <p>Please Search The Database for {form.pinCode}</p> : ""}
       </div>
       <form onSubmit={onSubmit}>
         <div className='container grid-2'>

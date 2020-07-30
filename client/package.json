@@ -31,10 +31,12 @@
     "react-live": "^2.2.2",
     "react-moment": "^0.9.7",
     "react-moveable": "^0.20.10",
+    "react-payment-inputs": "^1.1.7",
     "react-pdf": "^4.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-simple-code-editor": "^0.11.0",
+    "styled-components": "^5.1.1",
     "uuid": "^8.1.0"
   },
   "scripts": {

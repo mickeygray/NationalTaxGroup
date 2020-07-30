@@ -17,10 +17,19 @@ const Grid = require("gridfs-stream");
 const multer = require("multer");
 const pdfFiller = require("pdffiller");
 const moment = require("moment");
+
 var hummus = require("hummus"),
   PDFDigitalForm = require("../middleware/PDFDigitalForm");
 let fs = require("fs");
 var util = require("util");
+
+const fileLoad = multer();
+
+const handlebars = require("handlebars");
+const key = require("../config/key.json");
+const nodemailer = require("nodemailer");
+const Email = require("../models/Email");
+const hbs = require("nodemailer-express-handlebars");
 
 router.put("/:id/pdfs", auth, async (req, res) => {
   const string = Object.keys(req.body).toString();
@@ -33,219 +42,301 @@ router.put("/:id/pdfs", auth, async (req, res) => {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   };
+
   let reg1 = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/; // Get emails
   let reg2 = /^(\(\d{3}\))?[\s-]?\d{3}[\s-]?\d{4}/gim;
   let liens = string.match(/(?<=Debtor Information\s*).*?(?=\s*Number)/gs);
   let emails = (string.match(reg1) || []).map((e) => e.replace(reg1, "$1"));
-  let phone1 = string.match(reg2).filter(distinct);
+  let phone1 = string.match(reg2);
+
+  if (phone1) {
+    phone1.filter(distinct);
+  }
   let bankruptcy1 = string.match(
     /(?<=Petitioner Information\s*).*?(?=\s*Meeting Date)/gs
   );
   let real1 = string.match(/(?<=Deed Record for\s*).*?(?=\s*Loan Type)/gs);
 
   const leadString = liens.shift();
-  const leadBody =
-    "{" +
-    leadString
-      .replace(/[\s,]+/g, " ")
-      .trim()
-      .replace("Name:", '"fullName":"')
-      .replace("SSN:", '", "ssn":"')
-      .replace("Address:", '", "deliveryAddress":"')
-      .replace("Creditor Information Name:", '", "plaintiff":"')
-      .replace("Jurisdiction", '", "state":"')
-      .replace("Filing Information", "")
-      .replace("Amount", '", "amount":"')
-      .replace("Filing Date", '", "filingDate":"')
-      .concat('", "emailAddresses":"' + emails) +
-    '"}';
+
+  leadString.replace(leadString.substring(leadString.indexOf("Debtor 2")), "");
+
+  const S =
+    leadString.substring(0, leadString.indexOf("Debtor 2")) +
+    leadString.substring(leadString.indexOf("Creditor Information"));
+
+  let leadBody;
+
+  if (leadString.includes("Debtor 2")) {
+    leadBody =
+      "{" +
+      S.replace(/[\s,]+/g, " ")
+        .trim()
+        .replace("Debtor 1", "")
+        .replace("Debtor 2", "")
+        .replace("Filing 1", "")
+        .replace("Name:", '"fullName":"')
+        .replace("SSN:", '", "ssn":"')
+        .replace("Address:", '", "deliveryAddress":"')
+        .replace("Creditor Information Name:", '", "plaintiff":"')
+        .replace("Jurisdiction", '", "state":"')
+        .replace("Filing Information", "")
+        .replace("Amount", '", "amount":"')
+        .replace("Filing Date", '", "filingDate":"')
+        .concat('", "emailAddresses":"' + emails) +
+      '"}';
+  } else {
+    leadBody =
+      "{" +
+      leadString
+        .replace(/[\s,]+/g, " ")
+        .trim()
+        .replace("Debtor 1", "")
+        .replace("Debtor 2", "")
+        .replace("Filing 1", "")
+        .replace("Name:", '"fullName":"')
+        .replace("SSN:", '", "ssn":"')
+        .replace("Address:", '", "deliveryAddress":"')
+        .replace("Creditor Information Name:", '", "plaintiff":"')
+        .replace("Jurisdiction", '", "state":"')
+        .replace("Filing Information", "")
+        .replace("Amount", '", "amount":"')
+        .replace("Filing Date", '", "filingDate":"')
+        .concat('", "emailAddresses":"' + emails) +
+      '"}';
+  }
 
   let lead = JSON.parse(leadBody);
-
+  console.log(lead.deliveryAddress, "1111111111111");
   lead.county = lead.deliveryAddress
     .match(/(?<=(\d+)(?!.*\d)\s*).*?(?=\s*COUNTY)/gs)
     .toString();
+  if (phone1) {
+    lead.phones = phone1.filter((str) => str.includes("("));
+  }
 
-  lead.phones = phone1.filter((str) => str.includes("("));
-  lead.amount = lead.amount.replace(":", "");
+  if (lead.amount != null) {
+    lead.amount = lead.amount.replace(":", "");
+  }
+
   lead.filingDate = lead.filingDate.replace(": ", "");
-  lead.state = lead.state.replace(": ", "");
-  lead.plaintiff = lead.plaintiff
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString()
-    .replace(",", " ")
-    .replace(",", " ")
-    .toProperCase();
-  lead.zip4 = lead.deliveryAddress
-    .substring(
-      lead.deliveryAddress.lastIndexOf(lead.state),
-      lead.deliveryAddress.lastIndexOf(lead.county)
-    )
-    .split(" ")
-    .splice(-1)
-    .toString();
+  lead.state = lead.state.replace(":", "").replace(": ", "");
 
-  lead.city = lead.deliveryAddress
-    .substring(0, lead.deliveryAddress.indexOf(lead.state))
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .splice(-1)
-    .toString();
+  if (lead.plaintiff != null) {
+    lead.plaintiff = lead.plaintiff
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString()
+      .replace(",", " ")
+      .replace(",", " ")
+      .toProperCase();
+  }
 
-  lead.ssn = lead.ssn
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString();
+  if (lead.deliveryAddress)
+    lead.zip4 = lead.deliveryAddress
+      .substring(
+        lead.deliveryAddress.lastIndexOf(lead.state),
+        lead.deliveryAddress.lastIndexOf(lead.county)
+      )
+      .split(" ")
+      .splice(-1)
+      .toString();
 
-  lead.amount = lead.amount
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString();
+  if (lead.deliveryAddress != null) {
+    lead.city = lead.deliveryAddress
+      .substring(0, lead.deliveryAddress.indexOf(lead.state))
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .splice(-1)
+      .toString();
+  }
 
-  lead.deliveryAddress = lead.deliveryAddress
-    .substring(0, lead.deliveryAddress.indexOf(lead.city))
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString()
-    .replace(",", " ")
-    .replace(",", " ")
-    .replace(",", " ")
-    .toProperCase();
+  if (lead.ssn != null) {
+    lead.ssn = lead.ssn
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString();
+  }
 
-  lead.city = lead.city.toProperCase();
-  lead.county = lead.county
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString()
-    .toProperCase();
-  lead.state = lead.state
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })
-    .toString();
+  if (lead.amount != null) {
+    lead.amount = lead.amount
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString();
+  }
 
-  lead.firstName = lead.fullName
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })[1]
-    .toString()
-    .toProperCase();
+  if (lead.deliveryAddress != null) {
+    lead.deliveryAddress = lead.deliveryAddress
+      .substring(0, lead.deliveryAddress.indexOf(lead.city))
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString()
+      .replace(",", " ")
+      .replace(",", " ")
+      .replace(",", " ")
+      .toProperCase();
+  }
 
-  lead.lastName = lead.fullName
-    .split(" ")
-    .filter(function (el) {
-      return el != "";
-    })[0]
-    .toString()
-    .toProperCase();
+  if (lead.city != null) {
+    lead.city = lead.city.toProperCase();
+  }
 
-  lead.fullName = lead.fullName.replace(
-    lead.fullName,
-    lead.firstName + " " + lead.lastName
-  );
+  if (lead.county != null) {
+    lead.county = lead.county
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString()
+      .toProperCase();
+  }
 
-  let realIndex1 = real1.toString().search(/Name/);
-  let realIndex2 = real1.toString().search(/Address/);
-  let realIndex3 = real1.toString().search(/County\/FIPS/);
-  let realIndex4 = real1.toString().search(/Mortgage Information/);
+  if (lead.state != null) {
+    lead.state = lead.state
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })
+      .toString();
+  }
 
-  const realField1 = real1.toString().slice(realIndex1, realIndex2);
-  const realField2 = real1.toString().slice(realIndex2, realIndex3);
-  const realField3 = real1
-    .toString()
-    .slice(realIndex4, real1.toString().length);
+  if (lead.fullName != null) {
+    lead.firstName = lead.fullName
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })[1]
+      .toString()
+      .toProperCase();
+  }
 
-  const colon1 = realField1.search(":");
-  const colon2 = realField2.search(":");
+  if (lead.fullName != null) {
+    lead.lastName = lead.fullName
+      .split(" ")
+      .filter(function (el) {
+        return el != "";
+      })[0]
+      .toString()
+      .toProperCase();
+  }
+  if (lead.fullName != null) {
+    lead.fullName = lead.fullName.replace(
+      lead.fullName,
+      lead.firstName + " " + lead.lastName
+    );
+  }
 
-  const name =
-    '"' +
-    realField1.slice(0, colon1).toLowerCase() +
-    '"' +
-    ':"' +
-    realField1.slice(colon1 + 1, realField1.length) +
-    '",';
+  if (real1 != null) {
+    let realIndex1 = real1.toString().search(/Name/);
+    let realIndex2 = real1.toString().search(/Address/);
+    let realIndex3 = real1.toString().search(/County\/FIPS/);
+    let realIndex4 = real1.toString().search(/Mortgage Information/);
 
-  const address =
-    '"' +
-    realField2.slice(0, colon2).toLowerCase() +
-    '"' +
-    ':"' +
-    realField2.slice(colon2 + 1, realField2.length) +
-    '",';
+    const realField1 = real1.toString().slice(realIndex1, realIndex2);
+    const realField2 = real1.toString().slice(realIndex2, realIndex3);
+    const realField3 = real1
+      .toString()
+      .slice(realIndex4, real1.toString().length);
 
-  const loan =
-    '"' + realField3.slice(realField3.length - 16, realField3.length) + '"';
+    const colon1 = realField1.search(":");
+    const colon2 = realField2.search(":");
 
-  const colon3 = loan.search(":");
+    const name =
+      '"' +
+      realField1.slice(0, colon1).toLowerCase() +
+      '"' +
+      ':"' +
+      realField1.slice(colon1 + 1, realField1.length) +
+      '",';
 
-  const bone =
-    loan.slice(0, colon3) + '"' + ':"' + loan.slice(colon3 + 1, loan.length);
+    const address =
+      '"' +
+      realField2.slice(0, colon2).toLowerCase() +
+      '"' +
+      ':"' +
+      realField2.slice(colon2 + 1, realField2.length) +
+      '",';
 
-  const stone = bone.toLowerCase().trim();
+    const loan =
+      '"' + realField3.slice(realField3.length - 16, realField3.length) + '"';
 
-  const realBody = "{" + name + address + stone + "}";
+    const colon3 = loan.search(":");
 
-  lead.real = JSON.parse(realBody.replace(/\s{2,10}/g, " "));
+    const bone =
+      loan.slice(0, colon3) + '"' + ':"' + loan.slice(colon3 + 1, loan.length);
 
-  let bankIndex1 = bankruptcy1.toString().search(/Bankruptcy Information/);
-  let bankIndex2 = bankruptcy1.toString().search(/Court/);
-  let bankIndex3 = bankruptcy1.toString().search(/Filing Date/);
-  let bankIndex4 = bankruptcy1.toString().search(/Filing Type/);
+    const stone = bone.toLowerCase().trim();
 
-  const bankField1 = bankruptcy1.toString().slice(bankIndex1, bankIndex2);
-  const bankField2 = bankruptcy1.toString().slice(bankIndex2, bankIndex3);
-  const bankField3 = bankruptcy1
-    .toString()
-    .slice(bankIndex4, bankruptcy1.toString().length);
+    const realBody = "{" + name + address + stone + "}";
 
-  const colon4 = bankField1.search(":");
-  const colon5 = bankField2.search(":");
-  const colon6 = bankField3.search(":");
+    lead.real = JSON.parse(realBody.replace(/\s{2,10}/g, " "));
+  } else {
+    lead.real = {
+      name: "",
+      address: "",
+      amount: "",
+    };
+  }
 
-  const loc =
-    '"' +
-    bankField2.slice(0, colon5).toLowerCase().trim() +
-    '"' +
-    ':"' +
-    bankField2.slice(colon5 + 1, bankField2.length - 1).trim() +
-    '",';
+  if (bankruptcy1) {
+    let bankIndex1 = bankruptcy1.toString().search(/Bankruptcy Information/);
+    let bankIndex2 = bankruptcy1.toString().search(/Court/);
+    let bankIndex3 = bankruptcy1.toString().search(/Filing Date/);
+    let bankIndex4 = bankruptcy1.toString().search(/Filing Type/);
 
-  const gock = loc.replace(/\r?\n|\r/g, "");
+    const bankField1 = bankruptcy1.toString().slice(bankIndex1, bankIndex2);
+    const bankField2 = bankruptcy1.toString().slice(bankIndex2, bankIndex3);
+    const bankField3 = bankruptcy1
+      .toString()
+      .slice(bankIndex4, bankruptcy1.toString().length);
 
-  const negro =
-    '"' +
-    bankField3.slice(0, colon6).toLowerCase().trim() +
-    '"' +
-    ':"' +
-    bankField3.slice(colon6 + 1, bankField3.length).trim() +
-    '"';
+    const colon4 = bankField1.search(":");
+    const colon5 = bankField2.search(":");
+    const colon6 = bankField3.search(":");
 
-  const begro = negro.replace(" type", "Type");
+    const loc =
+      '"' +
+      bankField2.slice(0, colon5).toLowerCase().trim() +
+      '"' +
+      ':"' +
+      bankField2.slice(colon5 + 1, bankField2.length - 1).trim() +
+      '",';
 
-  const bankBody = "{" + gock + begro + "}";
+    const gock = loc.replace(/\r?\n|\r/g, "");
 
-  lead.bankruptcy = JSON.parse(bankBody);
+    const negro =
+      '"' +
+      bankField3.slice(0, colon6).toLowerCase().trim() +
+      '"' +
+      ':"' +
+      bankField3.slice(colon6 + 1, bankField3.length).trim() +
+      '"';
+
+    const begro = negro.replace(" type", "Type");
+
+    const bankBody = "{" + gock + begro + "}";
+
+    lead.bankruptcy = JSON.parse(bankBody);
+  }
   lead.age = string.match(/(?<=[(]Age:\s*).*?(?=\s*[)])/gs)[0].toString();
   lead.dob = string
     .match(/(?<=[-]XXXX\s*).*?(?=\s*[(]Age:)/gs)[0]
     .toString()
     .trim();
+
+  lead.filingDate = lead.filingDate.replace(":", "").trim();
+
+  lead.dob = lead.dob.substring(0, 7);
 
   const regex = new RegExp("/((^[A-Z][,][A-Z]))/", "g");
 
@@ -316,6 +407,89 @@ router.post("/form", auth, async (req, res) => {
       JSON.stringify(digitalForm.fields, null, 4)
     );
   }
+});
+
+router.delete("/lienid", auth, async (req, res) => {
+  const lienid = req.query.q;
+
+  let prospects = await Prospect.find({ lienid: lienid });
+
+  const deal = prospects.find((prospect) => prospect.paymentStatus.total > 0);
+
+  let callids;
+
+  console.log("1111111", lienid);
+  console.log("1111111", prospects);
+  console.log("1111111", deal);
+  console.log("1111111", callids);
+
+  prospects.forEach((prospect) => callids.push(prospect.callid));
+
+  if (deal != null) {
+    const notDeal = prospects.filter((prospect) => prospect._id != deal._id);
+
+    const updated = prospects.findByIdAndUpdate(deal._id, {
+      "$push": { "callids": callids },
+    });
+
+    updated.save();
+
+    prospects = await Prospect.deleteMany({ _id: notDeal._id });
+
+    res.json(prospects);
+  }
+});
+router.post("/email", fileLoad.any(), auth, async (req, res) => {
+  console.log(req.files);
+
+  const files = req.files;
+
+  let attachment = files.map(({ originalname, buffer }) => ({
+    filename: originalname,
+    content: new Buffer(buffer, "application/pdf"),
+  }));
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      type: "OAuth2",
+      user: "lienunit@nattaxgroup.com",
+      serviceClient: key.client_id,
+      privateKey: key.private_key,
+    },
+  });
+
+  /*
+  const options = {
+    viewEngine: {
+      extName: ".hbs",
+      partialsDir: path.join(__dirname, "pdfs"),
+      layoutsDir: path.join(__dirname, "pdfs"),
+      defaultLayout: false,
+    },
+    viewPath: "pdfs",
+    extName: ".hbs",
+  };
+*/
+  //transporter.use("compile", hbs(options));
+
+  const mailer = {
+    title: req.body.subject,
+    from: req.body.from,
+    to: req.body.to,
+    subject: req.body.subject,
+    attachments: attachment,
+    //  template: "template",
+    // context: {
+    //   lead: lead,
+    // }
+    text: req.body.text,
+  };
+
+  console.log(mailer);
+  transporter.sendMail(mailer);
 });
 
 router.get("/status", auth, async (req, res) => {
@@ -522,13 +696,15 @@ router.get("/", auth, async (req, res) => {
 });
 
 router.post("/", auth, async (req, res) => {
-  console.log(req.body, "sdfsdfdsfdsf");
   const {
     phone,
     fullName,
     deliveryAddress,
     city,
     state,
+    tracking,
+    callid,
+    source,
     zip4,
     plaintiff,
     amount,
@@ -546,6 +722,8 @@ router.post("/", auth, async (req, res) => {
     phones,
     bankruptcy,
   } = req.body;
+
+  console.log(lienid);
   /*
   let name2;
   let address2;
@@ -606,6 +784,9 @@ router.post("/", auth, async (req, res) => {
     plaintiff,
     amount,
     lienid,
+    tracking,
+    callid,
+    source,
     phone,
     emailAddress,
     pinCode,
@@ -997,19 +1178,16 @@ router.put("/:_id/paymentMethods", auth, async (req, res) => {
     "$push": {
       "paymentMethods": {
         "name": req.body.name,
-        "type": req.body.type,
-        "ccName": req.body.ccName,
-        "ccType": req.body.ccType,
-        "ccNo": req.body.ccNo,
-        "ccExp": req.body.ccExp,
-        "ccZip": req.body.ccZip,
-        "ccSec": req.body.ccSec,
-        "ccPin": req.body.ccPin,
+        "cardNumber": req.body.cardNumber,
+        "expiryDate": req.body.expiryDate,
+        "cvc": req.body.cvc,
         "accBank": req.body.accBank,
         "accType": req.body.accType,
         "accRouting": req.body.accRouting,
         "accNo": req.body.accNo,
         "contact": req.body.contact,
+        "totalBalance": req.body.totalBalance,
+        "availableBalance": req.body.availableBalance,
       },
     },
   });

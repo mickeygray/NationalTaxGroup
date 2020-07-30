@@ -56,6 +56,8 @@ import {
   SET_DOC,
   SET_WORKERS,
   POP_DOC,
+  SEND_EMAIL,
+  DELETE_DUPS,
 } from "../types";
 
 export default (state, action) => {
@@ -64,6 +66,14 @@ export default (state, action) => {
       return {
         ...state,
         notes: state.notes.filter((note) => note.id !== action.payload),
+      };
+
+    case DELETE_DUPS:
+      return {
+        ...state,
+        prospects: state.prospects.filter(
+          (prospect) => prospect.lienid !== action.payload
+        ),
       };
     case UPDATE_PAYMENTSTATUS:
       return {
@@ -75,7 +85,11 @@ export default (state, action) => {
         ...state,
         caseWorkers: action.payload,
       };
-
+    case SEND_EMAIL:
+      return {
+        ...state,
+        formData: action.payload,
+      };
     case GET_FILE:
       return {
         ...state,
@@ -367,7 +381,7 @@ export default (state, action) => {
     case LET_CALL:
       return {
         ...state,
-        number: action.payload,
+        callIn: action.payload,
       };
     case CLEAR_LEAD:
       return {
@@ -387,7 +401,7 @@ export default (state, action) => {
     case CLEAR_NUMBER:
       return {
         ...state,
-        number: null,
+        callIn: null,
       };
     case SEARCH_LIENS:
       return {
