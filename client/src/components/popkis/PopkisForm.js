@@ -89,7 +89,7 @@ const PopkisForm = () => {
         status: "",
       });
     }
-  }, [setRecent, recentLead]);
+  }, [recentLead]);
 
   useEffect(() => {
     if (prospect !== null) {
@@ -359,13 +359,24 @@ const PopkisForm = () => {
 
   if (prospect.paymentMethods) {
     const reducer = (accumulator, currentValue) => accumulator + currentValue;
-    total = prospect.paymentMethods
-      .map((account) => account.totalBalance)
-      .reduce(reducer);
 
-    available = prospect.paymentMethods
-      .map((account) => account.availableBalance)
-      .reduce(reducer);
+    if (
+      prospect.paymentMethods.length > 0 &&
+      prospect.paymentMethods[0].totalBalance > 0
+    ) {
+      total = prospect.paymentMethods
+        .map((account) => account.totalBalance)
+        .reduce(reducer);
+    }
+
+    if (
+      prospect.paymentMethods.length > 0 &&
+      prospect.paymentMethods[0].availableBalance > 0
+    ) {
+      available = prospect.paymentMethods
+        .map((account) => account.availableBalance)
+        .reduce(reducer);
+    }
   }
 
   return (

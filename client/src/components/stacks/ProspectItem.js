@@ -83,16 +83,9 @@ const ProspectItem = (props) => {
   } else {
     match = prospect;
   }
+
   const onClick = (e) => {
-    let match = {};
-    getProspect(prospect._id);
-
-    if (filtered) {
-      match = filtered;
-    } else {
-      match = prospect;
-    }
-
+    getProspect(match._id);
     setRecent(match);
   };
 

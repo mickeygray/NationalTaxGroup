@@ -8,6 +8,8 @@ import {
   GET_USERNAME,
   GET_USERREMINDED,
   SET_USER,
+  SET_USERPROFILE,
+  GET_MYPROSPECTS,
   POST_TASK,
   DELETE_TASK,
   GET_ASSIGNED,
@@ -20,10 +22,10 @@ export default (state, action) => {
         ...state,
         recentLeads: action.payload,
       };
-    case GET_LEADS:
+    case GET_MYPROSPECTS:
       return {
         ...state,
-        prospects: action.payload,
+        myProspects: action.payload,
       };
     case GET_USER:
       return {
@@ -34,6 +36,12 @@ export default (state, action) => {
       return {
         ...state,
         reminded: action.payload,
+      };
+
+    case SET_USERPROFILE:
+      return {
+        ...state,
+        user: action.payload,
       };
     case GET_ASSIGNED:
       return {

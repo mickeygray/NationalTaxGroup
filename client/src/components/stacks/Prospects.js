@@ -619,6 +619,21 @@ const Prospects = ({ prosp }) => {
         <CsvDownload data={result} />
       </div>
       <div style={leadStyle}>
+        {workers.length > 0
+          ? prospects
+              .filter(
+                (prospect) =>
+                  prospect.caseWorkers.originators.name ===
+                  Object.values(workers)
+              )
+              .map((filtered) => (
+                <ProspectItem
+                  key={filtered._id}
+                  filtered={filtered}
+                  prosp={prosp}
+                />
+              ))
+          : ""}
         {cases.includes("hasRepresentation")
           ? prospects
               .filter(

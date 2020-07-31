@@ -8,6 +8,9 @@ const ProspectsSearch = () => {
   const alertContext = useContext(AlertContext);
   const userContext = useContext(UserContext);
 
+  const { user } = userContext;
+
+  console.log(user);
   const { getProspects } = leadContext;
 
   const [text, setText] = useState("");

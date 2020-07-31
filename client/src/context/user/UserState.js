@@ -15,13 +15,16 @@ import {
   DELETE_REMINDER,
   DELETE_RECENTLEAD,
   GET_USER,
+  GET_MYPROSPECTS,
   GET_USERNAME,
   GET_USERREMINDED,
   SET_USER,
   POST_TASK,
   GET_ASSIGNED,
   DELETE_TASK,
+  SET_USERPROFILE,
 } from "../types";
+import userContext from "./userContext";
 
 const UserState = (props) => {
   const initialState = {
@@ -31,6 +34,7 @@ const UserState = (props) => {
     reminders: [],
     reminder: {},
     reminded: null,
+    myProspects: null,
     assignments: null,
     prospects: [],
     recentLeads: [],
@@ -39,9 +43,16 @@ const UserState = (props) => {
     name: null,
   };
 
-  const leadContext = useContext(LeadContext);
   const { user } = useContext(AuthContext);
+
   const [state, dispatch] = useReducer(userReducer, initialState);
+
+  const getMyProspects = async (user) => {
+    console.log(user);
+    const res = await axios.get(`/api/prospects/caseWorkers?q=${user.name}`);
+
+    dispatch({ type: GET_MYPROSPECTS, payload: res.data });
+  };
 
   //get user name
   const getUserName = async (_id) => {
@@ -54,16 +65,19 @@ const UserState = (props) => {
 
   const setUser = (user) => {
     console.log(user);
-    dispatch({ type: SET_USER, payload: user });
+    dispatch({ type: SET_USERPROFILE, payload: user });
   };
 
   //get user name
-  const getUser = async (_id) => {
-    const res = await axios.get(`/api/users/${_id}`);
+  const getUser = async (user) => {
+    console.log(user);
+    const res = await axios.get(`/api/users/${user._id}`);
     dispatch({
       type: GET_USER,
       payload: res.data,
     });
+
+    console.log(res.data);
   };
 
   const getUserReminded = async (query) => {
@@ -82,23 +96,6 @@ const UserState = (props) => {
   //  load my dashboard
 
   // populate my recent leads
-  const getMyLeads = async (text) => {
-    const config = {
-      params: {
-        createdBy: `${user._id}`,
-        claimedBy: `${user._id}`,
-        q: `${text}`,
-      },
-    };
-    const res = await axios.get(`/api/leads?q=${text}`, config);
-
-    const prospects = res.data;
-
-    dispatch({
-      type: GET_LEADS,
-      payload: prospects,
-    });
-  };
 
   // prevLeads
 
@@ -117,14 +114,15 @@ const UserState = (props) => {
       return self.indexOf(value) === index;
     };
 
-    const recentLeads = prevLeads
+    const recentLeads1 = prevLeads
       .filter(distinct)
       .filter((e) => typeof e !== "string");
     const recentRoutes = prevLeads
       .filter(distinct)
       .filter((e) => typeof e !== "object");
 
-    console.log(recentLeads);
+    const recentLeads = recentLeads1.filter(distinct);
+
     dispatch({
       type: SET_RECENT,
       payload: recentLeads,
@@ -252,6 +250,7 @@ const UserState = (props) => {
         user: state.user,
         assignment: state.assignment,
         name: state.name,
+        myProspects: state.myProspects,
         users: state.users,
         tasks: state.tasks,
         reminders: state.reminders,
@@ -262,7 +261,7 @@ const UserState = (props) => {
         text: state.text,
         user: state.user,
         reminded: state.reminded,
-        getMyLeads,
+        getMyProspects,
         setRecent,
         getUser,
         deleteTask,

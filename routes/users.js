@@ -96,6 +96,17 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+router.get("/:id", auth, async (req, res) => {
+  console.log(req);
+  try {
+    const user = await User.findById(req.params._id);
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 router.get("/search", auth, async (req, res) => {
   const reqObj = JSON.parse(req.query.q);
 

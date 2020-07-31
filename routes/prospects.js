@@ -681,6 +681,26 @@ router.get("/today", auth, async (req, res) => {
   res.json(prospects);
 });
 
+router.get("/caseWorkers", auth, async (req, res) => {
+  console.log(req.query.q);
+  const prospects = await Prospect.find({
+    $or: [
+      { "caseWorkers.originators.name": req.query.q },
+      { "caseWorkers.loanProcessors.name": req.query.q },
+
+      { "caseWorkers.documentProcessors.name": req.query.q },
+
+      { "caseWorkers.upsell.name": req.query.q },
+
+      { "caseWorkers.federalReso.name": req.query.q },
+      { "caseWorkers.stateReso.name": req.query.q },
+    ],
+  })
+    .sort("-createDate")
+    .limit(50);
+  res.json(prospects);
+});
+
 router.get("/", auth, async (req, res) => {
   const regex = new RegExp(`${req.query.q}`, "gi");
   const prospects = await Prospect.find({
