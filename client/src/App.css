@@ -477,13 +477,6 @@ img {
   z-index: 99999;
 }
 
-.homeform {
-  display: grid;
-  grid-area: "form";
-  grid-row-start: 4;
-  grid-column-start: 2;
-}
-
 .navgrid {
   z-index: 9999;
   display: grid;
