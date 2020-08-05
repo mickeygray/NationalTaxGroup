@@ -89,12 +89,12 @@ const FileAComplaint = () => {
           className='overlay'></div>
         <div className='homecopy'>
           <div className='container grid-2 mx-3'>
-            <div className='card'>
-              <img src={criminal} style={{ height: "800px" }} />
+            <div>
+              <img src={criminal} />
             </div>
             <div>
               <br />
-              <br />
+
               <h2 className='lead' style={{ color: "red" }}>
                 NOTICE OF CRIMINAL INVESTIGATION MAILER
               </h2>
