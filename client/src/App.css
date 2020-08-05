@@ -789,7 +789,8 @@ table th {
   opacity: 22%;
 }
 /* Mobile Styles */
-@media (max-width: 700px) {
+
+@media (max-width: 828px) {
   .hide-sm {
     display: none;
   }
