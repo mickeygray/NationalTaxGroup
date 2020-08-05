@@ -63,6 +63,7 @@ import {
   DELETE_DUPS,
   SET_WORKERS,
   SEND_EMAIL,
+  SET_FILTERS,
 } from "../types";
 
 const LeadState = (props) => {
@@ -96,8 +97,12 @@ const LeadState = (props) => {
     calls: [],
     note: {},
     notes: [],
+    filters: [],
+    filters1: [],
     worker: null,
+    prospectsRes: [],
     workers: [],
+    workers1: [],
     text: "",
     recentLeads: [],
     todaysLeads: [],
@@ -180,6 +185,28 @@ const LeadState = (props) => {
       type: POST_LEAD,
       payload: res.data,
     });
+  };
+
+  const setFilters = (filter) => {
+    state.filters1.push(filter);
+    let popArray = [];
+    let final = state.filters1
+      .filter((a) => !a.includes("list"))
+      .filter((a) => !a.includes("show"));
+
+    popArray = final
+      .filter((a) => a.includes("pop"))
+      .map((x) => x.replace(/pop/g, ""));
+
+    state.filters = final
+      .filter((val) => !popArray.includes(val))
+      .filter((val) => !val.includes("pop"));
+
+    state.fitlers1 = state.filters1.filter((val) => popArray.includes(val));
+
+    console.log(state.filters1);
+
+    dispatch({ type: SET_FILTERS, payload: state.filters });
   };
 
   // Clear Liens
@@ -433,15 +460,96 @@ const LeadState = (props) => {
   };
 
   // Lead Seach in stacks
-  const getProspects = async (text) => {
+  const getProspects = async (text, filters) => {
     const res = await axios.get(`/api/prospects?q=${text}`);
 
-    console.log(text);
     const prospects = res.data;
+
+    const prospectsRes =
+      state.filters.length === 0
+        ? prospects
+        : prospects.filter((prospect) => {
+            let searchResults = [];
+            return state.filters.some((filter) => {
+              if (filter.includes(" ")) {
+                for (const array of prospect.caseWorkers.originators) {
+                  if (array.name === filter) return array;
+                }
+                for (const array1 of prospect.caseWorkers.loanProcessors) {
+                  if (array1.name === filter) return array1;
+                }
+                for (const array2 of prospect.caseWorkers.documentProcessors) {
+                  if (array2.name === filter) return array2;
+                }
+                for (const array3 of prospect.caseWorkers.upsells) {
+                  if (array3.name === filter) return array3;
+                }
+                for (const array4 of prospect.caseWorkers.federalReso) {
+                  if (array4.name === filter) return array4;
+                }
+                for (const array5 of prospect.caseWorkers.stateReso) {
+                  if (array5.name === filter) return array5;
+                }
+                for (const array6 of prospect.caseWorkers.taxPreparers) {
+                  if (array6.name === filter) return array6;
+                }
+              } else {
+                let searchResults = [];
+                switch (filter) {
+                  case "hasRepresentation":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+
+                  case "hasFederalFile":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                  case "hasHardship":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                  case "hasStateFile":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                  case "hasPaymentPlan":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                  case "hasOffer":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                  case "hasAppeal":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                  case "hasCorp":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                  case "hasAnnuity":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+                }
+              }
+            });
+          });
 
     dispatch({
       type: GET_LEADS,
-      payload: prospects,
+      payload: prospectsRes,
     });
   };
 
@@ -915,8 +1023,6 @@ const LeadState = (props) => {
       sched.push(scheduleItem2);
     }
 
-    console.log(sched);
-
     let startDate;
     let it = parseInt(iteration.installments);
     let int;
@@ -960,15 +1066,6 @@ const LeadState = (props) => {
     console.log(res.data);
 
     updatePaymentStatus(prospect);
-  };
-
-  const setWorkers = (worker) => {
-    let workers = [];
-    workers.push(worker);
-    dispatch({
-      type: SET_WORKERS,
-      payload: workers,
-    });
   };
 
   const updatePaymentStatus = async (prospect) => {
@@ -1057,6 +1154,9 @@ const LeadState = (props) => {
         calls: state.calls,
         worker: state.worker,
         workers: state.workers,
+        filters1: state.filters1,
+        filters: state.filters,
+        workers1: state.workers1,
         note: state.note,
         notes: state.notes,
         currentNote: state.currentNote,
@@ -1076,6 +1176,7 @@ const LeadState = (props) => {
         vars: state.vars,
         bcc: state.bcc,
         leads: state.leads,
+        prospectsRes: state.prospectsRes,
         mailObject: state.mailObject,
         doc: state.doc,
         mailList: state.mailList,
@@ -1091,6 +1192,7 @@ const LeadState = (props) => {
         deletePaymentScheduleItem,
         getPaymentMethod,
         putPaymentScheduleItem,
+        setFilters,
         pushWorker,
         getTodaysProspects,
         getProspectName,
@@ -1114,6 +1216,7 @@ const LeadState = (props) => {
         putResoStatus,
         clearLead,
         clearLeadFields,
+
         addLexisProspect,
         clearRecentLead,
         clearNumber,
@@ -1127,7 +1230,7 @@ const LeadState = (props) => {
         setRecentLead,
         postResoStatus,
         setCurrent,
-        setWorkers,
+
         letCall,
         clearLiens,
         updateProspect,

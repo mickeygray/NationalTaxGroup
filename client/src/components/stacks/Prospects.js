@@ -7,13 +7,13 @@ import { Fragment } from "react";
 const Prospects = ({ prosp }) => {
   const leadContext = useContext(LeadContext);
 
-  const { getLeads, prospects, prospect, workers } = leadContext;
+  const { getLeads, prospectsRes, prospect, workers, filters } = leadContext;
 
   const result = [];
   function arraysFilters(key) {
     switch (key) {
       case "showFullName":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].fullName = prospect.fullName)
             : (result[i] = {
@@ -23,7 +23,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showCreateDate":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].createDate = prospect.createDate)
             : (result[i] = {
@@ -42,7 +42,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showAmount":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].amount = prospect.amount)
             : (result[i] = {
@@ -51,7 +51,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showName2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].name2 = prospect.name2)
             : (result[i] = {
@@ -60,7 +60,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showAddress2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].address2 = prospect.address2)
             : (result[i] = {
@@ -69,7 +69,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showCity2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].city2 = prospect.city2)
             : (result[i] = {
@@ -78,7 +78,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showState2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].state2 = prospect.state2)
             : (result[i] = {
@@ -87,7 +87,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showZip2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].zip2 = prospect.zip2)
             : (result[i] = {
@@ -96,7 +96,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showEmployerTime":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].employerTime = prospect.employerTime)
             : (result[i] = {
@@ -105,7 +105,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showSsn2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].ssn2 = prospect.ssn2)
             : (result[i] = {
@@ -114,7 +114,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showLexId":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].lexId = prospect.lexId)
             : (result[i] = {
@@ -123,7 +123,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showPhone2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].phone2 = prospect.phone2)
             : (result[i] = {
@@ -132,7 +132,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showPhone3":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].phone3 = prospect.phone3)
             : (result[i] = {
@@ -141,7 +141,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showBankruptcyType" && prospect.bankruptcy:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].bankrupctyType = prospect.bankruptcy.filingType)
             : (result[i] = {
@@ -150,7 +150,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showAge":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].age = prospect.age)
             : (result[i] = {
@@ -159,7 +159,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showEmail2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].email2 = prospect.email2)
             : (result[i] = {
@@ -168,7 +168,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showEmail3":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].email3 = prospect.email3)
             : (result[i] = {
@@ -177,7 +177,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showProblem1":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].problem1 = prospect.problem1)
             : (result[i] = {
@@ -186,7 +186,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showProblem2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].problem2 = prospect.problem2)
             : (result[i] = {
@@ -195,7 +195,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showProblem3":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].problem3 = prospect.problem3)
             : (result[i] = {
@@ -204,7 +204,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showResSold":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].resSold = prospect.resSold)
             : (result[i] = {
@@ -214,7 +214,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showResSold2":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].resSold2 = prospect.resSold2)
             : (result[i] = {
@@ -224,7 +224,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showHome":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].homePay = prospect.homePay)
             : (result[i] = {
@@ -234,7 +234,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showHomePay" && prospect.real:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].homeLoan = prospect.real.amount)
             : (result[i] = {
@@ -243,7 +243,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showWages":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].wages = prospect.wages)
             : (result[i] = {
@@ -252,7 +252,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showIncome1Type":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].income1Type = prospect.income1Type)
             : (result[i] = {
@@ -261,7 +261,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showIncome1Value":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].income1Value = prospect.income1Value)
             : (result[i] = {
@@ -270,7 +270,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showIncome2Type":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].income2Type = prospect.income2Type)
             : (result[i] = {
@@ -279,7 +279,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showIncome2Value":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].income2Value = prospect.income2Value)
             : (result[i] = {
@@ -288,7 +288,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showIncome3Type":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].showIncome3Type = prospect.income3Type)
             : (result[i] = {
@@ -297,7 +297,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showPlaintiff":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].plaintiff = prospect.plaintiff)
             : (result[i] = {
@@ -306,7 +306,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showIncome3Value":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].income3Value = prospect.income3Value)
             : (result[i] = {
@@ -315,7 +315,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showOtherIncomeType":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].otherIncomeType = prospect.otherIncomeType)
             : (result[i] = {
@@ -324,7 +324,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showOtherIncomeValue":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].otherIncomeValue = prospect.otherIncomeValue)
             : (result[i] = {
@@ -333,7 +333,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showAvailableCredit":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].availableCredit = prospect.availableCredit)
             : (result[i] = {
@@ -343,7 +343,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showCreditScore":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].creditScore = prospect.creditScore)
             : (result[i] = {
@@ -353,7 +353,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showBankruptcyType" && prospect.bankruptcy:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].bankruptcyType = prospect.bankruptcy.filingType)
             : (result[i] = {
@@ -362,7 +362,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showEmail":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].email = prospect.email)
             : (result[i] = {
@@ -371,7 +371,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showTotalCredit":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].totalCredit = prospect.totalCredit)
             : (result[i] = {
@@ -380,7 +380,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showEmployerName":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].employerName = prospect.employerName)
             : (result[i] = {
@@ -389,7 +389,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showEmployerPhone":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].employerPhone = prospect.employerPhone)
             : (result[i] = {
@@ -399,7 +399,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showPhone":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].phone = prospect.phone)
             : (result[i] = {
@@ -408,7 +408,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showPinCode":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].pinCode = prospect.pinCode)
             : (result[i] = {
@@ -417,7 +417,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showStatus":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].status = prospect.status)
             : (result[i] = {
@@ -426,7 +426,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showCompliant":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].compliant = prospect.compliant)
             : (result[i] = {
@@ -435,7 +435,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showFilingStatus":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].filingStatus = prospect.filingStatus)
             : (result[i] = {
@@ -444,7 +444,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showCpa":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].cpa = prospect.cpa)
             : (result[i] = {
@@ -453,7 +453,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showSsn":
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].ssn = prospect.ssn)
             : (result[i] = {
@@ -462,7 +462,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showGross" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].gross = prospect.paymentStatus.gross)
             : (result[i] = {
@@ -471,7 +471,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showQuote" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].quote = prospect.paymentStatus.quote)
             : (result[i] = {
@@ -480,7 +480,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showInitial" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].initial = prospect.paymentStatus.initial)
             : (result[i] = {
@@ -489,7 +489,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showTotal" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].total = prospect.paymentStatus.total)
             : (result[i] = {
@@ -498,7 +498,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showPayments" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].paymentsRemaining =
                 prospect.paymentStatus.paymentsRemaining)
@@ -508,7 +508,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showPercent" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].percentPaid = prospect.paymentStatus.percentPaid)
             : (result[i] = {
@@ -518,7 +518,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showRedline" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].redLine = prospect.paymentStatus.redLine)
             : (result[i] = {
@@ -528,7 +528,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showRefund" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].refunded = prospect.paymentStatus.refunded)
             : (result[i] = {
@@ -538,7 +538,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showInitialPaymentDate" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].initialPaymentDate =
                 prospect.paymentStatus.initialPaymentDate)
@@ -559,7 +559,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showLastPaymentDate" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].lastPaymentDate =
                 prospect.paymentStatus.lastPaymentDate)
@@ -580,7 +580,7 @@ const Prospects = ({ prosp }) => {
         break;
 
       case "showBalance" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].balance = prospect.paymentStatus.balance)
             : (result[i] = {
@@ -589,7 +589,7 @@ const Prospects = ({ prosp }) => {
         );
         break;
       case "showLoan" && prospect.paymentStatus:
-        prospects.map((prospect, i) =>
+        prospectsRes.map((prospect, i) =>
           result[i]
             ? (result[i].loans = prospect.paymentStatus.loans)
             : (result[i] = {
@@ -600,32 +600,31 @@ const Prospects = ({ prosp }) => {
     }
   }
 
-  Object.keys(prosp).map((key) => {
-    prosp[key] ? arraysFilters(key) : console.log("");
-  });
+  const onClick = (e) => {
+    Object.keys(prosp).map((key) => {
+      prosp[key] ? arraysFilters(key) : console.log("");
+    });
+  };
 
-  const cases = Object.keys(prosp).filter((k) => prosp[k]);
+  const statusArray = Object.keys(prosp)
+    .filter((k) => prosp[k])
+    .filter((a) => a.includes("is"))
+    .filter((a) => !a.includes("list"))
+    .map((x) => x.replace(/is/g, ""))
+    .map((x) => x.toLowerCase());
 
-  /*
-        {prospects !== []
-          ?''
-          : ""}
-*/
+  console.log(statusArray);
+  console.log(filters);
 
-  console.log(workers);
   return (
     <Fragment>
       <div>
-        <CsvDownload data={result} />
+        <CsvDownload data={result} onClick={onClick} />
       </div>
       <div style={leadStyle}>
-        {workers.length > 0
-          ? prospects
-              .filter(
-                (prospect) =>
-                  prospect.caseWorkers.originators.name ===
-                  Object.values(workers)
-              )
+        {prospectsRes.length > 0 && statusArray.length > 0
+          ? prospectsRes
+              .filter((prospect) => prospect.status === statusArray.some())
               .map((filtered) => (
                 <ProspectItem
                   key={filtered._id}
@@ -633,135 +632,6 @@ const Prospects = ({ prosp }) => {
                   prosp={prosp}
                 />
               ))
-          : ""}
-        {cases.includes("hasRepresentation")
-          ? prospects
-              .filter(
-                (prospect) => prospect.resoStatus.representation.length > 0
-              )
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {cases.includes("hasFederalFile")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.federalFile.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {cases.includes("hasStateFile")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.stateFile.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {cases.includes("hasPaymentPlan")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.paymentPlan.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {cases.includes("hasOffer")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.offer.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {cases.includes("hasAnnuity")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.annuity.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}{" "}
-        {cases.includes("hasCorp")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.corp.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {cases.includes("hasAppeal")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.appeal.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {cases.includes("hasHardship")
-          ? prospects
-              .filter((prospect) => prospect.resoStatus.hardship.length > 0)
-
-              .map((filtered) => (
-                <ProspectItem
-                  key={filtered._id}
-                  filtered={filtered}
-                  prosp={prosp}
-                />
-              ))
-          : ""}
-        {!cases.includes(
-          "hasHardship",
-          "hasAppeal",
-          "hasoffer",
-          "hasPaymentPlan",
-          "hasAnnuity",
-          "hasCorp",
-          "hasRepresentation",
-          "hasFederalFile",
-          "hasStateFile"
-        ) && prospects !== []
-          ? prospects.map((prospect) => (
-              <ProspectItem
-                key={prospect._id}
-                prospect={prospect}
-                prosp={prosp}
-              />
-            ))
           : ""}
       </div>
     </Fragment>

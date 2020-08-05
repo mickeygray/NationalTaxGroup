@@ -8,9 +8,9 @@ const ProspectsSearch = () => {
   const alertContext = useContext(AlertContext);
   const userContext = useContext(UserContext);
 
+  const { filters } = leadContext;
   const { user } = userContext;
 
-  console.log(user);
   const { getProspects } = leadContext;
 
   const [text, setText] = useState("");
@@ -43,7 +43,7 @@ const ProspectsSearch = () => {
             type='submit'
             value='Search'
             className='btn btn-dark btn-sm'
-            onClick={() => getProspects(text)}
+            onClick={() => getProspects(text, filters)}
           />
         </div>
       </form>

@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import LeadContext from "../../context/lead/leadContext";
+const StatusModal = (props) => {
+  const { prosp, toggleProsp } = props;
 
-const StatusModal = () => {
-  const [statusFilter, setStatusFilter] = useState("");
-
-  const onChange = (e) => {
-    setStatusFilter({
-      [e.target.name]: e.target.value,
-    });
-    console.log(statusFilter);
-  };
+  const { setFilters } = useContext(LeadContext);
 
   return (
     <div>
@@ -17,11 +12,10 @@ const StatusModal = () => {
           {" "}
           <label htmlFor='filedFederal'>Prospect</label>
           <input
-            name='statusFilter'
+            name='isProspect'
             type='checkbox'
-            onChange={onChange}
-            value='prospect'
-            checked={statusFilter === "prospect"}
+            checked={prosp.isProspect}
+            onChange={toggleProsp}
           />
         </li>
 
@@ -29,11 +23,10 @@ const StatusModal = () => {
           {" "}
           <label htmlFor='filedFederal'>Client</label>
           <input
-            name='statusFilter'
+            name='isClient'
             type='checkbox'
-            onChange={onChange}
-            value={statusFilter}
-            checked={() => setStatusFilter("client")}
+            onChange={toggleProsp}
+            checked={prosp.isClient}
           />
         </li>
 
@@ -41,44 +34,40 @@ const StatusModal = () => {
           {" "}
           <label htmlFor='filedFederal'>Upsellable</label>
           <input
-            name='statusFilter'
+            name='isUpsellable'
             type='checkbox'
-            value='upsellable'
-            onChange={onChange}
-            checked={statusFilter === "upsellable"}
+            onChange={toggleProsp}
+            checked={prosp.isUpsellable}
           />
         </li>
         <li>
           {" "}
           <label htmlFor='filedFederal'>Highdollar</label>
           <input
-            name='statusFilter'
+            name='isHighdollar'
             type='checkbox'
-            value='highdollar'
-            onChange={onChange}
-            checked={statusFilter === "highdollar"}
+            onChange={toggleProsp}
+            checked={prosp.isHighDollar}
           />
         </li>
         <li>
           {" "}
           <label htmlFor='filedFederal'>Redline</label>
           <input
-            name='statusFilter'
+            name='isRedLine'
             type='checkbox'
-            value='redLine'
-            onChange={onChange}
-            checked={statusFilter === "redline"}
+            onChange={toggleProsp}
+            checked={prosp.isRedLine}
           />
         </li>
         <li>
           {" "}
           <label htmlFor='filedFederal'>Refund</label>
           <input
-            name='statusFilter'
+            name='isRefunded'
             type='checkbox'
-            value='refunded'
-            onChange={onChange}
-            checked={statusFilter === "refund"}
+            onChange={toggleProsp}
+            checked={prosp.isRefunded}
           />
         </li>
       </ul>

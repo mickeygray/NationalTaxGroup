@@ -26,6 +26,7 @@ import TakeMeOffTheList from "./components/pages/splash/TakeMeOffTheList";
 import FreshStart from "./components/pages/splash/FreshStart";
 import TaxGroup from "./components/pages/website/pages/TaxGroup";
 import FileAComplaint from "./components/pages/splash/FileAComplaint";
+import Criminal from "./components/pages/splash/Criminal";
 import LienViewer from "./components/pages/website/pages/LienViewer";
 import IGetYourMoneyBack from "./components/pages/website/pages/IGetYourMoneyBack";
 import Free1040Filler from "./components/pages/website/pages/Free1040Filler";
@@ -94,6 +95,7 @@ const App = () => {
                           path='/takemeoffthelist'
                           component={TakeMeOffTheList}
                         />
+                        <Route exact path='/criminal' component={Criminal} />
                       </Switch>
                     </Fragment>
                   </Router>

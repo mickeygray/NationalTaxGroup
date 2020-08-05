@@ -12,7 +12,11 @@ const StickyNavbar = () => {
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
     setStyle({
-      backgroundColor: "none",
+      backgroundColor: "#f4f4f4",
+      overflowY: "hidden",
+      width: "95vw",
+      marginLeft: "100px",
+      overflowX: "hidden",
     });
   }, []);
 
@@ -28,6 +32,10 @@ const StickyNavbar = () => {
 
   const onScroll = () => {
     setStyle({
+      overflowY: "hidden",
+      overflowX: "hidden",
+      width: "95vw",
+      marginLeft: "10px",
       position: "sticky",
       top: "0",
       background: "black",
@@ -36,24 +44,22 @@ const StickyNavbar = () => {
   };
 
   return (
-    <div className='navgrid' onScroll={onScroll} style={style}>
-      <div className='container'>
-        <p className='text-primary'>
-          <Link to='/taxgroup' onClick={onClick}>
-            <img
-              src={logo}
-              alt='National Tax Group'
-              style={{
-                width: "60px",
-                height: "60px",
-                borderRadius: "10px",
-                opacity: "50%",
-              }}
-            />{" "}
-            National Tax Group
-          </Link>
-        </p>
-      </div>
+    <div onScroll={onScroll} style={style}>
+      <p className='text-primary'>
+        <Link to='/taxgroup' onClick={onClick}>
+          <img
+            src={logo}
+            alt='National Tax Group'
+            style={{
+              width: "60px",
+              height: "60px",
+              borderRadius: "10px",
+              opacity: "50%",
+            }}
+          />{" "}
+          National Tax Group
+        </Link>
+      </p>
     </div>
   );
 };

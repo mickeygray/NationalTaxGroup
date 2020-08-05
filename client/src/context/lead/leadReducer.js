@@ -58,6 +58,7 @@ import {
   POP_DOC,
   SEND_EMAIL,
   DELETE_DUPS,
+  SET_FILTERS,
 } from "../types";
 
 export default (state, action) => {
@@ -99,6 +100,11 @@ export default (state, action) => {
       return {
         ...state,
         workers: action.payload,
+      };
+    case SET_FILTERS:
+      return {
+        ...state,
+        filters: action.payload,
       };
     case ADD_LEXIS:
       return {
@@ -366,7 +372,7 @@ export default (state, action) => {
     case GET_LEADS:
       return {
         ...state,
-        prospects: action.payload,
+        prospectsRes: action.payload,
       };
     case GET_FIELDS:
       return {

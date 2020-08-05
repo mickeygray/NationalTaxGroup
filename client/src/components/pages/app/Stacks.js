@@ -84,6 +84,12 @@ const Stacks = () => {
       showAmount: true,
       showPlaintiff: false,
       showPhone: true,
+      isProspect: false,
+      isClient: false,
+      isUpsellable: false,
+      isHighdollar: false,
+      isRedLine: false,
+      isRefunded: false,
       showPinCode: true,
       showStatus: true,
       showCompliant: false,
@@ -115,6 +121,12 @@ const Stacks = () => {
     listTaxPreparers: false,
     listStateReso: false,
     listStatus: false,
+    isProspect: false,
+    isClient: false,
+    isUpsellable: false,
+    isHighdollar: false,
+    isRedLine: false,
+    isRefunded: false,
     hasRepresentation: false,
     hasFederalFile: false,
     hasStateFile: false,
@@ -189,8 +201,6 @@ const Stacks = () => {
 
   const today = new Date(Date.now());
 
-  console.log(today);
-
   let formattedToday = Intl.DateTimeFormat(
     "en-US",
     { timeZone: "America/Los_Angeles" },
@@ -206,6 +216,10 @@ const Stacks = () => {
   const onChange2 = (e) => {
     setSearchState((prevState) => !prevState);
   };
+
+  const toggleProsp = useCallback((e) => {
+    setProsp({ ...prosp, [e.target.name]: e.target.checked });
+  });
 
   return (
     <Fragment>
@@ -232,7 +246,7 @@ const Stacks = () => {
       </select>
       <div className='grid-2b'>
         <div>
-          <FieldSelect prosp={prosp} setProsp={setProsp} />
+          <FieldSelect prosp={prosp} toggleProsp={toggleProsp} />
         </div>
         {searchState ? (
           <div className='card'>

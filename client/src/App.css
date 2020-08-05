@@ -197,6 +197,16 @@ img {
     "copy";
 }
 
+.grid-zero {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 25vh);
+  grid-template-areas:
+    "overlay"
+    "copy"
+    "form";
+}
+
 .grid-recent {
   display: grid;
   grid-template-columns: 15px 200px;
@@ -467,9 +477,16 @@ img {
   display: grid;
   grid-row-start: 1;
   grid-row-end: 4;
-  grid-column-start: 2;
-  grid-column-end: 8;
+  grid-column-start: 1;
+  grid-column-end: 5;
   z-index: 99999;
+}
+
+.homeform {
+  display: grid;
+  grid-area: "form";
+  grid-row-start: 4;
+  grid-column-start: 2;
 }
 
 .navgrid {

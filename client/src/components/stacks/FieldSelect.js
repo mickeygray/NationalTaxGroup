@@ -11,21 +11,16 @@ import TaxPrepModal from "./TaxPrepModal";
 import LoanProcessorsModal from "./LoanProcessorsModal";
 
 const FieldSelect = (props) => {
-  const { prosp, setProsp } = props;
+  const { prosp, toggleProsp } = props;
 
   const { getUserReminded, users } = useContext(UserContext);
 
-  const { workers } = useContext(LeadContext);
+  const { workers, setFilters } = useContext(LeadContext);
 
-  console.log(workers);
   useEffect(() => {
     let query = "";
     getUserReminded(query);
   }, []);
-
-  const onChange = (e) => {
-    setProsp({ ...prosp, [e.target.name]: e.target.checked });
-  };
 
   const [modal, setModal] = useState(false);
 
@@ -50,7 +45,25 @@ const FieldSelect = (props) => {
   const toggleModal = useCallback(() => {
     setModal(false);
   });
-  console.log(prosp);
+
+  /*
+        {prospects !== []
+          ?''
+          : ""}
+
+
+
+*/
+  const cases = Object.keys(prosp).filter((k) => prosp[k]);
+  const onClick = (e) => {
+    if (e.target.checked === true) {
+      const filter = e.target.name;
+      setFilters(filter);
+    } else {
+      const filter = "pop" + e.target.name;
+      setFilters(filter);
+    }
+  };
   return (
     <div className='sidebar'>
       <ul className='m-1'>
@@ -63,8 +76,8 @@ const FieldSelect = (props) => {
           <input
             name='listOriginators'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listOriginators}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         {prosp.listOriginators ? (
@@ -84,8 +97,9 @@ const FieldSelect = (props) => {
           <input
             name='listLoanProcessors'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listLoanProcessors}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         {prosp.listLoanProcessors ? (
@@ -105,8 +119,9 @@ const FieldSelect = (props) => {
           <input
             name='listDocumentProcessors'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listDocumentProcessors}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         {prosp.listDocumentProcessors ? (
@@ -126,8 +141,8 @@ const FieldSelect = (props) => {
           <input
             name='listUpsells'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listUpsells}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         {prosp.listUpsells ? (
@@ -147,8 +162,8 @@ const FieldSelect = (props) => {
           <input
             name='listFederalReso'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listFederalReso}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         {prosp.listFederalReso ? (
@@ -168,8 +183,8 @@ const FieldSelect = (props) => {
           <input
             name='listTaxPreparers'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listTaxPreparers}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         {prosp.listTaxPreparers ? (
@@ -189,8 +204,8 @@ const FieldSelect = (props) => {
           <input
             name='listStateReso'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listStateReso}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         {prosp.listStateReso ? (
@@ -210,11 +225,15 @@ const FieldSelect = (props) => {
           <input
             name='listStatus'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.listStatus}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
-        {prosp.listStatus ? <StatusModal /> : ""}
+        {prosp.listStatus ? (
+          <StatusModal prosp={prosp} toggleProsp={toggleProsp} />
+        ) : (
+          ""
+        )}
         <br />
         <h3>Case Status</h3>
         <li>
@@ -225,8 +244,8 @@ const FieldSelect = (props) => {
           <input
             name='hasRepresentation'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasRepresentation}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -237,8 +256,8 @@ const FieldSelect = (props) => {
           <input
             name='hasFederalFile'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasFederalFile}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -249,8 +268,8 @@ const FieldSelect = (props) => {
           <input
             name='hasStateFile'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasStateFile}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -261,8 +280,8 @@ const FieldSelect = (props) => {
           <input
             name='hasHardship'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasHardship}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -273,8 +292,8 @@ const FieldSelect = (props) => {
           <input
             name='hasPaymentPlan'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasPaymentPlan}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -285,8 +304,8 @@ const FieldSelect = (props) => {
           <input
             name='hasOffer'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasOffer}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -297,8 +316,8 @@ const FieldSelect = (props) => {
           <input
             name='hasAppeal'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasAppeal}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -309,8 +328,8 @@ const FieldSelect = (props) => {
           <input
             name='hasCorp'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasCorp}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -321,8 +340,8 @@ const FieldSelect = (props) => {
           <input
             name='hasAnnuity'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.hasAnnuity}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <br />
@@ -336,8 +355,8 @@ const FieldSelect = (props) => {
           <input
             name='showFullName'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showFullName}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -348,8 +367,8 @@ const FieldSelect = (props) => {
           <input
             name='showAmount'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showAmount}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -360,8 +379,8 @@ const FieldSelect = (props) => {
           <input
             name='showPinCode'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showPinCode}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -372,8 +391,8 @@ const FieldSelect = (props) => {
           <input
             name='showStatus'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showStatus}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -384,8 +403,8 @@ const FieldSelect = (props) => {
           <input
             name='showSsn'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showSsn}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -396,8 +415,8 @@ const FieldSelect = (props) => {
           <input
             name='showAge'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showAge}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -408,8 +427,8 @@ const FieldSelect = (props) => {
           <input
             name='showLexId'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showLexId}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -420,8 +439,8 @@ const FieldSelect = (props) => {
           <input
             name='showPlaintiff'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showPlaintiff}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <h5>Contact Information</h5>
@@ -433,8 +452,8 @@ const FieldSelect = (props) => {
           <input
             name='showPhone'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showPhone}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -445,8 +464,8 @@ const FieldSelect = (props) => {
           <input
             name='showPhone2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showPhone2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -457,8 +476,8 @@ const FieldSelect = (props) => {
           <input
             name='showPhone3'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showPhone3}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -469,8 +488,8 @@ const FieldSelect = (props) => {
           <input
             name='showEmail'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showEmail}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -481,8 +500,8 @@ const FieldSelect = (props) => {
           <input
             name='showEmail2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showEmail2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -493,8 +512,8 @@ const FieldSelect = (props) => {
           <input
             name='showEmail3'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showEmail3}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <h5>Financial Information</h5>
@@ -506,8 +525,8 @@ const FieldSelect = (props) => {
           <input
             name='showHome'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showHome}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -518,8 +537,8 @@ const FieldSelect = (props) => {
           <input
             name='showHomePay'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showHomePay}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -530,8 +549,9 @@ const FieldSelect = (props) => {
           <input
             name='showBankruptcyType'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showBankruptcyType}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -542,8 +562,8 @@ const FieldSelect = (props) => {
           <input
             name='showWages'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showWages}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -554,8 +574,8 @@ const FieldSelect = (props) => {
           <input
             name='showIncome1Type'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showIncome1Type}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -566,8 +586,9 @@ const FieldSelect = (props) => {
           <input
             name='showIncome1Value'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showIncome1Value}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -578,8 +599,8 @@ const FieldSelect = (props) => {
           <input
             name='showIncome2Type'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showIncome2Type}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -590,8 +611,9 @@ const FieldSelect = (props) => {
           <input
             name='showIncome2Value'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showIncome2Value}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -602,8 +624,8 @@ const FieldSelect = (props) => {
           <input
             name='showIncome3Type'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showIncome3Type}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -614,8 +636,9 @@ const FieldSelect = (props) => {
           <input
             name='showIncome3Value'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showIncome3Value}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -626,8 +649,9 @@ const FieldSelect = (props) => {
           <input
             name='showOtherIncomeType'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showOtherIncomeType}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -638,8 +662,9 @@ const FieldSelect = (props) => {
           <input
             name='showOtherIncomeValue'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showOtherIncomeValue}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -650,8 +675,9 @@ const FieldSelect = (props) => {
           <input
             name='showAvailableCredit'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showAvailableCredit}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -662,8 +688,8 @@ const FieldSelect = (props) => {
           <input
             name='showTotalCredit'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showTotalCredit}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <h5>Payment Information</h5>
@@ -675,8 +701,8 @@ const FieldSelect = (props) => {
           <input
             name='showQuote'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showQuote}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -687,8 +713,8 @@ const FieldSelect = (props) => {
           <input
             name='showGross'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showGross}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -699,8 +725,8 @@ const FieldSelect = (props) => {
           <input
             name='showInitial'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showInitial}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -711,8 +737,8 @@ const FieldSelect = (props) => {
           <input
             name='showTotal'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showTotal}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -723,8 +749,8 @@ const FieldSelect = (props) => {
           <input
             name='showPayments'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showPayments}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>{" "}
         <li>
@@ -735,8 +761,8 @@ const FieldSelect = (props) => {
           <input
             name='showPercent'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showPercent}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>{" "}
         <li>
@@ -747,8 +773,8 @@ const FieldSelect = (props) => {
           <input
             name='showRedline'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showRedline}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -759,8 +785,8 @@ const FieldSelect = (props) => {
           <input
             name='showRefund'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showRefund}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -771,8 +797,9 @@ const FieldSelect = (props) => {
           <input
             name='showInitialPaymentDate'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showInitialPaymentDate}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -783,8 +810,9 @@ const FieldSelect = (props) => {
           <input
             name='showLastPaymentDate'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showLastPaymentDate}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -795,8 +823,8 @@ const FieldSelect = (props) => {
           <input
             name='showBalance'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showBalance}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <h5>Loans and Credit</h5>
@@ -808,8 +836,8 @@ const FieldSelect = (props) => {
           <input
             name='showCreditScore'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showCreditScore}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -820,8 +848,9 @@ const FieldSelect = (props) => {
           <input
             name='showEmployerTime'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showEmployerTime}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -832,8 +861,8 @@ const FieldSelect = (props) => {
           <input
             name='showLoan'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showLoan}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <h5>Case Information</h5>
@@ -845,8 +874,8 @@ const FieldSelect = (props) => {
           <input
             name='showCreateDate'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showCreateDate}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -857,8 +886,8 @@ const FieldSelect = (props) => {
           <input
             name='showCreateDate'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showCreateDate}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <h5>Prospect Status Filters</h5>
@@ -870,8 +899,8 @@ const FieldSelect = (props) => {
           <input
             name='showProblem1'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showProblem1}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -882,8 +911,8 @@ const FieldSelect = (props) => {
           <input
             name='showProblem2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showProblem2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -894,8 +923,8 @@ const FieldSelect = (props) => {
           <input
             name='showProblem3'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showProblem3}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -906,8 +935,8 @@ const FieldSelect = (props) => {
           <input
             name='showResSold'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showResSold}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -918,8 +947,8 @@ const FieldSelect = (props) => {
           <input
             name='showResSold2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showResSold2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -930,8 +959,8 @@ const FieldSelect = (props) => {
           <input
             name='showCompliant'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showCompliant}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -942,8 +971,9 @@ const FieldSelect = (props) => {
           <input
             name='showFilingStatus'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showFilingStatus}
+            onClick={onClick}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -954,8 +984,8 @@ const FieldSelect = (props) => {
           <input
             name='showCpa'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showCpa}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <h5>Secondary Contact</h5>
@@ -967,8 +997,8 @@ const FieldSelect = (props) => {
           <input
             name='showName2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showName2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -979,8 +1009,8 @@ const FieldSelect = (props) => {
           <input
             name='showAddress2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showAddress2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -991,8 +1021,8 @@ const FieldSelect = (props) => {
           <input
             name='showCity2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showCity2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -1003,8 +1033,8 @@ const FieldSelect = (props) => {
           <input
             name='showState2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showState2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -1015,8 +1045,8 @@ const FieldSelect = (props) => {
           <input
             name='showZip2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showZip2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
         <li>
@@ -1027,8 +1057,8 @@ const FieldSelect = (props) => {
           <input
             name='showSsn2'
             type='checkbox'
-            onChange={onChange}
-            checked={prosp.showSsn2}
+            onClick={onClick}
+            onChange={toggleProsp}
           />
         </li>
       </ul>

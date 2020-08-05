@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div
       className='navgrid bg-dark'
-      style={{ zIndex: "99999", height: "200%" }}>
+      style={{ zIndex: "99999", height: "200%", width: "95vw" }}>
       <div className='container'>
         <p className='text-primary'>
           <Link to='/'>

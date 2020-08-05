@@ -1,18 +1,16 @@
-Popkis: delete docs, pop phones and emailAddresses from popkis, email client docs , credit card validation and available balance and total balance, generate invoice, 
+Popkis: delete docs, pop phones and emailAddresses from popkis, generate invoice, 
 
 Stacks: filter by caseWorker, delete all other prospects with lienid after accepted payment.
 
-Dangerzone: Last 50 , my money
+Dangerzone: my money
 
 Eyore: get and process reports from sendgrid amazon and google. Email address cleaning Regex develop in depth piece libarary 
 
-the big guns: make the infinite lead machine, turn reports into csv, do report math, parse invoices, pop in tableau frame, report call database.  
-
-Ship Em: get the unique call id to slap in prospect, add marketing source to prospect item 
+the big guns: sum  calls, prospects, clients, money per daily unique 800 number.
 
 ths api, ytel api, microbilt api, lexis api
 
-
+     
 
 
 

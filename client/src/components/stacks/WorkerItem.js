@@ -4,23 +4,26 @@ import LeadContext from "../../context/lead/leadContext";
 
 const WorkerItem = (props) => {
   const { filtered } = props;
-  const { setWorkers } = useContext(LeadContext);
+  const { setFilters } = useContext(LeadContext);
 
-  console.log(props);
-
+  const [checked, setChecked] = useState(false);
   const [worker, setWorker] = useState("");
+
   useEffect(() => {
-    if (worker != "") {
-      setWorkers(worker);
+    if (checked === true) {
+      setFilters(filtered.name);
+      setWorker(filtered.name);
     }
-  }, [worker, filtered]);
+    if (checked === false && worker === filtered.name) {
+      setFilters(`pop${filtered.name}`);
+      setWorker("");
+    }
+  }, [checked, filtered]);
 
   const onChange = (e) => {
-    setWorker({ ...worker, [e.target.name]: e.target.value });
+    setChecked((prevState) => !prevState);
   };
 
-  console.log(worker);
-  console.log(filtered);
   return (
     <Fragment>
       {" "}
@@ -28,6 +31,7 @@ const WorkerItem = (props) => {
       <input
         name='worker'
         type='checkbox'
+        checked={checked}
         value={filtered.name}
         onChange={onChange}
       />

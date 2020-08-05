@@ -128,3 +128,4 @@ export const SET_WORKERS = "SET_WORKERS";
 export const DELETE_DUPS = "DELETE_DUPS";
 export const SET_USERPROFILE = "SET_USERPROFILE";
 export const GET_MYPROSPECTS = "GET_MYPROSPECTS";
+export const SET_FILTERS = "SET_FILTERS";
