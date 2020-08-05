@@ -72,10 +72,10 @@ const FileAComplaint = () => {
     e.preventDefault();
   };
   return (
-    <div>
+    <div className='container'>
       <div className='grid-zero'>
         <div className='homecopy'>
-          <div className='container grid-2'>
+          <div className='grid-2'>
             <div>
               <img src={criminal} />
             </div>
@@ -130,7 +130,7 @@ const FileAComplaint = () => {
         </div>
       </div>
       <div style={{ backgroundColor: "#ffaf7a" }}>
-        <div className='container'>
+        <div>
           <div className='card bg-light homeform'>
             <form onSubmit={onSubmit}>
               <input
