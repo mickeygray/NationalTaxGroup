@@ -81,7 +81,7 @@ const FileAComplaint = () => {
           <br />
 
           <h2 className='lead' style={{ color: "red" }}>
-            NOTICE OF CRIMINAL INVESTIGATION MAILER
+            SSI BENEFITS SUSPENSION MAILER
           </h2>
           <h4>
             <i>
