@@ -201,6 +201,7 @@ img {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(8, 95px);
+  background-color: #ffaf7a;
   grid-template-areas:
     "overlay"
     "copy"
