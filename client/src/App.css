@@ -199,8 +199,8 @@ img {
 
 .grid-zero {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 25vh);
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(8, 95px);
   grid-template-areas:
     "overlay"
     "copy"
@@ -297,7 +297,7 @@ img {
 .overlay {
   grid-area: overlay;
   display: grid;
-  position: absolute;
+
   grid-row-start: 1;
   grid-row-end: 3;
   grid-column-start: 1;
@@ -460,11 +460,6 @@ img {
   width: 74rem;
   height: 30rem;
 }
-.overlay img {
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-}
 
 .contactimg img {
   width: 5rem;
@@ -475,8 +470,8 @@ img {
 .homecopy {
   grid-area: copy;
   display: grid;
-  grid-row-start: 1;
-  grid-row-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 8;
   grid-column-start: 1;
   grid-column-end: 5;
   z-index: 99999;

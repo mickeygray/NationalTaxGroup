@@ -72,84 +72,79 @@ const FileAComplaint = () => {
     e.preventDefault();
   };
   return (
-    <Fragment>
-      <Fragment>
-        <StickyNavbar />
-      </Fragment>
-      <Fragment>
-        <div className='grid-zero' style={{ overflowX: "hidden" }}>
-          <div className='overlay'>
-            <p style={{ backgroundColor: "#f4f4f4" }}>
-              <img
-                src={hero2}
-                alt=''
-                style={{
-                  zIndex: "-1",
-                  height: "100vh",
-                  width: "95vw",
-                  opacity: "22%",
-                }}
-              />
-            </p>
-          </div>
-          <div className='homecopy'>
-            <div className='container grid-2 py-3 mx-3'>
-              <div className='card'>
-                <br />
-                <br />
-                <h2 className='text-danger lead'>
-                  NOTICE OF CRIMINAL INVESTIGATION MAILER
-                </h2>
-                <h4>
-                  <i>
-                    If you or a loved one has recieved a letter like the one
-                    above, you may be entitled to compensation as an ongoing
-                    complaint filed against the company American Tax Solutions
-                    and Disbarred Attorney Terrance "Terry" Selb Aka Chris
-                    Baker.{" "}
-                  </i>
-                </h4>
-                <br />
-                <a
-                  href='tel:+13106665997'
-                  className='btn btn-block btn-primary all-center'>
-                  Speak to a lawyer
-                </a>
-                <br />
-                <ul>
-                  <br />
-                  <li>
-                    <h4>
-                      Disbarred Attorney Terrance Selb sends fraudulent mailers
-                      to people with expired tax liens impersonating the
-                      government and threatening criminal charges.
-                    </h4>
-                  </li>
+    <div>
+      <div
+        className='grid-zero'
+        style={{ overflowX: "hidden", overflowY: "hidden" }}>
+        <div
+          style={{
+            height: "100vh",
+            width: "100vw",
 
-                  <li>
-                    <h5>
-                      We are actively submitting all complaints against Terrance
-                      Selb, Tyler Bennet, Chris Baker, Ben Graupner and Andrew
-                      Rappor and the companies American Tax Solutions, Tax Debt
-                      Group and Get A Tax Lawyer to the BBB, FTC and State of
-                      California.
-                    </h5>
-                  </li>
-                </ul>
-                <h5>
-                  Your complaints are completely anonymous and could lead to
-                  financial compensation if you were directly impacted by this
-                  scam.
-                </h5>
-              </div>
-              <div>
-                <img src={criminal} style={{ height: "800px" }} />
-              </div>
+            backgroundImage: `url(${hero2})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            opacity: "22%",
+          }}
+          className='overlay'></div>
+        <div className='homecopy'>
+          <div className='container grid-2 mx-3'>
+            <div className='card'>
+              <img src={criminal} style={{ height: "800px" }} />
+            </div>
+            <div>
+              <br />
+              <br />
+              <h2 className='lead' style={{ color: "red" }}>
+                NOTICE OF CRIMINAL INVESTIGATION MAILER
+              </h2>
+              <h4>
+                <i>
+                  If you or a loved one has recieved a letter like the one
+                  above, you may be entitled to compensation as an ongoing
+                  complaint filed against the company American Tax Solutions and
+                  Disbarred Attorney Terrance "Terry" Selb Aka Chris Baker.{" "}
+                </i>
+              </h4>
+              <br />
+              <a
+                href='tel:+13106665997'
+                className='btn btn-block btn-primary all-center'>
+                Speak to a lawyer
+              </a>
+              <br />
+              <ul>
+                <li>
+                  <h4>
+                    Disbarred Attorney Terrance Selb sends fraudulent mailers to
+                    people with expired tax liens impersonating the government
+                    and threatening criminal charges.
+                  </h4>
+                </li>
+                <br />
+                <li>
+                  <h5>
+                    We are actively submitting all complaints against Terrance
+                    Selb, Tyler Bennet, Chris Baker, Ben Graupner and Andrew
+                    Rappor and the companies American Tax Solutions, Tax Debt
+                    Group and Get A Tax Lawyer to the BBB, FTC and State of
+                    California.
+                  </h5>
+                </li>
+              </ul>
+              <br />
+              <h5>
+                Your complaints are completely anonymous and could lead to
+                financial compensation if you were directly impacted by this
+                scam.
+              </h5>
             </div>
           </div>
         </div>
+      </div>
+      <div style={{ backgroundColor: "#ffaf7a" }}>
         <div className='container'>
-          <div className='card homeform'>
+          <div className='card bg-light homeform'>
             <form onSubmit={onSubmit}>
               <input
                 type='text'
@@ -235,9 +230,8 @@ const FileAComplaint = () => {
             </form>
           </div>
         </div>
-        <Footer />
-      </Fragment>
-    </Fragment>
+      </div>
+    </div>
   );
 };
 
