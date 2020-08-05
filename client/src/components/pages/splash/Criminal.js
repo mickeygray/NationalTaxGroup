@@ -19,7 +19,7 @@ const FileAComplaint = () => {
       problem: "",
       company: "",
       paid: "",
-      status: "new",
+      status: "criminal",
     });
   }, []);
 
@@ -30,7 +30,7 @@ const FileAComplaint = () => {
     problem: "",
     company: "",
     paid: "",
-    status: "new",
+    status: "criminal",
   });
   const [letters, setLetters] = useState([]);
 
@@ -90,10 +90,10 @@ const FileAComplaint = () => {
               </h2>
               <h4>
                 <i>
-                  If you or a loved one has recieved a letter like the one
-                  above, you may be entitled to compensation as an ongoing
-                  complaint filed against the company American Tax Solutions and
-                  Disbarred Attorney Terrance "Terry" Selb Aka Chris Baker.{" "}
+                  If you or a loved one has recieved a letter like this one, you
+                  may be entitled to compensation as an ongoing complaint filed
+                  against the company American Tax Solutions and Disbarred
+                  Attorney Terrance "Terry" Selb Aka Chris Baker.{" "}
                 </i>
               </h4>
               <br />
@@ -115,9 +115,9 @@ const FileAComplaint = () => {
                 <li>
                   <h5>
                     We are actively submitting all complaints against Terrance
-                    Selb, Tyler Bennet, Chris Baker, Ben Graupner and Andrew
-                    Rappor and the companies American Tax Solutions, Tax Debt
-                    Group and Get A Tax Lawyer to the BBB, FTC and State of
+                    Selb, Tyler Bennet, Chris Baker, Ben Graupner and Andruw
+                    Rapport and the companies American Tax Solutions, Tax Debt
+                    Group and GetATaxLawyer.com to the BBB, FTC and State of
                     California.
                   </h5>
                 </li>
