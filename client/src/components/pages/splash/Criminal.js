@@ -78,7 +78,7 @@ const FileAComplaint = () => {
         style={{ overflowX: "hidden", overflowY: "hidden" }}>
         <div
           style={{
-            height: "100vh",
+            height: "120vh",
             width: "100vw",
 
             backgroundImage: `url(${hero2})`,
