@@ -198,7 +198,7 @@ const FileAComplaint = () => {
             <input
               type='text'
               placeholder='Amount Paid'
-              name='Paid'
+              name='paid'
               onChange={onChange}
               value={paid}
             />
