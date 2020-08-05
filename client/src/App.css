@@ -790,17 +790,21 @@ table th {
 }
 /* Mobile Styles */
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .hide-sm {
     display: none;
   }
-
+  .grid-2,
   .grid-3,
   .grid-4 {
     grid-template-columns: 1fr;
   }
   .dingleberries {
     display: none;
+  }
+
+  .homecopy {
+    margin-bottom: 10px;
   }
   /* Text Styles */
   .x-large {
