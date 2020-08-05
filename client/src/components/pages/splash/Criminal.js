@@ -76,17 +76,7 @@ const FileAComplaint = () => {
       <div
         className='grid-zero'
         style={{ overflowX: "hidden", overflowY: "hidden" }}>
-        <div
-          style={{
-            height: "120vh",
-            width: "100vw",
-
-            backgroundImage: `url(${hero2})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            opacity: "22%",
-          }}
-          className='overlay'></div>
+        <div className='overlay dingleberries'></div>
         <div className='homecopy'>
           <div className='container grid-2 mx-3'>
             <div>

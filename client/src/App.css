@@ -780,10 +780,24 @@ table th {
   margin-right: 0.6rem;
 }
 
+.dingleberries {
+  height: 120vh;
+  width: 100vw;
+  background-image: url("./images/hero2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 22%;
+}
 /* Mobile Styles */
 @media (max-width: 700px) {
   .hide-sm {
     display: none;
+  }
+  .dingleberries {
+    height: 120vh;
+    width: 100vw;
+
+    opacity: 22%;
   }
 
   .grid-2,
