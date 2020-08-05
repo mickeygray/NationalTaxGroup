@@ -800,7 +800,7 @@ table th {
     grid-template-columns: 1fr;
   }
   .dingleberries {
-    height: 100%;
+    display: none;
   }
   /* Text Styles */
   .x-large {
