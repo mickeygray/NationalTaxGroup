@@ -78,7 +78,7 @@ const FileAComplaint = () => {
         style={{ overflowX: "hidden", overflowY: "hidden" }}>
         <div className='overlay dingleberries'></div>
         <div className='homecopy'>
-          <div className='container grid-2 mx-3'>
+          <div className='container grid-2'>
             <div>
               <img src={criminal} />
             </div>
