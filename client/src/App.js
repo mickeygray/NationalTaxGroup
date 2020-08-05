@@ -28,6 +28,7 @@ import TaxGroup from "./components/pages/website/pages/TaxGroup";
 import FileAComplaint from "./components/pages/splash/FileAComplaint";
 import Criminal from "./components/pages/splash/Criminal";
 import Distraint from "./components/pages/splash/Distraint";
+import SSI from "./components/pages/splash/SSI";
 import LienViewer from "./components/pages/website/pages/LienViewer";
 import IGetYourMoneyBack from "./components/pages/website/pages/IGetYourMoneyBack";
 import Free1040Filler from "./components/pages/website/pages/Free1040Filler";
@@ -87,6 +88,7 @@ const App = () => {
                           component={IGetYourMoneyBack}
                         />
                         <Route exact path='/distraint' component={Distraint} />
+                        <Route exact path='/distraint' component={SSI} />
                         <Route
                           exact
                           path='/fileacomplaint'

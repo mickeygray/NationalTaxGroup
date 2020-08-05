@@ -177,7 +177,7 @@ const FileAComplaint = () => {
               <div>
                 <br />
                 <br />
-                <button className='btn btn-danger btn-block '>
+                <button onClick={onClick} className='btn btn-danger btn-block '>
                   File A Complaint
                 </button>
               </div>
