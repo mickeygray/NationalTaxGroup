@@ -793,12 +793,6 @@ table th {
   .hide-sm {
     display: none;
   }
-  .dingleberries {
-    height: 120vh;
-    width: 100vw;
-
-    opacity: 22%;
-  }
 
   .grid-2,
   .grid-3,
