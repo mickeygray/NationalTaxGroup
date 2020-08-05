@@ -790,7 +790,7 @@ table th {
 }
 /* Mobile Styles */
 
-@media (max-width: 800px) {
+@media (max-width: 700px) {
   .hide-sm {
     display: none;
   }
@@ -802,9 +802,13 @@ table th {
   .dingleberries {
     display: none;
   }
-
+  .grid-zero {
+    margin-bottom: 10px;
+    background-color: #ffaf7a;
+  }
   .homecopy {
     margin-bottom: 10px;
+    background-color: #ffaf7a;
   }
   /* Text Styles */
   .x-large {
