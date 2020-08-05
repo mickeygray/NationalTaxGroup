@@ -799,7 +799,9 @@ table th {
   .grid-4 {
     grid-template-columns: 1fr;
   }
-
+  .dingleberries {
+    height: 100%;
+  }
   /* Text Styles */
   .x-large {
     font-size: 3rem;
