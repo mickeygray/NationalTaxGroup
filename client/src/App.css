@@ -799,6 +799,7 @@ table th {
   .grid-3,
   .grid-4 {
     grid-template-columns: 1fr;
+    grid-template-rows: repeat(2 1fr);
   }
   .dingleberries {
     display: none;
