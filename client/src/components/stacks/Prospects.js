@@ -607,11 +607,9 @@ const Prospects = ({ prosp, currentPosts }) => {
     }
   }
 
-  const onClick = (e) => {
-    Object.keys(prosp).map((key) => {
-      prosp[key] ? arraysFilters(key) : console.log("");
-    });
-  };
+  Object.keys(prosp).map((key) => {
+    prosp[key] ? arraysFilters(key) : console.log("");
+  });
 
   const statusArray = filters
     .filter((a) => a.includes("is"))
@@ -621,7 +619,7 @@ const Prospects = ({ prosp, currentPosts }) => {
   return (
     <Fragment>
       <div>
-        <CsvDownload data={result} onClick={onClick} />
+        <CsvDownload data={result} />
       </div>
       <div style={leadStyle}>
         {currentPosts.length > 0 && statusArray.length > 0
