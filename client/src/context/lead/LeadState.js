@@ -187,24 +187,18 @@ const LeadState = (props) => {
     });
   };
 
-  const setFilters = (filter) => {
-    state.filters1.push(filter);
-    let popArray = [];
-    let final = state.filters1
-      .filter((a) => !a.includes("list"))
-      .filter((a) => !a.includes("show"));
-
-    popArray = final
-      .filter((a) => a.includes("pop"))
-      .map((x) => x.replace(/pop/g, ""));
-
-    state.filters = final
-      .filter((val) => !popArray.includes(val))
-      .filter((val) => !val.includes("pop"));
-
-    state.fitlers1 = state.filters1.filter((val) => popArray.includes(val));
-
-    console.log(state.filters1);
+  const setFilters = (array) => {
+    state.filters = state.filters.concat(array);
+    function filterByCount(array, count) {
+      return array.filter(function (value) {
+        return (
+          array.filter(function (v) {
+            return v === value;
+          }).length === count
+        );
+      });
+    }
+    state.filters = filterByCount(state.filters, 1);
 
     dispatch({ type: SET_FILTERS, payload: state.filters });
   };
@@ -537,6 +531,12 @@ const LeadState = (props) => {
                       if (array.id) return searchResults.concat(array);
                     }
                     break;
+                  case "hasAnnuity":
+                    for (const array of prospect.resoStatus.representation) {
+                      if (array.id) return searchResults.concat(array);
+                    }
+                    break;
+
                   case "hasAnnuity":
                     for (const array of prospect.resoStatus.representation) {
                       if (array.id) return searchResults.concat(array);

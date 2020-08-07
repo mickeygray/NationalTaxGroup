@@ -6,22 +6,27 @@ const WorkerItem = (props) => {
   const { filtered } = props;
   const { setFilters } = useContext(LeadContext);
 
-  const [checked, setChecked] = useState(false);
-  const [worker, setWorker] = useState("");
+  const [array, setWorkers] = useState([]);
 
   useEffect(() => {
-    if (checked === true) {
-      setFilters(filtered.name);
-      setWorker(filtered.name);
-    }
-    if (checked === false && worker === filtered.name) {
-      setFilters(`pop${filtered.name}`);
-      setWorker("");
-    }
-  }, [checked, filtered]);
+    if (array.length > 0 && new Set(array).size !== array.length) {
+      function filterByCount(array, count) {
+        return array.filter(function (value) {
+          return (
+            array.filter(function (v) {
+              return v === value;
+            }).length === count
+          );
+        });
+      }
+
+      setWorkers(filterByCount(array, 1));
+      setFilters(array);
+    } else if (array.length === 1) setFilters(array);
+  }, [array]);
 
   const onChange = (e) => {
-    setChecked((prevState) => !prevState);
+    setWorkers([...array, e.target.value]);
   };
 
   return (
@@ -31,7 +36,6 @@ const WorkerItem = (props) => {
       <input
         name='worker'
         type='checkbox'
-        checked={checked}
         value={filtered.name}
         onChange={onChange}
       />

@@ -4,7 +4,12 @@ const StatusModal = (props) => {
   const { prosp, toggleProsp } = props;
 
   const { setFilters } = useContext(LeadContext);
+  const onClick = (e) => {
+    let array = [];
 
+    array.push(e.target.name);
+    setFilters(array);
+  };
   return (
     <div>
       <ul>
@@ -16,6 +21,7 @@ const StatusModal = (props) => {
             type='checkbox'
             checked={prosp.isProspect}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
 
@@ -27,6 +33,7 @@ const StatusModal = (props) => {
             type='checkbox'
             onChange={toggleProsp}
             checked={prosp.isClient}
+            onClick={onClick}
           />
         </li>
 
@@ -38,6 +45,7 @@ const StatusModal = (props) => {
             type='checkbox'
             onChange={toggleProsp}
             checked={prosp.isUpsellable}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -48,6 +56,7 @@ const StatusModal = (props) => {
             type='checkbox'
             onChange={toggleProsp}
             checked={prosp.isHighDollar}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -58,6 +67,7 @@ const StatusModal = (props) => {
             type='checkbox'
             onChange={toggleProsp}
             checked={prosp.isRedLine}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -68,6 +78,7 @@ const StatusModal = (props) => {
             type='checkbox'
             onChange={toggleProsp}
             checked={prosp.isRefunded}
+            onClick={onClick}
           />
         </li>
       </ul>

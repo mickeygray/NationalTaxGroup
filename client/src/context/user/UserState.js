@@ -254,7 +254,7 @@ const UserState = (props) => {
         users: state.users,
         tasks: state.tasks,
         reminders: state.reminders,
-        prospects: state.leads,
+        prospects: state.prospects,
         prospect: state.prospect,
         prevLeads: state.prevLeads,
         recentLeads: state.recentLeads,

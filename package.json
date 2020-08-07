@@ -55,6 +55,7 @@
     "nodemailer-express-handlebars": "^4.0.0",
     "nodemon": "^2.0.4",
     "pdffiller": "0.0.11",
+    "react-paginate": "^6.3.2",
     "salt": "^0.5.5",
     "set-interval": "^2.0.4",
     "uuidv4": "^6.1.1"

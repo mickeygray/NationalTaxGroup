@@ -695,9 +695,8 @@ router.get("/caseWorkers", auth, async (req, res) => {
       { "caseWorkers.federalReso.name": req.query.q },
       { "caseWorkers.stateReso.name": req.query.q },
     ],
-  })
-    .sort("-createDate")
-    .limit(50);
+  }).sort("-createDate");
+
   res.json(prospects);
 });
 

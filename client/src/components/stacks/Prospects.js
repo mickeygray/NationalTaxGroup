@@ -1,13 +1,20 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, Fragment } from "react";
 import ProspectItem from "./ProspectItem";
 import LeadContext from "../../context/lead/leadContext";
 import CsvDownload from "react-json-to-csv";
-import { Fragment } from "react";
+import Pagination from "./Pagination";
 
-const Prospects = ({ prosp }) => {
+const Prospects = ({ prosp, currentPosts }) => {
   const leadContext = useContext(LeadContext);
 
-  const { getLeads, prospectsRes, prospect, workers, filters } = leadContext;
+  const {
+    getLeads,
+    prospectsRes,
+    prospect,
+    workers,
+    filters,
+    getProspects,
+  } = leadContext;
 
   const result = [];
   function arraysFilters(key) {
@@ -606,15 +613,10 @@ const Prospects = ({ prosp }) => {
     });
   };
 
-  const statusArray = Object.keys(prosp)
-    .filter((k) => prosp[k])
+  const statusArray = filters
     .filter((a) => a.includes("is"))
-    .filter((a) => !a.includes("list"))
     .map((x) => x.replace(/is/g, ""))
     .map((x) => x.toLowerCase());
-
-  console.log(statusArray);
-  console.log(filters);
 
   return (
     <Fragment>
@@ -622,9 +624,12 @@ const Prospects = ({ prosp }) => {
         <CsvDownload data={result} onClick={onClick} />
       </div>
       <div style={leadStyle}>
-        {prospectsRes.length > 0 && statusArray.length > 0
-          ? prospectsRes
-              .filter((prospect) => prospect.status === statusArray.some())
+        {currentPosts.length > 0 && statusArray.length > 0
+          ? currentPosts
+
+              .filter((o) =>
+                Object.values(o).some((r) => statusArray.indexOf(r) >= 0)
+              )
               .map((filtered) => (
                 <ProspectItem
                   key={filtered._id}
@@ -632,7 +637,13 @@ const Prospects = ({ prosp }) => {
                   prosp={prosp}
                 />
               ))
-          : ""}
+          : currentPosts.map((filtered) => (
+              <ProspectItem
+                key={filtered._id}
+                filtered={filtered}
+                prosp={prosp}
+              />
+            ))}
       </div>
     </Fragment>
   );

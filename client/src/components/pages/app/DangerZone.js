@@ -4,15 +4,16 @@ import UserContext from "../../../context/user/userContext";
 import LeadContext from "../../../context/lead/leadContext";
 import Reminders from "../../dangerzone/Reminders";
 import MyLeads from "../../dangerzone/MyLeads";
-import Calls from "../../calls/Calls";
-import CallFilter from "../../calls/CallFilter";
+import MyMoney from "../../dangerzone/MyMoney";
+
 import Tasks from "../../dangerzone/Tasks";
 import Navbar from "../../layout/Navbar";
+
 const DangerZone = () => {
   const authContext = useContext(AuthContext);
   const userContext = useContext(UserContext);
 
-  const { getUser } = userContext;
+  const { getMyProspects, myProspects } = userContext;
   const { user } = authContext;
 
   return (
@@ -30,9 +31,12 @@ const DangerZone = () => {
           </div>
 
           <div>
-            <h3 className='text-danger'>My Last 50 Leads</h3>
-            <div style={{ height: "50vh", overflowY: "scroll" }}>
+            <h3 className='text-danger'>My Prospects And Clients</h3>
+            <div>
               <MyLeads user={user} />
+            </div>
+            <div>
+              <MyMoney />
             </div>
           </div>
           <div className='sidebar' style={{ width: "15rem" }}>

@@ -282,11 +282,15 @@ const StatState = (props) => {
   };
   //generate csv
 
-  const makeCSV = (res) => {
-    dispatch({
-      type: MAKE_CSV,
-      payload: res.data,
-    });
+  const userMoney = (myProspects) => {
+    const payments = myProspects
+      .map(
+        (prospect) =>
+          prospect.paymentStatus && Object.entries(prospect.paymentStatus)
+      )
+      .filter((x) => x != null);
+
+    console.log(payments);
   };
 
   const getFilterSelected = (query) => {
@@ -360,8 +364,8 @@ const StatState = (props) => {
         getIdArray,
         updateReports,
         getReport,
+        userMoney,
         getPayments,
-        makeCSV,
         getTodaysPayments,
         getTodaysProspects,
         getTodaysLeads,

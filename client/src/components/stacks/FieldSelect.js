@@ -15,7 +15,7 @@ const FieldSelect = (props) => {
 
   const { getUserReminded, users } = useContext(UserContext);
 
-  const { workers, setFilters } = useContext(LeadContext);
+  const { setFilters } = useContext(LeadContext);
 
   useEffect(() => {
     let query = "";
@@ -46,24 +46,23 @@ const FieldSelect = (props) => {
     setModal(false);
   });
 
-  /*
-        {prospects !== []
-          ?''
-          : ""}
+  function filterByCount(array, count) {
+    return array.filter(function (value) {
+      return (
+        array.filter(function (v) {
+          return v === value;
+        }).length === count
+      );
+    });
+  }
 
-
-
-*/
-  const cases = Object.keys(prosp).filter((k) => prosp[k]);
   const onClick = (e) => {
-    if (e.target.checked === true) {
-      const filter = e.target.name;
-      setFilters(filter);
-    } else {
-      const filter = "pop" + e.target.name;
-      setFilters(filter);
-    }
+    let array = [];
+
+    array.push(e.target.name);
+    setFilters(array);
   };
+
   return (
     <div className='sidebar'>
       <ul className='m-1'>
@@ -76,7 +75,6 @@ const FieldSelect = (props) => {
           <input
             name='listOriginators'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -97,8 +95,6 @@ const FieldSelect = (props) => {
           <input
             name='listLoanProcessors'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -119,8 +115,6 @@ const FieldSelect = (props) => {
           <input
             name='listDocumentProcessors'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -138,12 +132,7 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             View Upsells
           </label>
-          <input
-            name='listUpsells'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='listUpsells' type='checkbox' onChange={toggleProsp} />
         </li>
         {prosp.listUpsells ? (
           <UpsellsModal
@@ -162,7 +151,6 @@ const FieldSelect = (props) => {
           <input
             name='listFederalReso'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -183,7 +171,6 @@ const FieldSelect = (props) => {
           <input
             name='listTaxPreparers'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -201,12 +188,7 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             View State Reso
           </label>
-          <input
-            name='listStateReso'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='listStateReso' type='checkbox' onChange={toggleProsp} />
         </li>
         {prosp.listStateReso ? (
           <StateResoModal
@@ -222,12 +204,7 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             View Statuses
           </label>
-          <input
-            name='listStatus'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='listStatus' type='checkbox' onChange={toggleProsp} />
         </li>
         {prosp.listStatus ? (
           <StatusModal prosp={prosp} toggleProsp={toggleProsp} />
@@ -244,8 +221,8 @@ const FieldSelect = (props) => {
           <input
             name='hasRepresentation'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -256,8 +233,8 @@ const FieldSelect = (props) => {
           <input
             name='hasFederalFile'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -268,8 +245,8 @@ const FieldSelect = (props) => {
           <input
             name='hasStateFile'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -280,8 +257,8 @@ const FieldSelect = (props) => {
           <input
             name='hasHardship'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -292,8 +269,8 @@ const FieldSelect = (props) => {
           <input
             name='hasPaymentPlan'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -304,8 +281,8 @@ const FieldSelect = (props) => {
           <input
             name='hasOffer'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -316,8 +293,8 @@ const FieldSelect = (props) => {
           <input
             name='hasAppeal'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -328,8 +305,8 @@ const FieldSelect = (props) => {
           <input
             name='hasCorp'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <li>
@@ -340,8 +317,8 @@ const FieldSelect = (props) => {
           <input
             name='hasAnnuity'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
+            onClick={onClick}
           />
         </li>
         <br />
@@ -352,96 +329,56 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Full Name
           </label>
-          <input
-            name='showFullName'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showFullName' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Amount
           </label>
-          <input
-            name='showAmount'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showAmount' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Pin Code
           </label>
-          <input
-            name='showPinCode'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showPinCode' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Status{" "}
           </label>
-          <input
-            name='showStatus'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showStatus' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Primary SSN
           </label>
-          <input
-            name='showSsn'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showSsn' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Age
           </label>
-          <input
-            name='showAge'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showAge' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Lexis ID
           </label>
-          <input
-            name='showLexId'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showLexId' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Lien Plaintiff
           </label>
-          <input
-            name='showPlaintiff'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showPlaintiff' type='checkbox' onChange={toggleProsp} />
         </li>
         <h5>Contact Information</h5>
         <li>
@@ -449,72 +386,42 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Primary Phone
           </label>
-          <input
-            name='showPhone'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showPhone' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary Phone
           </label>
-          <input
-            name='showPhone2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showPhone2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Teritary Phone
           </label>
-          <input
-            name='showPhone3'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showPhone3' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Email
           </label>
-          <input
-            name='showEmail'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showEmail' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary Email
           </label>
-          <input
-            name='showEmail2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showEmail2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Teritiary Email
           </label>
-          <input
-            name='showEmail3'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showEmail3' type='checkbox' onChange={toggleProsp} />
         </li>
         <h5>Financial Information</h5>
         <li>
@@ -522,24 +429,14 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Monthly House Payment
           </label>
-          <input
-            name='showHome'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showHome' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Mortgage Amount
           </label>
-          <input
-            name='showHomePay'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showHomePay' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
@@ -549,8 +446,6 @@ const FieldSelect = (props) => {
           <input
             name='showBankruptcyType'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -559,12 +454,7 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Wages
           </label>
-          <input
-            name='showWages'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showWages' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
@@ -574,7 +464,6 @@ const FieldSelect = (props) => {
           <input
             name='showIncome1Type'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -586,8 +475,6 @@ const FieldSelect = (props) => {
           <input
             name='showIncome1Value'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -599,7 +486,6 @@ const FieldSelect = (props) => {
           <input
             name='showIncome2Type'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -611,8 +497,6 @@ const FieldSelect = (props) => {
           <input
             name='showIncome2Value'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -624,7 +508,6 @@ const FieldSelect = (props) => {
           <input
             name='showIncome3Type'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -636,8 +519,6 @@ const FieldSelect = (props) => {
           <input
             name='showIncome3Value'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -649,8 +530,6 @@ const FieldSelect = (props) => {
           <input
             name='showOtherIncomeType'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -662,8 +541,6 @@ const FieldSelect = (props) => {
           <input
             name='showOtherIncomeValue'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -675,8 +552,6 @@ const FieldSelect = (props) => {
           <input
             name='showAvailableCredit'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -688,7 +563,6 @@ const FieldSelect = (props) => {
           <input
             name='showTotalCredit'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -698,96 +572,56 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Quote
           </label>
-          <input
-            name='showQuote'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showQuote' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Gross
           </label>
-          <input
-            name='showGross'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showGross' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Initial
           </label>
-          <input
-            name='showInitial'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showInitial' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Total
           </label>
-          <input
-            name='showTotal'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showTotal' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Payments Remaining
           </label>
-          <input
-            name='showPayments'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showPayments' type='checkbox' onChange={toggleProsp} />
         </li>{" "}
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Percent Paid
           </label>
-          <input
-            name='showPercent'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showPercent' type='checkbox' onChange={toggleProsp} />
         </li>{" "}
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Late Amount
           </label>
-          <input
-            name='showRedline'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showRedline' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Refunded Amount
           </label>
-          <input
-            name='showRefund'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showRefund' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
@@ -797,8 +631,6 @@ const FieldSelect = (props) => {
           <input
             name='showInitialPaymentDate'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -810,8 +642,6 @@ const FieldSelect = (props) => {
           <input
             name='showLastPaymentDate'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -820,12 +650,7 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Balance
           </label>
-          <input
-            name='showBalance'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showBalance' type='checkbox' onChange={toggleProsp} />
         </li>
         <h5>Loans and Credit</h5>
         <li>
@@ -836,7 +661,6 @@ const FieldSelect = (props) => {
           <input
             name='showCreditScore'
             type='checkbox'
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -848,8 +672,6 @@ const FieldSelect = (props) => {
           <input
             name='showEmployerTime'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -858,12 +680,7 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Loan
           </label>
-          <input
-            name='showLoan'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showLoan' type='checkbox' onChange={toggleProsp} />
         </li>
         <h5>Case Information</h5>
         <li>
@@ -871,24 +688,14 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Create Date
           </label>
-          <input
-            name='showCreateDate'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showCreateDate' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Marketing Source
           </label>
-          <input
-            name='showCreateDate'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showCreateDate' type='checkbox' onChange={toggleProsp} />
         </li>
         <h5>Prospect Status Filters</h5>
         <li>
@@ -896,72 +703,42 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Primary Tax Problem
           </label>
-          <input
-            name='showProblem1'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showProblem1' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary Tax Problem
           </label>
-          <input
-            name='showProblem2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showProblem2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Teritary Problem
           </label>
-          <input
-            name='showProblem3'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showProblem3' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Primary Resolution Sold
           </label>
-          <input
-            name='showResSold'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showResSold' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Second Resolution Sold{" "}
           </label>
-          <input
-            name='showResSold2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showResSold2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Compliance
           </label>
-          <input
-            name='showCompliant'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showCompliant' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
@@ -971,8 +748,6 @@ const FieldSelect = (props) => {
           <input
             name='showFilingStatus'
             type='checkbox'
-            onClick={onClick}
-            onClick={onClick}
             onChange={toggleProsp}
           />
         </li>
@@ -981,12 +756,7 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show CPA Status
           </label>
-          <input
-            name='showCpa'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showCpa' type='checkbox' onChange={toggleProsp} />
         </li>
         <h5>Secondary Contact</h5>
         <li>
@@ -994,72 +764,42 @@ const FieldSelect = (props) => {
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary Contact
           </label>
-          <input
-            name='showName2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showName2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary Address
           </label>
-          <input
-            name='showAddress2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showAddress2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary City
           </label>
-          <input
-            name='showCity2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showCity2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary State
           </label>
-          <input
-            name='showState2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showState2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary Zip
           </label>
-          <input
-            name='showZip2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showZip2' type='checkbox' onChange={toggleProsp} />
         </li>
         <li>
           {" "}
           <label style={{ fontSize: ".75rem" }} htmlFor='filedFederal'>
             Show Secondary SSN
           </label>
-          <input
-            name='showSsn2'
-            type='checkbox'
-            onClick={onClick}
-            onChange={toggleProsp}
-          />
+          <input name='showSsn2' type='checkbox' onChange={toggleProsp} />
         </li>
       </ul>
     </div>
