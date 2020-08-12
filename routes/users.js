@@ -160,12 +160,12 @@ router.put("/:id/reminders", auth, async (req, res) => {
     Date.parse(req.body.reminderDueDate) - Date.now()
   );
   try {
-    const user = await User.findByIdAndUpdate(req.body.userReminded._id, {
+    const user = await User.findByIdAndUpdate(req.body.userReminded, {
       $push: {
         "reminders": {
           text: req.body.text,
           _id: req.body._id,
-          userReminded: req.body.userReminded._id,
+          userReminded: req.body.userReminded,
           reminderDate: Date.now(),
           reminderDueDate: req.body.reminderDueDate,
           status: req.body.status,

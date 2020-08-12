@@ -67,9 +67,8 @@ const UserState = (props) => {
     });
   };
 
-  const setUser = (user) => {
-    console.log(user);
-    dispatch({ type: SET_USERPROFILE, payload: user });
+  const setUser = (reminded) => {
+    dispatch({ type: SET_USER, payload: reminded });
   };
 
   //get user name

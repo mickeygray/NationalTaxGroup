@@ -12,12 +12,16 @@ const CommissionProcessing = () => {
   useEffect(() => {
     getPeriodPay(period);
   }, []);
+
+  console.log(periodPay);
   return (
     <div className='grid-4'>
       {periodPay
-        ? periodPay.map((payment) => (
-            <CommissionItem key={payment._id} payment={payment} />
-          ))
+        ? periodPay
+            .filter((payment) => payment.paymentId.length > 20)
+            .map((payment) => (
+              <CommissionItem key={payment._id} payment={payment} />
+            ))
         : ""}
     </div>
   );

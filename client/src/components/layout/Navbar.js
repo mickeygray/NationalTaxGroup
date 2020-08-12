@@ -15,18 +15,44 @@ const Navbar = () => {
     logout();
   };
 
-  const [text, setText] = useState({
-    text: "Stacks!",
-  });
+  useEffect(() => {
+    setText("Stacks!");
+    setPop("Popkis!");
+  }, []);
+  const [text, setText] = useState("Stacks!");
+
+  const [pop, setPop] = useState("Popkis!");
+
+  const onClick = (e) => {
+    if (text === "Stacks!") {
+      setText("Racks!");
+    } else if (text === "Racks!") {
+      setText("Stacks!");
+    }
+  };
+
+  const onClick2 = (e) => {
+    if (pop === "Popkis!") {
+      setPop("RIP Betty!");
+    } else if (pop === "RIP Betty!") {
+      setPop("Popkis!");
+    }
+  };
   const authLinks = (
     <Fragment>
       <li>
         <Link to='/'>Danger Zone!</Link>
         <Link to='/ShipEm'>Ship Em!</Link>
-        <Link to='/Stacks'>Stacks</Link>
-        <Link to='/Eyore'>Eyore</Link>
-        <Link to='/PPsPalace'>PPs Palace</Link>
-        <a>Popkis!</a>
+        <Link to='/Stacks'>
+          <a href='#!' onClick={onClick}>
+            {text}
+          </a>
+        </Link>
+        <Link to='/Eyore'>Eyore!</Link>
+        <Link to='/PPsPalace'>PPs Palace!</Link>
+        <a href='#!' onClick={onClick2}>
+          {pop}
+        </a>
 
         <a href='#!' onClick={onLogout}>
           <i className='fa fa-sign-out' />{" "}

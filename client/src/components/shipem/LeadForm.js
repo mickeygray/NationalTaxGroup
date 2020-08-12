@@ -42,9 +42,15 @@ const LeadForm = () => {
         zip4: "",
         plaintiff: "",
         amount: "",
+        real: {},
+        bankruptcy: {},
         ssn: "",
+        dob: "",
+        age: "",
         pinCode: "",
         emailAddress: "",
+        emailAddresses: [],
+        phones: [],
       });
     }
   }, [current, leadContext]);
@@ -74,9 +80,15 @@ const LeadForm = () => {
     state: "",
     zip4: "",
     plaintiff: "",
+    dob: "",
+    age: "",
+    real: {},
+    bankruptcy: {},
     amount: "",
     pinCode: "",
     emailAddress: "",
+    emailAddresses: [],
+    phones: [],
     ssn: "",
   });
 
@@ -117,9 +129,15 @@ const LeadForm = () => {
   const {
     fullName,
     emailAddress,
+    emailAddresses,
+    phones,
     deliveryAddress,
     city,
     state,
+    real,
+    bankruptcy,
+    dob,
+    age,
     zip4,
     plaintiff,
     ssn,
@@ -156,6 +174,10 @@ const LeadForm = () => {
 
   const prospect = {
     phone,
+    phones,
+    emailAddresses,
+    dob,
+    age,
     fullName,
     deliveryAddress,
     city,
@@ -164,6 +186,8 @@ const LeadForm = () => {
     plaintiff,
     amount,
     lienid,
+    real,
+    bankruptcy,
     emailAddress,
     pinCode,
     compliant,
@@ -183,6 +207,10 @@ const LeadForm = () => {
       deliveryAddress: "",
       city: "",
       state: "",
+      emailAddresses: [],
+      bankruptcy: {},
+      real: {},
+      phones: [],
       zip4: "",
       emailAddress: "",
       plaintiff: "",
@@ -195,7 +223,7 @@ const LeadForm = () => {
       tracking: "",
       source: "",
     });
-
+    setFile("");
     setOpen({
       compliant: "filed",
       filingStatus: "m",
@@ -334,9 +362,68 @@ const LeadForm = () => {
               type='text'
               placeholder='E-Mail'
               name='email'
-              value={emailAddress}
+              value={
+                emailAddresses && emailAddresses.length > 0
+                  ? emailAddresses[0]
+                  : emailAddress
+              }
               onChange={onChange}
             />
+            {emailAddresses && emailAddresses[1] ? (
+              <input
+                type='text'
+                placeholder='E-Mail'
+                name='email'
+                value={emailAddresses[1]}
+                onChange={onChange}
+              />
+            ) : (
+              ""
+            )}
+            {emailAddresses && emailAddresses[2] ? (
+              <input
+                type='text'
+                placeholder='E-Mail'
+                name='email'
+                value={emailAddresses[2]}
+                onChange={onChange}
+              />
+            ) : (
+              ""
+            )}
+            {emailAddresses[3] ? (
+              <input
+                type='text'
+                placeholder='E-Mail'
+                name='email'
+                value={emailAddresses[3]}
+                onChange={onChange}
+              />
+            ) : (
+              ""
+            )}
+            {emailAddresses[4] ? (
+              <input
+                type='text'
+                placeholder='E-Mail'
+                name='email'
+                value={emailAddresses[4]}
+                onChange={onChange}
+              />
+            ) : (
+              ""
+            )}
+            {emailAddresses[5] ? (
+              <input
+                type='text'
+                placeholder='E-Mail'
+                name='email'
+                value={emailAddresses[5]}
+                onChange={onChange}
+              />
+            ) : (
+              ""
+            )}
             <input
               type='text'
               placeholder='Pin Code'

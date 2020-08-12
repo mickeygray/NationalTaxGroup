@@ -90,7 +90,7 @@ const ResoTaskItem = (props) => {
     }
   }, [assignments, userContext]);
 
-  console.log(assignments);
+  console.log(doc);
   useEffect(() => {
     if (reminded != null) {
       setAssignment({
@@ -136,6 +136,10 @@ const ResoTaskItem = (props) => {
       },
     };
     const formData = new FormData();
+    formData.append(
+      "name",
+      prospect._id + "||" + doc.endpoint + "||" + doc.name
+    );
     formData.append("file", file);
     formData.append("prospectId", prospect._id);
     formData.append("document", file.name);
@@ -159,7 +163,6 @@ const ResoTaskItem = (props) => {
   const toggleModal = useCallback(() => {
     setModal((prevState) => !prevState);
   }, []);
-  console.log(file);
 
   const searchedArray = eval("prospect.resoStatus." + doc.endpoint);
 

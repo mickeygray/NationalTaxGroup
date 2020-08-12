@@ -43,15 +43,19 @@ router.put("/:id/pdfs", auth, async (req, res) => {
     });
   };
 
-  let reg1 = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/; // Get emails
-  let reg2 = /^(\(\d{3}\))?[\s-]?\d{3}[\s-]?\d{4}/gim;
+  let reg1 = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gis; // Get emails
+  let reg2 = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/gim;
   let liens = string.match(/(?<=Debtor Information\s*).*?(?=\s*Number)/gs);
-  let emails = (string.match(reg1) || []).map((e) => e.replace(reg1, "$1"));
-  let phone1 = string.match(reg2);
+  let emails = string.match(reg1);
+  let phone1 = string
+    .match(reg2)
+    .toString()
+    .replace(/[\n\r]/g, "")
+    .split(",");
 
-  if (phone1) {
-    phone1.filter(distinct);
-  }
+  if (phone1.length > 0)
+    phone1 = phone1.map((phone) => phone.trim()).filter(distinct);
+
   let bankruptcy1 = string.match(
     /(?<=Petitioner Information\s*).*?(?=\s*Meeting Date)/gs
   );
@@ -107,7 +111,7 @@ router.put("/:id/pdfs", auth, async (req, res) => {
   }
 
   let lead = JSON.parse(leadBody);
-  console.log(lead.deliveryAddress, "1111111111111");
+
   lead.county = lead.deliveryAddress
     .match(/(?<=(\d+)(?!.*\d)\s*).*?(?=\s*COUNTY)/gs)
     .toString();
@@ -152,15 +156,6 @@ router.put("/:id/pdfs", auth, async (req, res) => {
         return el != "";
       })
       .splice(-1)
-      .toString();
-  }
-
-  if (lead.ssn != null) {
-    lead.ssn = lead.ssn
-      .split(" ")
-      .filter(function (el) {
-        return el != "";
-      })
       .toString();
   }
 
@@ -338,6 +333,11 @@ router.put("/:id/pdfs", auth, async (req, res) => {
 
   lead.dob = lead.dob.substring(0, 7);
 
+  lead.ssn = string
+    .match(/(?<=Email\s*).*?(?=\s*XXXX)/gs)
+    .toString()
+    .replace(/[\n\r]/g, "");
+
   const regex = new RegExp("/((^[A-Z][,][A-Z]))/", "g");
 
   lead.emailAddresses = lead.emailAddresses.split(",").filter(distinct);
@@ -394,7 +394,6 @@ router.put("/:id/pdfs", auth, async (req, res) => {
     { new: true, upsert: true }
   );
   res.json(enriched);
-  console.log(enriched);
 });
 
 router.post("/lexis", auth, async (req, res) => {

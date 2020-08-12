@@ -10,14 +10,16 @@ var storage = new GridFsStorage({
   file: (req, file) => {
     const match = ["application/pdf"];
 
+    console.log(req.body.document, "HAHAHAHAHAHAHAHA");
+
     if (match.indexOf(file.mimetype) === -1) {
-      const filename = `${file.originalname}`;
+      const filename = `${file.filename}`;
       return filename;
     }
 
     return {
       bucketName: "fs",
-      filename: `${file.originalname}`,
+      filename: `${file.filename}`,
     };
   },
 });

@@ -25,9 +25,10 @@ const ReminderModal = (props) => {
   const [reminder, setReminder] = useState({
     text: text,
     _id: user._id,
-    userReminded: {},
+    userReminded: "",
     reminderDate: Date.now(),
     reminderDueDate: "",
+
     status: "",
     daysTilDue: 0,
     clientId: props._id,
@@ -37,7 +38,7 @@ const ReminderModal = (props) => {
       setReminder({
         text: text,
         _id: user._id,
-        userReminded: reminded,
+        userReminded: reminded._id,
         reminderDate: Date.now(),
         reminderDueDate: "",
         status: "",
@@ -49,7 +50,7 @@ const ReminderModal = (props) => {
       setReminder({
         text: text,
         _id: user._id,
-        userReminded: {},
+        userReminded: "",
         reminderDate: Date.now(),
         reminderDueDate: "",
         status: "",
@@ -78,7 +79,10 @@ const ReminderModal = (props) => {
     setModal(true);
   };
 
-  console.log(reminder);
+  console.log(
+    reminder,
+    "ewkljrewkjr;welkj rkwj;ksdfj;ksdjf;sdkjf ;sdlkjfs; kREMINDER !!!!!!!!"
+  );
 
   return (
     <>

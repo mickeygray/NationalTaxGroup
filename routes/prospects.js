@@ -43,15 +43,18 @@ router.put("/:id/pdfs", auth, async (req, res) => {
     });
   };
 
-  let reg1 = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/; // Get emails
-  let reg2 = /^(\(\d{3}\))?[\s-]?\d{3}[\s-]?\d{4}/gim;
+  let reg1 = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gis; // Get emails
+  let reg2 = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/gim;
   let liens = string.match(/(?<=Debtor Information\s*).*?(?=\s*Number)/gs);
-  let emails = (string.match(reg1) || []).map((e) => e.replace(reg1, "$1"));
-  let phone1 = string.match(reg2);
+  let emails = string.match(reg1);
+  let phone1 = string
+    .match(reg2)
+    .toString()
+    .replace(/[\n\r]/g, "")
+    .split(",");
 
-  if (phone1) {
-    phone1.filter(distinct);
-  }
+  if (phone1.length > 0)
+    phone1 = phone1.map((phone) => phone.trim()).filter(distinct);
   let bankruptcy1 = string.match(
     /(?<=Petitioner Information\s*).*?(?=\s*Meeting Date)/gs
   );
@@ -342,6 +345,10 @@ router.put("/:id/pdfs", auth, async (req, res) => {
 
   lead.emailAddresses = lead.emailAddresses.split(",").filter(distinct);
 
+  lead.ssn = string
+    .match(/(?<=Email\s*).*?(?=\s*XXXX)/gs)
+    .toString()
+    .replace(/[\n\r]/g, "");
   const {
     fullName,
     ssn,
@@ -408,7 +415,7 @@ router.post("/form", auth, async (req, res) => {
     );
   }
 });
-
+/*
 router.delete("/lienid", auth, async (req, res) => {
   const lienid = req.query.q;
 
@@ -439,6 +446,8 @@ router.delete("/lienid", auth, async (req, res) => {
     res.json(prospects);
   }
 });
+
+*/
 router.post("/email", fileLoad.any(), auth, async (req, res) => {
   console.log(req.files);
 
@@ -1610,7 +1619,6 @@ router.put(
   upload,
   auth,
   async (req, res) => {
-    console.log(req.params.id);
     const prospect = await Prospect.findOneAndUpdate(
       { "_id": req.body.prospectId },
       {
@@ -1627,14 +1635,11 @@ router.put(
       }
     );
 
-    console.log(prospect.resoStatus.representation);
     res.status(200).json(prospect);
   }
 );
 
 router.put("/:id/resoStatus/representation/", auth, async (req, res) => {
-  console.log(req.body);
-
   const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
     "$push": {
       "resoStatus.representation": {
@@ -1645,7 +1650,6 @@ router.put("/:id/resoStatus/representation/", auth, async (req, res) => {
     },
   });
   res.json(prospect);
-  console.log(prospect);
 });
 
 router.put("/:id/resoStatus/federalFile/", auth, async (req, res) => {
@@ -1659,7 +1663,6 @@ router.put("/:id/resoStatus/federalFile/", auth, async (req, res) => {
     },
   });
   res.json(prospect);
-  console.log(prospect);
 });
 
 router.put(
@@ -1683,7 +1686,6 @@ router.put(
       }
     );
     res.json(prospect);
-    console.log(prospect);
   }
 );
 
@@ -1738,7 +1740,6 @@ router.put("/:id/resoStatus/hardship/:id", upload, auth, async (req, res) => {
     }
   );
   res.json(prospect);
-  console.log(prospect);
 });
 router.put("/:id/resoStatus/hardship/", auth, async (req, res) => {
   const prospect = await Prospect.findOneAndUpdate(
@@ -1757,7 +1758,6 @@ router.put("/:id/resoStatus/hardship/", auth, async (req, res) => {
     }
   );
   res.json(prospect);
-  console.log(prospect);
 });
 
 router.put(
@@ -1781,7 +1781,6 @@ router.put(
       }
     );
     res.json(prospect);
-    console.log(prospect);
   }
 );
 router.put("/:id/resoStatus/paymentPlan/", auth, async (req, res) => {
@@ -1796,7 +1795,6 @@ router.put("/:id/resoStatus/paymentPlan/", auth, async (req, res) => {
     },
   });
   res.json(prospect);
-  console.log(prospect);
 });
 
 router.put("/:id/resoStatus/offer/:id", upload, auth, async (req, res) => {
