@@ -17,8 +17,6 @@ const PaymentProcessingSearch = () => {
   } = statContext;
   const today = new Date(Date.now());
 
-  console.log(today);
-
   let formattedToday = Intl.DateTimeFormat("fr-CA", {
     year: "numeric",
     month: "numeric",

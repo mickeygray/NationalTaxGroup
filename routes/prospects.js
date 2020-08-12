@@ -694,6 +694,7 @@ router.get("/caseWorkers", auth, async (req, res) => {
 
       { "caseWorkers.federalReso.name": req.query.q },
       { "caseWorkers.stateReso.name": req.query.q },
+      { "caseWorkers.taxPreparers.name": req.query.q },
     ],
   }).sort("-createDate");
 
@@ -714,7 +715,20 @@ router.get("/", auth, async (req, res) => {
   res.json(prospects);
 });
 
+router.get("/paymentSchedule", auth, async (req, res) => {
+  const period = JSON.parse(req.query.q);
+  const prospects = await Prospect.find({
+    $and: [
+      { "paymentSchedule.paymentDate": { $lte: new Date(period.periodEnd) } },
+      { "paymentSchedule.paymentDate": { $gte: new Date(period.periodStart) } },
+    ],
+  });
+
+  res.json(prospects);
+});
+
 router.post("/", auth, async (req, res) => {
+  console.log(req.body, "13fm;lksdjfsdklfjsd");
   const {
     phone,
     fullName,
@@ -825,6 +839,8 @@ router.post("/", auth, async (req, res) => {
   const prospect = await newProspect.save();
 
   res.json(prospect);
+
+  console.log(prospect);
 });
 
 router.get("/:_id/resoStatus", auth, async (req, res) => {
@@ -1408,6 +1424,23 @@ router.put("/:id/paymentSchedule/:id/paymentId", auth, async (req, res) => {
     {
       "$set": {
         "paymentSchedule.$.paymentId": payid,
+      },
+    },
+    { new: true }
+  );
+
+  console.log(prospect);
+  res.json(prospect);
+});
+
+router.put("/:id/paymentSchedule/:id/commissioned", auth, async (req, res) => {
+  const prospect = await Prospect.findOneAndUpdate(
+    {
+      "paymentSchedule._id": req.params.id,
+    },
+    {
+      "$set": {
+        "paymentSchedule.$.commissioned": true,
       },
     },
     { new: true }

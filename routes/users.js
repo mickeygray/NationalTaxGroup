@@ -96,17 +96,6 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/:id", auth, async (req, res) => {
-  console.log(req);
-  try {
-    const user = await User.findById(req.params._id);
-    res.json(user);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
-
 router.get("/search", auth, async (req, res) => {
   const reqObj = JSON.parse(req.query.q);
 
@@ -133,6 +122,33 @@ router.get("/search", auth, async (req, res) => {
 
     console.log(assignments);
     res.json(assignments);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.put("/payDay", auth, async (req, res) => {
+  const splits = req.body;
+  let user;
+
+  for (const split of splits) {
+    user = await User.findOneAndUpdate(
+      { name: Object.keys(split).toString() },
+      {
+        "$push": {
+          "payDay": parseInt(Object.values(split)),
+        },
+      }
+    );
+  }
+});
+
+router.get("/:id", auth, async (req, res) => {
+  console.log(req);
+  try {
+    const user = await User.findById(req.params._id);
+    res.json(user);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

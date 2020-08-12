@@ -68,7 +68,7 @@ const RecentLeadItem = ({
         backgroundColor: "black",
         marginLeft: "5px",
         width: "150px",
-        height: "35px",
+        height: "100%",
       }}>
       <Link
         style={{

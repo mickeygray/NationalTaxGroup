@@ -14,6 +14,7 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  payDay: [Number],
   date: {
     type: Date,
     default: Date.now,

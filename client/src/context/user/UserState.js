@@ -22,9 +22,11 @@ import {
   POST_TASK,
   GET_ASSIGNED,
   DELETE_TASK,
+  GET_PERIODPAY,
   SET_USERPROFILE,
+  SET_PERIODPAY,
+  SET_SPLITS,
 } from "../types";
-import userContext from "./userContext";
 
 const UserState = (props) => {
   const initialState = {
@@ -32,8 +34,10 @@ const UserState = (props) => {
     user: {},
     users: [],
     reminders: [],
+    payments: [],
     reminder: {},
     reminded: null,
+    periodPay: [],
     myProspects: null,
     assignments: null,
     prospects: [],
@@ -155,6 +159,67 @@ const UserState = (props) => {
     getUser(user._id);
   };
 
+  const getPeriodPay = async (period) => {
+    const queryString = JSON.stringify(period);
+
+    const res = await axios.get(
+      `/api/prospects/paymentSchedule?q=${queryString}`
+    );
+
+    dispatch({
+      type: GET_PERIODPAY,
+      payload: res.data,
+    });
+
+    setPeriodCommissions(res.data, period);
+  };
+
+  const setSplits = async (split) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    console.log(split);
+    const res = await axios.put(`/api/users/payDay`, split);
+
+    dispatch({
+      type: SET_SPLITS,
+      payload: res.data,
+    });
+  };
+
+  const setPeriodCommissions = (payments, period) => {
+    const periodPay = payments
+      .map((payment) =>
+        payment.paymentSchedule.map((payment1) => ({
+          caseWorkers: payment.caseWorkers.originators.concat(
+            payment.caseWorkers.upsells,
+            payment.caseWorkers.documentProcessors,
+            payment.caseWorkers.loanProcessors
+          ),
+          tracking: payment.tracking,
+          caseId: payment._id,
+          clientName: payment.fullName,
+          id: payment1._id,
+          ...payment1,
+        }))
+      )
+      .flat()
+      .filter(
+        (periodPay) =>
+          new Date(periodPay.paymentDate) >= new Date(period.periodStart) &&
+          new Date(periodPay.paymentDate) <= new Date(period.periodEnd)
+      );
+
+    console.log(periodPay);
+
+    dispatch({
+      type: SET_PERIODPAY,
+      payload: periodPay,
+    });
+  };
+
   const deleteRecentLead = (_id, location) => {
     dispatch({
       type: DELETE_RECENTLEAD,
@@ -252,7 +317,9 @@ const UserState = (props) => {
         name: state.name,
         myProspects: state.myProspects,
         users: state.users,
+        payments: state.payments,
         tasks: state.tasks,
+        periodPay: state.periodPay,
         reminders: state.reminders,
         prospects: state.prospects,
         prospect: state.prospect,
@@ -265,7 +332,10 @@ const UserState = (props) => {
         setRecent,
         getUser,
         deleteTask,
+        getPeriodPay,
         postTask,
+        setPeriodCommissions,
+        setSplits,
         setUser,
         getUserName,
         getUserReminded,

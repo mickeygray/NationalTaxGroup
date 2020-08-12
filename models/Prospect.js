@@ -301,10 +301,12 @@ const ProspectSchema = mongoose.Schema({
   },
   paymentSchedule: [
     {
+      paymentIndex: { type: Number },
       paymentMethod: { type: String },
       paymentAmount: { type: Number },
       paymentDate: { type: Date },
       paymentId: { type: String },
+      commissioned: { type: Boolean, default: false },
     },
   ],
   paymentMethods: [PaymentMethod.schema],

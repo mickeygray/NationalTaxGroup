@@ -18,6 +18,9 @@ import {
   UPDATE_PAYMENTSTATUS,
   GET_TODAYS,
   GET_CLIENTPAYMENTS,
+  SET_PERIOD,
+  SET_TRACKINGPAYMENT,
+  COMMISSION_PAYMENT,
 } from "../types";
 
 export default (state, action) => {
@@ -26,6 +29,21 @@ export default (state, action) => {
       return {
         ...state,
         payments: action.payload,
+      };
+    case SET_TRACKINGPAYMENT:
+      return {
+        ...state,
+        payment: action.payload,
+      };
+    case COMMISSION_PAYMENT:
+      return {
+        ...state,
+        payment: action.payload,
+      };
+    case SET_PERIOD:
+      return {
+        ...state,
+        period: action.payload,
       };
     case GET_CLIENTPAYMENTS:
       return {

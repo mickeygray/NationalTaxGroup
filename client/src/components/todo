@@ -1,14 +1,13 @@
-Popkis: delete docs, pop phones and emailAddresses from popkis, generate invoice, 
+Popkis: delete docs, pop phones and emailAddresses from popkis, generate invoice, delete all other prospects with lienid after accepted payment
 
-Stacks: filter by caseWorker, delete all other prospects with lienid after accepted payment.
-
-Dangerzone: my money
+Dangerzone: my money, check docProc on myleads, filter ref on myPros
 
 Eyore: get and process reports from sendgrid amazon and google. Email address cleaning Regex develop in depth piece libarary 
 
 the big guns: sum  calls, prospects, clients, money per daily unique 800 number.
 
-ths api, ytel api, microbilt api, lexis api
+INT. NTE - DAY - pitch tools that feed into popkis
+
 
      
 

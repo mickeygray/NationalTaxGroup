@@ -56,7 +56,7 @@ const MyLeads = () => {
 };
 const leadStyle = {
   display: "grid",
-  gridTemplateRows: "repeat(10, 1fr)",
+  gridTemplateRows: "repeat(5, 1fr)",
   gridGap: ".1rem",
 };
 

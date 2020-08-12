@@ -254,7 +254,6 @@ const DealModal = (props) => {
         {type === "creditcard" ? (
           <Fragment>
             <div className='bg-light card'>
-              <label htmlFor='quote'>Name on Card</label>
               <PaymentInputsWrapper {...wrapperProps}>
                 <svg {...getCardImageProps({ images })} />
 

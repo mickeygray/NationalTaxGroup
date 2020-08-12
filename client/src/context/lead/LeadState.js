@@ -1004,6 +1004,7 @@ const LeadState = (props) => {
     ).format(dateDisplay2);
 
     const scheduleItem1 = {
+      paymentIndex: 1,
       paymentMethod: scheduleItem.initialPaymentMethod,
       paymentAmount: scheduleItem.initialPaymentAmount,
       paymentDate: scheduleItem.initialPaymentDate,
@@ -1011,6 +1012,7 @@ const LeadState = (props) => {
     };
 
     const scheduleItem2 = {
+      paymentIndex: 2,
       paymentMethod: scheduleItem.secondPaymentMethod,
       paymentAmount: scheduleItem.secondPaymentAmount,
       paymentDate: scheduleItem.secondPaymentDate,
@@ -1019,10 +1021,11 @@ const LeadState = (props) => {
 
     sched.push(scheduleItem1);
 
-    if (scheduleItem2.secondPaymentDate) {
+    if (parseInt(scheduleItem2.paymentAmount) > 0) {
       sched.push(scheduleItem2);
     }
 
+    console.log(sched);
     let startDate;
     let it = parseInt(iteration.installments);
     let int;
@@ -1042,6 +1045,7 @@ const LeadState = (props) => {
 
     for (let i = 0; i < it; i++)
       arr[i] = {
+        paymentIndex: 3 + i,
         paymentDate: new Date(startDate + i * int),
         paymentMethod: iteration.initialPaymentMethod,
         paymentAmount: iteration.installmentAmount,
@@ -1051,6 +1055,8 @@ const LeadState = (props) => {
     arr.pop();
 
     const paySched = sched.concat(arr);
+
+    console.log(paySched);
 
     const res = await axios.put(
       `/api/prospects/${prospect._id}/paymentSchedule`,

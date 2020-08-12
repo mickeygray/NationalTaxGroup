@@ -10,9 +10,12 @@ import {
   SET_USER,
   SET_USERPROFILE,
   GET_MYPROSPECTS,
+  GET_PERIODPAY,
   POST_TASK,
   DELETE_TASK,
   GET_ASSIGNED,
+  SET_PERIODPAY,
+  SET_SPLITS,
 } from "../types";
 
 export default (state, action) => {
@@ -22,10 +25,25 @@ export default (state, action) => {
         ...state,
         recentLeads: action.payload,
       };
+    case SET_SPLITS:
+      return {
+        ...state,
+        split: action.payload,
+      };
     case GET_MYPROSPECTS:
       return {
         ...state,
         myProspects: action.payload,
+      };
+    case GET_PERIODPAY:
+      return {
+        ...state,
+        payments: action.payload,
+      };
+    case SET_PERIODPAY:
+      return {
+        ...state,
+        periodPay: action.payload,
       };
     case GET_USER:
       return {
