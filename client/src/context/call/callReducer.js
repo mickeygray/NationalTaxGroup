@@ -8,7 +8,6 @@ import {
   FILTER_CALLS,
   CLEAR_FILTER,
   GET_LEADCALLS,
-  GET_NUMBS,
 } from "../types";
 
 export default (state, action) => {
@@ -41,11 +40,6 @@ export default (state, action) => {
         call: action.payload,
       };
 
-    case GET_NUMBS:
-      return {
-        ...state,
-        thing: action.payload,
-      };
     case FILTER_CALLS:
       return {
         ...state,

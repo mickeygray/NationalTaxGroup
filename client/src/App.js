@@ -19,6 +19,7 @@ import ShipEm from "./components/pages/app/ShipEm";
 import Stacks from "./components/pages/app/Stacks";
 import Popkis from "./components/pages/app/Popkis";
 import Eyore from "./components/pages/app/Eyore";
+import TheBigGuns from "./components/pages/app/TheBigGuns";
 import DangerZone from "./components/pages/app/DangerZone";
 import LeadState from "./context/lead/LeadState";
 import EmailState from "./context/email/EmailState";
@@ -57,6 +58,11 @@ const App = () => {
                         <PrivateRoute exact path='/' component={DangerZone} />
                         <PrivateRoute exact path='/eyore' component={Eyore} />
                         <PrivateRoute exact path='/shipem' component={ShipEm} />
+                        <PrivateRoute
+                          exact
+                          path='/thebigguns'
+                          component={TheBigGuns}
+                        />
                         <PrivateRoute
                           exact
                           path='/PPsPalace'

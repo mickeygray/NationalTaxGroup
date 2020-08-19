@@ -1,16 +1,18 @@
 import {
-  MAKE_REPORT,
-  UPDATE_REPORTS,
-  DELETE_REPORT,
-  GET_REPORT,
-  MAKE_CSV,
-  SEND_REPORT,
   GET_FILTER,
   GET_CAMPAIGN,
   GET_IDARRAY,
   GET_CURRENTEMAIL,
   GET_LISTLENGTH,
-  GET_ALLCALLS,
+  GET_TODAYCALLS,
+  GET_TODAYPROSPECTS,
+  GET_TODAYLEADS,
+  GET_TODAYPAYMENTS,
+  GET_PERIODCALLS,
+  GET_PERIODPROSPECTS,
+  GET_PERIODLEADS,
+  GET_PERIODPAYMENTS,
+  GET_PERIOD,
   GET_PAYMENTS,
   SEARCH_PAYMENTDATES,
   CLEAR_FILTER,
@@ -21,10 +23,63 @@ import {
   SET_PERIOD,
   SET_TRACKINGPAYMENT,
   COMMISSION_PAYMENT,
+  GET_RECURRING,
 } from "../types";
 
 export default (state, action) => {
   switch (action.type) {
+    case GET_TODAYCALLS:
+      return {
+        ...state,
+        todayCalls: action.payload,
+      };
+    case GET_PERIODCALLS:
+      return {
+        ...state,
+        periodCalls: action.payload,
+      };
+    case GET_PERIODLEADS:
+      return {
+        ...state,
+        periodLeads: action.payload,
+      };
+    case GET_PERIODPROSPECTS:
+      return {
+        ...state,
+        periodProspects: action.payload,
+      };
+    case GET_PERIODPAYMENTS:
+      return {
+        ...state,
+        periodPayments: action.payload,
+      };
+    case GET_PERIOD:
+      return {
+        ...state,
+        periodPaymentSummary: action.payload,
+      };
+
+    case GET_RECURRING:
+      return {
+        ...state,
+        recurring: action.payload,
+      };
+    case GET_TODAYLEADS:
+      return {
+        ...state,
+        todayLeads: action.payload,
+      };
+    case GET_TODAYPROSPECTS:
+      return {
+        ...state,
+        todayProspects: action.payload,
+      };
+    case GET_TODAYPAYMENTS:
+      return {
+        ...state,
+        todayPayments: action.payload,
+      };
+
     case GET_PAYMENTS:
       return {
         ...state,
@@ -82,31 +137,7 @@ export default (state, action) => {
         ...state,
         payment: action.payload,
       };
-    case MAKE_REPORT:
-      return {
-        ...state,
-        report: action.payload,
-      };
-    case MAKE_REPORT:
-      return {
-        ...state,
-        report: action.payload,
-      };
-    case MAKE_REPORT:
-      return {
-        ...state,
-        report: action.payload,
-      };
-    case MAKE_REPORT:
-      return {
-        ...state,
-        report: action.payload,
-      };
-    case MAKE_REPORT:
-      return {
-        ...state,
-        report: action.payload,
-      };
+
     case GET_FILTER:
       return {
         ...state,
@@ -123,11 +154,6 @@ export default (state, action) => {
         currentEmail: action.payload,
       };
 
-    case GET_ALLCALLS:
-      return {
-        ...state,
-        calls: action.payload,
-      };
     case GET_IDARRAY:
       return {
         ...state,
@@ -138,32 +164,7 @@ export default (state, action) => {
         ...state,
         listLength: action.payload,
       };
-    case UPDATE_REPORTS:
-      return {
-        ...state,
-        reports: action.payload,
-      };
-    case DELETE_REPORT:
-      return {
-        ...state,
-        call: action.payload,
-      };
 
-    case GET_REPORT:
-      return {
-        ...state,
-        thing: action.payload,
-      };
-    case MAKE_CSV:
-      return {
-        ...state,
-        csv: action.payload,
-      };
-    case SEND_REPORT:
-      return {
-        ...state,
-        report: action.payload,
-      };
     default:
       return state;
   }

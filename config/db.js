@@ -12,10 +12,15 @@ const connectDB = async () => {
       useFindAndModify: false,
       useUnifiedTopology: true,
     });
-    let dbs = mongoose.connection;
-    dbs.once("open", () => {
-      gfs = Grid(conn.dbs, mongoose.mongo);
-      gfs.collection("files");
+
+    const connect = mongoose.createConnection(db, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true,
+    });
+    connect.once("open", () => {
+      gfs = new mongoose.mongo.GridFSBucket(connect.db, { bucketName: "fs" });
     });
 
     console.log("MongoDB Connected...");

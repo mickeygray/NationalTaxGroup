@@ -3,24 +3,23 @@ import axios from "axios";
 import StatContext from "./statContext";
 import StatReducer from "./statReducer";
 import {
-  MAKE_REPORT,
-  UPDATE_REPORTS,
-  DELETE_REPORT,
-  GET_REPORT,
-  MAKE_CSV,
   GET_FILTER,
   GET_CAMPAIGN,
   GET_CURRENTEMAIL,
   GET_LISTLENGTH,
   GET_IDARRAY,
-  GET_ALLCALLS,
-  GET_ALLPROSPECTS,
-  GET_ALLDEALS,
-  GET_ALLLEADS,
+  GET_TODAYCALLS,
+  GET_TODAYPROSPECTS,
+  GET_TODAYLEADS,
+  GET_PERIODCALLS,
+  GET_PERIODPROSPECTS,
+  GET_PERIODLEADS,
+  GET_PERIODPAYMENTS,
   FILTER_PAYMENTS,
-  GET_PAYMENTS,
+  GET_TODAYPAYMENTS,
   SEARCH_PAYMENTDATES,
   GET_TODAYS,
+  GET_PERIOD,
   CLEAR_FILTER,
   GET_CLIENTPAYMENTS,
   GET_PAYMENTSTATUS,
@@ -28,6 +27,7 @@ import {
   SET_PERIOD,
   SET_TRACKINGPAYMENT,
   COMMISSION_PAYMENT,
+  GET_RECURRING,
 } from "../types";
 
 const StatState = (props) => {
@@ -43,6 +43,15 @@ const StatState = (props) => {
     period: null,
     payments: [],
     today: {},
+    todayProspects: [],
+    todayLeads: [],
+    todayCalls: [],
+    todayPayments: [],
+    periodPaymentSummary: {},
+    periodProspects: [],
+    periodLeads: [],
+    periodCalls: [],
+    periodPayments: [],
   };
 
   const [state, dispatch] = useReducer(StatReducer, initialState);
@@ -60,7 +69,7 @@ const StatState = (props) => {
     const selectionString = JSON.stringify(selection);
 
     const res = await axios.get(
-      `/api/prospects/allPayments,/searchDates?q=${selectionString}`
+      `/api/prospects/payments/searchDates?q=${selectionString}`
     );
 
     dispatch({
@@ -69,22 +78,22 @@ const StatState = (props) => {
     });
   };
 
-  const getTodaysPayments = async () => {
-    const res = await axios.get(`/api/prospects/payments/today/`);
+  const getTodaysCalls = async () => {
+    const res = await axios.get(`/api/prospects/calls/today/`);
 
     dispatch({
-      type: GET_PAYMENTS,
+      type: GET_TODAYCALLS,
       payload: res.data,
     });
 
     getTodays(res.data);
   };
 
-  const getTodaysCalls = async () => {
-    const res = await axios.get(`/api/prospects/calls/today/`);
+  const getTodaysPayments = async () => {
+    const res = await axios.get(`/api/prospects/payments/today/`);
 
     dispatch({
-      type: GET_ALLCALLS,
+      type: GET_TODAYPAYMENTS,
       payload: res.data,
     });
 
@@ -95,7 +104,7 @@ const StatState = (props) => {
     const res = await axios.get(`/api/prospects/today/`);
 
     dispatch({
-      type: GET_ALLPROSPECTS,
+      type: GET_TODAYPROSPECTS,
       payload: res.data,
     });
 
@@ -106,68 +115,1548 @@ const StatState = (props) => {
     const res = await axios.get(`/api/leads/today/`);
 
     dispatch({
-      type: GET_ALLPROSPECTS,
+      type: GET_TODAYLEADS,
       payload: res.data,
     });
 
     getTodays(res.data);
   };
 
+  const getPeriodCalls = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const reqObj = {
+      startDate: state.period.periodStart,
+      endDate: state.period.periodEnd,
+    };
+
+    const string = JSON.stringify(reqObj);
+    const res = await axios.get(
+      `/api/prospects/calls/period?q=${string}`,
+      config
+    );
+
+    dispatch({
+      type: GET_PERIODCALLS,
+      payload: res.data,
+    });
+    console.log(res.data, "CALLS");
+    getPeriod(res.data);
+  };
+
+  const getPeriodPayments = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const reqObj = {
+      startDate: state.period.periodStart,
+      endDate: state.period.periodEnd,
+    };
+
+    const string = JSON.stringify(reqObj);
+    const res = await axios.get(
+      `/api/prospects/payments/period?q=${string}`,
+      config
+    );
+
+    dispatch({
+      type: GET_PERIODPAYMENTS,
+      payload: res.data,
+    });
+    console.log(res.data, "PAYMENTS");
+    getPeriod(res.data);
+  };
+
+  const getPeriodProspects = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const reqObj = {
+      startDate: state.period.periodStart,
+      endDate: state.period.periodEnd,
+    };
+    const string = JSON.stringify(reqObj);
+    const res = await axios.get(`/api/prospects/period?q=${string}`, config);
+
+    dispatch({
+      type: GET_PERIODPROSPECTS,
+      payload: res.data,
+    });
+    console.log(res.data, "PROSPECTS");
+    getPeriod(res.data);
+  };
+
+  const getPeriodLeads = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    console.log(state.period);
+    const reqObj = {
+      startDate: state.period.periodStart,
+      endDate: state.period.periodEnd,
+    };
+
+    const string = JSON.stringify(reqObj);
+
+    console.log(reqObj);
+    const res = await axios.get(`/api/leads/period?q=${string}`, config);
+
+    dispatch({
+      type: GET_PERIODLEADS,
+      payload: res.data,
+    });
+
+    console.log(res.data, "LEADS");
+
+    getPeriod(res.data);
+  };
+
   const getTodays = async (items) => {
-    let dateDisplay1 = new Date(Date.now());
-    let date = Intl.DateTimeFormat(
-      "fr-CA",
-      { timeZone: "America/Los_Angeles" },
-      {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-      }
-    ).format(dateDisplay1);
-
-    console.log(items);
-
-    let todaysPayments = [];
-    let todaysCalls = [];
-    let todaysProspects = [];
-    let todaysLeads = [];
-    let todaysNewClients = [];
-    let todaysUpdatedClients = [];
-
     for (var i = 0; i < items.length; i++) {
-      if (items[i].paymentDate && items[i].paymentDate.includes(date)) {
-        todaysPayments.push(items[i]);
-      } else if (items[i].start_time && items[i].start_time.includes(date)) {
-        todaysCalls.push(items[i]);
-      } else if (items[i].createDate && items[i].createDate.includes(date)) {
-        todaysProspects.push(items[i]);
-      } else if (items[i].loadDate && items[i].loadDate.includes(date)) {
-        todaysLeads.push(items[i]);
-      } else if (
-        items[i].initialPaymentDate &&
-        !items[i].lastPaymentDate &&
-        items[i].initialPaymentDate.includes(date)
+      if (
+        items[i].start_time &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].start_time)) ===
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(Date.now()))
       ) {
-        todaysNewClients.push(items[i]);
+        state.todayCalls.push(items[i]);
       } else if (
-        items[i].lastpaymentDate &&
-        items[i].lastPaymentDate.includes(date)
+        items[i].createDate &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].createDate)) ===
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(Date.now()))
       ) {
-        todaysUpdatedClients.push(items[i]);
+        state.todayProspects.push(items[i]);
+      } else if (
+        items[i].loadDate &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].loadDate)) ===
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(Date.now()))
+      ) {
+        state.todayLeads.push(items[i]);
+      } else if (
+        items[i].paymentDate &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].paymentDate)) ===
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(Date.now()))
+      ) {
+        state.todayPayments.push(items[i]);
       }
     }
 
-    const today = {
-      todaysPayments,
-      todaysCalls,
-      todaysProspects,
-      todaysLeads,
-      todaysNewClients,
-      todaysUpdatedClients,
-    };
+    state.todayProspects = state.todayProspects.filter(
+      (object, index) =>
+        index ===
+        state.todayProspects.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+
+    state.todayLeads = state.todayLeads.filter(
+      (object, index) =>
+        index ===
+        state.todayLeads.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+    state.todayCalls = state.todayCalls.filter(
+      (object, index) =>
+        index ===
+        state.todayCalls.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+    state.todayPayments = state.todayPayments.filter(
+      (object, index) =>
+        index ===
+        state.todayPayments.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+
+    let totalPay = [];
+    let redPay = [];
+    let refPay = [];
+    let avgs = [];
+    let todayPaymentAmount;
+    let todayRefundAmount;
+    let todayRedlineAmount;
+    let todayRedlineCount;
+    let todayRefundCount;
+    let todayNewPaymentAmount;
+    let todayClientCount;
+    let todayAvgPayment;
+    let todayPaymentMax;
+    let todayRecurringPaymentAmount;
+    let todayNewPaymentMax;
+    let todayPaymentMin;
+    let todayNewPaymentMin;
+    let totals = {};
+    let todayAvgs = {};
+
+    state.todayPayments.forEach((payment) => {
+      switch (true) {
+        case payment.paymentId.length > 30:
+          totalPay.push(payment);
+          break;
+        case payment.paymentId.length === 18:
+          redPay.push(payment);
+          break;
+        case payment.paymentId.length === 19:
+          refPay.push(payment);
+          break;
+      }
+
+      todayPaymentAmount = totalPay
+        .map((payment) => payment.paymentAmount)
+        .reduce((x, y) => x + y, 0);
+
+      todayPaymentMin = Math.min(
+        ...totalPay.map((payment) => payment.paymentAmount)
+      );
+      todayPaymentMax = Math.max(
+        ...totalPay.map((payment) => payment.paymentAmount)
+      );
+
+      todayNewPaymentAmount = totalPay
+        .filter((payment) => payment.paymentIndex === 1)
+        .map((payment) => payment.paymentAmount)
+        .reduce((x, y) => x + y, 0);
+
+      if (todayNewPaymentAmount > 0) {
+        todayRecurringPaymentAmount =
+          todayPaymentAmount - todayNewPaymentAmount;
+        todayNewPaymentMax = Math.max(
+          ...totalPay
+            .filter((payment) => payment.paymentIndex === 1)
+            .map((payment) => payment.paymentAmount)
+        );
+
+        todayNewPaymentMin = Math.min(
+          ...totalPay
+            .filter((payment) => payment.paymentIndex === 1)
+            .map((payment) => payment.paymentAmount)
+        );
+      } else {
+        todayRecurringPaymentAmount = todayPaymentAmount;
+        todayNewPaymentMax = 0;
+        todayNewPaymentMin = 0;
+      }
+      todayRefundAmount = refPay
+        .map((payment) => payment.paymentAmount)
+
+        .reduce((x, y) => x + y, 0);
+
+      todayRefundCount = refPay.length;
+
+      todayRedlineCount = redPay.length;
+
+      todayRedlineAmount = redPay
+        .map((payment) => payment.paymentAmount)
+
+        .reduce((x, y) => x + y, 0);
+
+      const todayClients = state.todayProspects.filter(
+        (prospect) => prospect.status === "client"
+      );
+
+      console.log(todayClients);
+      if (todayClients.length > 0) {
+        todayClientCount = todayClients.length;
+        todayClients.map((prospect, i) =>
+          avgs[i]
+            ? ((avgs[i].gross = prospect.paymentStatus.gross),
+              (avgs[i].total = prospect.paymentStatus.total),
+              (avgs[i].initial = prospect.paymentStatus.initial))
+            : (avgs[i] = {
+                gross: prospect.paymentStatus.gross,
+                total: prospect.paymentStatus.total,
+                initial: prospect.paymentStatus.initial,
+              })
+        );
+
+        totals = avgs.reduce((a, b) => ({
+          total: parseFloat(a.total) + parseFloat(b.total),
+          initial: parseFloat(a.initial) + parseFloat(b.initial),
+          gross: parseFloat(a.gross) + parseFloat(b.gross),
+        }));
+
+        todayAvgs = avgs.reduce((a, b) => ({
+          total: (a.total + b.total) / avgs.length,
+          initial: (a.initial + b.initial) / avgs.length,
+          gross: (parseFloat(a.gross) + parseFloat(b.gross)) / avgs.length,
+        }));
+
+        console.log(totals);
+      } else {
+        todayClientCount = 0;
+      }
+
+      if (state.todayPayments.length > 0) {
+        todayAvgPayment = todayNewPaymentAmount / state.todayPayments.length;
+      } else {
+        todayAvgPayment = 0;
+      }
+
+      let todayNewTollFree = [];
+      state.todayProspects.map((prospect, i) =>
+        todayNewTollFree[i]
+          ? ((todayNewTollFree[i].tracking = prospect.tracking),
+            (todayNewTollFree[i].source = prospect.source),
+            (todayNewTollFree[i].paymentSchedule = prospect.paymentSchedule),
+            (todayNewTollFree[i].paymentStatus = prospect.paymentStatus))
+          : (todayNewTollFree[i] = {
+              tracking: prospect.tracking,
+              source: prospect.source,
+              paymentSchedule: prospect.paymentSchedule,
+              paymentStatus: prospect.paymentStatus,
+            })
+      );
+
+      let trackingTotalPay = [];
+      let trackingRedPay = [];
+      let trackingRefPay = [];
+      let trackingInitialPay = [];
+      let trackingGrossPay = [];
+      let trackingPaymentAmount;
+      let trackingRefundAmount;
+      let trackingRedlineAmount;
+      let trackingNewPaymentAmount;
+      let trackingClientCount;
+      let trackingAvgPayment;
+      let trackingPaymentMax;
+      let trackingRecurringPaymentAmount;
+      let trackingNewPaymentMax;
+      let trackingPaymentMin;
+      let trackingNewPaymentMin;
+      let trackingTotals = {};
+      let trackingTodayAvgs = {};
+
+      console.log(todayNewTollFree);
+      const todayNewTollFreePayments = todayNewTollFree.reduce(function (
+        res,
+        obj
+      ) {
+        let key = obj.tracking;
+        if (res[key]) {
+          res[key] = res[key].concat(obj.paymentSchedule);
+        } else res[key] = obj.paymentSchedule;
+        return res;
+      },
+      {});
+
+      Object.entries(todayNewTollFreePayments).forEach((tollFree) => {
+        tollFree[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentId.length > 30:
+              let key = tollFree[0];
+              let newObj = { [key]: payment.paymentAmount };
+
+              trackingTotalPay.push(newObj);
+
+              break;
+            case payment.paymentId.length === 18:
+              let key1 = tollFree[0];
+              let newObj1 = { [key1]: payment.paymentAmount };
+
+              trackingRedPay.push(newObj1);
+              break;
+            case payment.paymentId.length === 19:
+              let key2 = tollFree[0];
+              let newObj2 = { [key2]: payment.paymentAmount };
+
+              trackingRefPay.push(newObj2);
+
+              break;
+          }
+        });
+      });
+
+      Object.entries(todayNewTollFreePayments).forEach((tollFree) => {
+        tollFree[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex > 0 && payment.paymentId.length != 19:
+              let key4 = tollFree[0];
+              let newObj4 = { [key4]: payment.paymentAmount };
+
+              return trackingGrossPay.push(newObj4);
+
+              break;
+          }
+        });
+      });
+
+      console.log(trackingGrossPay);
+
+      Object.entries(todayNewTollFreePayments).forEach((tollFree) => {
+        tollFree[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex < 2 && payment.paymentId.length > 30:
+              let key3 = tollFree[0];
+              let newObj3 = { [key3]: payment.paymentAmount };
+
+              return trackingInitialPay.push(newObj3);
+
+              break;
+          }
+        });
+      });
+
+      trackingInitialPay = Object.entries(
+        trackingInitialPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["initial", value.reduce((x, y) => x + y)] };
+      });
+
+      trackingGrossPay = Object.entries(
+        trackingGrossPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["gross", value.reduce((x, y) => x + y)] };
+      });
+
+      console.log(trackingInitialPay);
+
+      trackingTotalPay = Object.entries(
+        trackingTotalPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["total", value.reduce((x, y) => x + y)] };
+      });
+
+      trackingRedPay = Object.entries(
+        trackingRedPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["redLine", value.reduce((x, y) => x + y)] };
+      });
+
+      trackingRefPay = Object.entries(
+        trackingRefPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["refunded", value.reduce((x, y) => x + y)] };
+      });
+
+      let trackingPayments = trackingTotalPay.concat(
+        trackingRedPay,
+        trackingRefPay,
+        trackingInitialPay,
+        trackingGrossPay
+      );
+
+      trackingPayments = trackingPayments.reduce((acc, i) => {
+        Object.keys(i).forEach((key) =>
+          acc.hasOwnProperty(key)
+            ? acc[key].push(i[key])
+            : (acc[key] = [i[key]])
+        );
+        return acc;
+      }, {});
+
+      let todayTrackingPayments = [];
+      Object.keys(trackingPayments).forEach(function (key) {
+        const payObj = Object.fromEntries(trackingPayments[key]);
+        let value = { [key]: payObj };
+        todayTrackingPayments.push(value);
+      });
+
+      console.log(todayNewTollFree);
+
+      let todayCallIds = [];
+
+      todayNewTollFree.map((tollFree) => {
+        const ids = [].concat(
+          state.todayProspects
+            .filter((prospect) => prospect.tracking === tollFree.tracking)
+            .map((prospect) => prospect.lienid)
+        );
+        todayCallIds.concat(ids);
+      });
+
+      let todayNewSales = [];
+      state.todayProspects.map((prospect, i) =>
+        todayNewSales[i]
+          ? ((todayNewSales[i].sales = prospect.caseWorkers.originators.concat(
+              prospect.caseWorkers.upsells,
+              prospect.caseWorkers.documentProcessors,
+              prospect.caseWorkers.loanProcessors
+            )),
+            (todayNewSales[i].paymentSchedule = prospect.paymentSchedule),
+            (todayNewSales[i].paymentStatus = prospect.paymentStatus))
+          : (todayNewSales[i] = {
+              sales: prospect.caseWorkers.originators
+                .concat(
+                  prospect.caseWorkers.upsells,
+                  prospect.caseWorkers.documentProcessors,
+                  prospect.caseWorkers.loanProcessors
+                )
+                .map((sales) => sales.name),
+              paymentSchedule: prospect.paymentSchedule,
+              paymentStatus: prospect.paymentStatus,
+            })
+      );
+
+      let salesTotalPay = [];
+      let salesRedPay = [];
+      let salesRefPay = [];
+      let salesInitialPay = [];
+      let salesGrossPay = [];
+
+      console.log(todayNewSales);
+
+      const todayNewSalesPayments = todayNewSales.reduce(function (res, obj) {
+        let key;
+        obj.sales.forEach((salesperson) => {
+          key = salesperson;
+          if (res[key]) {
+            res[key] = res[key].concat(obj.paymentSchedule);
+          } else res[key] = obj.paymentSchedule;
+        });
+
+        return res;
+      }, {});
+
+      console.log(todayNewSalesPayments);
+
+      Object.entries(todayNewSalesPayments).forEach((sales) => {
+        sales[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentId.length > 30:
+              let key = sales[0];
+              let newObj = { [key]: payment.paymentAmount };
+
+              salesTotalPay.push(newObj);
+
+              break;
+            case payment.paymentId.length === 18:
+              let key1 = sales[0];
+              let newObj1 = { [key1]: payment.paymentAmount };
+
+              salesRedPay.push(newObj1);
+              break;
+            case payment.paymentId.length === 19:
+              let key2 = sales[0];
+              let newObj2 = { [key2]: payment.paymentAmount };
+
+              salesRefPay.push(newObj2);
+
+              break;
+          }
+        });
+      });
+
+      Object.entries(todayNewSalesPayments).forEach((sales) => {
+        sales[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex > 0 && payment.paymentId.length != 19:
+              let key4 = sales[0];
+              let newObj4 = { [key4]: payment.paymentAmount };
+
+              return salesGrossPay.push(newObj4);
+
+              break;
+          }
+        });
+      });
+
+      Object.entries(todayNewSalesPayments).forEach((sales) => {
+        sales[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex < 2 && payment.paymentId.length > 30:
+              let key3 = sales[0];
+              let newObj3 = { [key3]: payment.paymentAmount };
+
+              return salesInitialPay.push(newObj3);
+
+              break;
+          }
+        });
+      });
+
+      salesInitialPay = Object.entries(
+        salesInitialPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["initial", value.reduce((x, y) => x + y)] };
+      });
+
+      salesGrossPay = Object.entries(
+        salesGrossPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["gross", value.reduce((x, y) => x + y)] };
+      });
+
+      salesTotalPay = Object.entries(
+        salesTotalPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["total", value.reduce((x, y) => x + y)] };
+      });
+
+      salesRedPay = Object.entries(
+        salesRedPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["redLine", value.reduce((x, y) => x + y)] };
+      });
+
+      salesRefPay = Object.entries(
+        salesRefPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["refunded", value.reduce((x, y) => x + y)] };
+      });
+
+      let salesPayments = salesTotalPay.concat(
+        salesRedPay,
+        salesRefPay,
+        salesInitialPay,
+        salesGrossPay
+      );
+
+      salesPayments = salesPayments.reduce((acc, i) => {
+        Object.keys(i).forEach((key) =>
+          acc.hasOwnProperty(key)
+            ? acc[key].push(i[key])
+            : (acc[key] = [i[key]])
+        );
+        return acc;
+      }, {});
+
+      let todaySalesPayments = [];
+      Object.keys(salesPayments).forEach(function (key) {
+        const payObj = Object.fromEntries(salesPayments[key]);
+        let value = { [key]: payObj };
+        todaySalesPayments.push(value);
+      });
+      const today = {
+        todayPayments: state.todayPayments,
+        todayPaymentAmount,
+        todayRedlineAmount,
+        todayRefundAmount,
+        todayRefundCount,
+        todayRedlineCount,
+        todayNewPaymentAmount,
+        todayPaymentMin,
+        todayPaymentMax,
+        todayNewPaymentMin,
+        todayNewPaymentMax,
+        todayRecurringPaymentAmount,
+        todayClientCount,
+        todayClients,
+        todayAvgPayment,
+        todayTrackingPayments,
+        todayCallIds,
+        todayNewGross: totals.gross,
+        todayNewInitial: totals.initial,
+        todayNewTotal: totals.total,
+        todayAvgGross: todayAvgs.gross,
+        todayAvgInitial: todayAvgs.initial,
+        todayAvgTotal: todayAvgs.total,
+        todaySalesPayments,
+        todayCalls: state.todayCalls,
+        todayProspects: state.todayProspects,
+        todayLeads: state.todayLeads,
+      };
+      dispatch({
+        type: GET_TODAYS,
+        payload: today,
+      });
+    });
+  };
+
+  const getPeriod = async (items) => {
+    for (var i = 0; i < items.length; i++) {
+      if (
+        items[i].start_time &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].start_time)) >=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodStart)) &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].start_time)) <=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodEnd))
+      ) {
+        state.periodCalls.push(items[i]);
+      } else if (
+        items[i].createDate &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].createDate)) >=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodStart)) &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].createDate)) <=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodEnd))
+      ) {
+        state.periodProspects.push(items[i]);
+      } else if (
+        items[i].loadDate &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].loadDate)) >=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodStart)) &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].loadDate)) <=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodEnd))
+      ) {
+        state.periodLeads.push(items[i]);
+      } else if (
+        items[i].paymentDate &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].paymentDate)) >=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodStart)) &&
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(items[i].paymentDate)) <=
+          Intl.DateTimeFormat(
+            "fr-CA",
+            { timeZone: "America/Los_Angeles" },
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }
+          ).format(new Date(state.period.periodEnd))
+      ) {
+        state.periodPayments.push(items[i]);
+      }
+    }
+
+    state.periodProspects = state.periodProspects.filter(
+      (object, index) =>
+        index ===
+        state.periodProspects.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+
+    state.periodLeads = state.periodLeads.filter(
+      (object, index) =>
+        index ===
+        state.periodLeads.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+    state.periodCalls = state.periodCalls.filter(
+      (object, index) =>
+        index ===
+        state.periodCalls.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+    state.periodPayments = state.periodPayments.filter(
+      (object, index) =>
+        index ===
+        state.periodPayments.findIndex(
+          (obj) => JSON.stringify(obj) === JSON.stringify(object)
+        )
+    );
+
+    console.log(state.periodCalls, "PERIOD FAFFFFFFFFFFFFFFFFFF");
+
+    let totalPay = [];
+    let redPay = [];
+    let refPay = [];
+    let avgs = [];
+    let periodPaymentAmount;
+    let periodRefundAmount;
+    let periodRedlineAmount;
+    let periodRefundCount;
+    let periodRedlineCount;
+    let periodNewPaymentAmount;
+    let periodClientCount;
+    let periodAvgPayment;
+    let periodPaymentMax;
+    let periodRecurringPaymentAmount;
+    let periodNewPaymentMax;
+    let periodPaymentMin;
+    let periodNewPaymentMin;
+    let totals = {};
+    let periodAvgs = {};
+
+    state.periodPayments.forEach((payment) => {
+      switch (true) {
+        case payment.paymentId.length > 30:
+          totalPay.push(payment);
+          break;
+        case payment.paymentId.length === 18:
+          redPay.push(payment);
+          break;
+        case payment.paymentId.length === 19:
+          refPay.push(payment);
+          break;
+      }
+
+      periodPaymentAmount = totalPay
+        .map((payment) => payment.paymentAmount)
+        .reduce((x, y) => x + y, 0);
+
+      periodPaymentMin = Math.min(
+        ...totalPay.map((payment) => payment.paymentAmount)
+      );
+      periodPaymentMax = Math.max(
+        ...totalPay.map((payment) => payment.paymentAmount)
+      );
+
+      periodNewPaymentAmount = totalPay
+        .filter((payment) => payment.paymentIndex === 1)
+        .map((payment) => payment.paymentAmount)
+        .reduce((x, y) => x + y, 0);
+
+      if (periodNewPaymentAmount > 0) {
+        periodRecurringPaymentAmount =
+          periodPaymentAmount - periodNewPaymentAmount;
+        periodNewPaymentMax = Math.max(
+          ...totalPay
+            .filter((payment) => payment.paymentIndex === 1)
+            .map((payment) => payment.paymentAmount)
+        );
+
+        periodNewPaymentMin = Math.min(
+          ...totalPay
+            .filter((payment) => payment.paymentIndex === 1)
+            .map((payment) => payment.paymentAmount)
+        );
+      } else {
+        periodRecurringPaymentAmount = periodPaymentAmount;
+        periodNewPaymentMax = 0;
+        periodNewPaymentMin = 0;
+      }
+      periodRefundAmount = refPay
+        .map((payment) => payment.paymentAmount)
+
+        .reduce((x, y) => x + y, 0);
+
+      periodRefundCount = refPay.length;
+      periodRedlineCount = redPay.length;
+      periodRedlineAmount = redPay
+        .map((payment) => payment.paymentAmount)
+
+        .reduce((x, y) => x + y, 0);
+
+      const periodClients = state.periodProspects.filter(
+        (prospect) => prospect.status === "client"
+      );
+
+      console.log(periodClients);
+      if (periodClients.length > 0) {
+        periodClientCount = periodClients.length;
+        periodClients.map((prospect, i) =>
+          avgs[i]
+            ? ((avgs[i].gross = prospect.paymentStatus.gross),
+              (avgs[i].total = prospect.paymentStatus.total),
+              (avgs[i].initial = prospect.paymentStatus.initial))
+            : (avgs[i] = {
+                gross: prospect.paymentStatus.gross,
+                total: prospect.paymentStatus.total,
+                initial: prospect.paymentStatus.initial,
+              })
+        );
+
+        totals = avgs.reduce((a, b) => ({
+          total: parseFloat(a.total) + parseFloat(b.total),
+          initial: parseFloat(a.initial) + parseFloat(b.initial),
+          gross: parseFloat(a.gross) + parseFloat(b.gross),
+        }));
+
+        periodAvgs = avgs.reduce((a, b) => ({
+          total: (a.total + b.total) / avgs.length,
+          initial: (a.initial + b.initial) / avgs.length,
+          gross: (parseFloat(a.gross) + parseFloat(b.gross)) / avgs.length,
+        }));
+
+        console.log(totals);
+      } else {
+        periodClientCount = 0;
+      }
+
+      if (state.periodPayments.length > 0) {
+        periodAvgPayment = periodNewPaymentAmount / state.periodPayments.length;
+      } else {
+        periodAvgPayment = 0;
+      }
+
+      let periodNewTollFree = [];
+      state.periodProspects.map((prospect, i) =>
+        periodNewTollFree[i]
+          ? ((periodNewTollFree[i].tracking = prospect.tracking),
+            (periodNewTollFree[i].source = prospect.source),
+            (periodNewTollFree[i].paymentSchedule = prospect.paymentSchedule),
+            (periodNewTollFree[i].paymentStatus = prospect.paymentStatus))
+          : (periodNewTollFree[i] = {
+              tracking: prospect.tracking,
+              source: prospect.source,
+              paymentSchedule: prospect.paymentSchedule,
+              paymentStatus: prospect.paymentStatus,
+            })
+      );
+
+      let trackingTotalPay = [];
+      let trackingRedPay = [];
+      let trackingRefPay = [];
+      let trackingInitialPay = [];
+      let trackingGrossPay = [];
+      let trackingPaymentAmount;
+      let trackingRefundAmount;
+      let trackingRedlineAmount;
+      let trackingNewPaymentAmount;
+      let trackingClientCount;
+      let trackingAvgPayment;
+      let trackingPaymentMax;
+      let trackingRecurringPaymentAmount;
+      let trackingNewPaymentMax;
+      let trackingPaymentMin;
+      let trackingNewPaymentMin;
+      let trackingTotals = {};
+      let trackingTodayAvgs = {};
+
+      const periodNewTollFreePayments = periodNewTollFree.reduce(function (
+        res,
+        obj
+      ) {
+        let key = obj.tracking;
+        if (res[key]) {
+          res[key] = res[key].concat(obj.paymentSchedule);
+        } else res[key] = obj.paymentSchedule;
+        return res;
+      },
+      {});
+
+      Object.entries(periodNewTollFreePayments).forEach((tollFree) => {
+        tollFree[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentId.length > 30:
+              let key = tollFree[0];
+              let newObj = { [key]: payment.paymentAmount };
+
+              trackingTotalPay.push(newObj);
+
+              break;
+            case payment.paymentId.length === 18:
+              let key1 = tollFree[0];
+              let newObj1 = { [key1]: payment.paymentAmount };
+
+              trackingRedPay.push(newObj1);
+              break;
+            case payment.paymentId.length === 19:
+              let key2 = tollFree[0];
+              let newObj2 = { [key2]: payment.paymentAmount };
+
+              trackingRefPay.push(newObj2);
+
+              break;
+          }
+        });
+      });
+
+      Object.entries(periodNewTollFreePayments).forEach((tollFree) => {
+        tollFree[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex > 0 && payment.paymentId.length != 19:
+              let key4 = tollFree[0];
+              let newObj4 = { [key4]: payment.paymentAmount };
+
+              return trackingGrossPay.push(newObj4);
+
+              break;
+          }
+        });
+      });
+
+      console.log(trackingGrossPay);
+
+      Object.entries(periodNewTollFreePayments).forEach((tollFree) => {
+        tollFree[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex < 2 && payment.paymentId.length > 30:
+              let key3 = tollFree[0];
+              let newObj3 = { [key3]: payment.paymentAmount };
+
+              return trackingInitialPay.push(newObj3);
+
+              break;
+          }
+        });
+      });
+
+      trackingInitialPay = Object.entries(
+        trackingInitialPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["initial", value.reduce((x, y) => x + y)] };
+      });
+
+      trackingGrossPay = Object.entries(
+        trackingGrossPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["gross", value.reduce((x, y) => x + y)] };
+      });
+
+      console.log(trackingInitialPay);
+
+      trackingTotalPay = Object.entries(
+        trackingTotalPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["total", value.reduce((x, y) => x + y)] };
+      });
+
+      trackingRedPay = Object.entries(
+        trackingRedPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["redLine", value.reduce((x, y) => x + y)] };
+      });
+
+      trackingRefPay = Object.entries(
+        trackingRefPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["refunded", value.reduce((x, y) => x + y)] };
+      });
+
+      let trackingPayments = trackingTotalPay.concat(
+        trackingRedPay,
+        trackingRefPay,
+        trackingInitialPay,
+        trackingGrossPay
+      );
+
+      trackingPayments = trackingPayments.reduce((acc, i) => {
+        Object.keys(i).forEach((key) =>
+          acc.hasOwnProperty(key)
+            ? acc[key].push(i[key])
+            : (acc[key] = [i[key]])
+        );
+        return acc;
+      }, {});
+
+      let periodTrackingPayments = [];
+      Object.keys(trackingPayments).forEach(function (key) {
+        const payObj = Object.fromEntries(trackingPayments[key]);
+        let value = { [key]: payObj };
+        periodTrackingPayments.push(value);
+      });
+      let periodNewSales = [];
+      state.periodProspects.map((prospect, i) =>
+        periodNewSales[i]
+          ? ((periodNewSales[i].sales = prospect.caseWorkers.originators.concat(
+              prospect.caseWorkers.upsells,
+              prospect.caseWorkers.documentProcessors,
+              prospect.caseWorkers.loanProcessors
+            )),
+            (periodNewSales[i].paymentSchedule = prospect.paymentSchedule),
+            (periodNewSales[i].paymentStatus = prospect.paymentStatus))
+          : (periodNewSales[i] = {
+              sales: prospect.caseWorkers.originators
+                .concat(
+                  prospect.caseWorkers.upsells,
+                  prospect.caseWorkers.documentProcessors,
+                  prospect.caseWorkers.loanProcessors
+                )
+                .map((sales) => sales.name),
+              paymentSchedule: prospect.paymentSchedule,
+              paymentStatus: prospect.paymentStatus,
+            })
+      );
+
+      let salesTotalPay = [];
+      let salesRedPay = [];
+      let salesRefPay = [];
+      let salesInitialPay = [];
+      let salesGrossPay = [];
+
+      const periodNewSalesPayments = periodNewSales.reduce(function (res, obj) {
+        let key;
+        obj.sales.forEach((salesperson) => {
+          key = salesperson;
+          if (res[key]) {
+            res[key] = res[key].concat(obj.paymentSchedule);
+          } else res[key] = obj.paymentSchedule;
+        });
+
+        return res;
+      }, {});
+
+      Object.entries(periodNewSalesPayments).forEach((sales) => {
+        sales[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentId.length > 30:
+              let key = sales[0];
+              let newObj = { [key]: payment.paymentAmount };
+
+              salesTotalPay.push(newObj);
+
+              break;
+            case payment.paymentId.length === 18:
+              let key1 = sales[0];
+              let newObj1 = { [key1]: payment.paymentAmount };
+
+              salesRedPay.push(newObj1);
+              break;
+            case payment.paymentId.length === 19:
+              let key2 = sales[0];
+              let newObj2 = { [key2]: payment.paymentAmount };
+
+              salesRefPay.push(newObj2);
+
+              break;
+          }
+        });
+      });
+
+      Object.entries(periodNewSalesPayments).forEach((sales) => {
+        sales[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex > 0 && payment.paymentId.length != 19:
+              let key4 = sales[0];
+              let newObj4 = { [key4]: payment.paymentAmount };
+
+              return salesGrossPay.push(newObj4);
+
+              break;
+          }
+        });
+      });
+
+      Object.entries(periodNewSalesPayments).forEach((sales) => {
+        sales[1].forEach((payment) => {
+          switch (true) {
+            case payment.paymentIndex < 2 && payment.paymentId.length > 30:
+              let key3 = sales[0];
+              let newObj3 = { [key3]: payment.paymentAmount };
+
+              return salesInitialPay.push(newObj3);
+
+              break;
+          }
+        });
+      });
+
+      salesInitialPay = Object.entries(
+        salesInitialPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["initial", value.reduce((x, y) => x + y)] };
+      });
+
+      salesGrossPay = Object.entries(
+        salesGrossPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["gross", value.reduce((x, y) => x + y)] };
+      });
+
+      salesTotalPay = Object.entries(
+        salesTotalPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["total", value.reduce((x, y) => x + y)] };
+      });
+
+      salesRedPay = Object.entries(
+        salesRedPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["redLine", value.reduce((x, y) => x + y)] };
+      });
+
+      salesRefPay = Object.entries(
+        salesRefPay.reduce((acc, i) => {
+          Object.keys(i).forEach((key) =>
+            acc.hasOwnProperty(key)
+              ? acc[key].push(i[key])
+              : (acc[key] = [i[key]])
+          );
+          return acc;
+        }, {})
+      ).map((entry) => {
+        var [key, value] = entry;
+        return { [key]: ["refunded", value.reduce((x, y) => x + y)] };
+      });
+
+      let salesPayments = salesTotalPay.concat(
+        salesRedPay,
+        salesRefPay,
+        salesInitialPay,
+        salesGrossPay
+      );
+
+      salesPayments = salesPayments.reduce((acc, i) => {
+        Object.keys(i).forEach((key) =>
+          acc.hasOwnProperty(key)
+            ? acc[key].push(i[key])
+            : (acc[key] = [i[key]])
+        );
+        return acc;
+      }, {});
+
+      let periodSalesPayments = [];
+      Object.keys(salesPayments).forEach(function (key) {
+        const payObj = Object.fromEntries(salesPayments[key]);
+        let value = { [key]: payObj };
+        periodSalesPayments.push(value);
+      });
+      const periodPaymentSummary = {
+        periodPayments: state.periodPayments,
+        periodPaymentAmount,
+        periodRedlineAmount,
+        periodRefundAmount,
+        periodRedlineCount,
+        periodRefundCount,
+        periodNewPaymentAmount,
+        periodPaymentMin,
+        periodPaymentMax,
+        periodNewPaymentMin,
+        periodNewPaymentMax,
+        periodRecurringPaymentAmount,
+        periodClientCount,
+        periodClients,
+        periodAvgPayment,
+        periodTrackingPayments,
+        periodNewGross: totals.gross,
+        periodNewInitial: totals.initial,
+        periodNewTotal: totals.total,
+        periodAvgGross: periodAvgs.gross,
+        periodAvgInitial: periodAvgs.initial,
+        periodAvgTotal: periodAvgs.total,
+        periodSalesPayments,
+        periodCalls: state.periodCalls,
+        periodProspects: state.periodProspects,
+        periodLeads: state.periodLeads,
+      };
+
+      console.log(periodPaymentSummary);
+      dispatch({
+        type: GET_PERIOD,
+        payload: periodPaymentSummary,
+      });
+    });
+  };
+
+  const getRecurring = async () => {
+    const res = await axios.get(`/api/prospects/today/recurring`);
     dispatch({
-      type: GET_TODAYS,
-      payload: today,
+      type: GET_RECURRING,
+      payload: res.data,
     });
   };
 
@@ -238,58 +1727,6 @@ const StatState = (props) => {
   };
 
   //make report
-  const makeReport = async (campaign) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const res = await axios.post("/api/reports", campaign, config);
-
-    dispatch({
-      type: MAKE_REPORT,
-      payload: res.data,
-    });
-  };
-
-  //Aggregate dailys into a week weeklys into a month monthlys into a quarter quarterlys into years based on these reports
-
-  //update reports
-  const updateReports = async (reports) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const res = await axios.put("/api/reports", reports, config);
-
-    dispatch({
-      type: UPDATE_REPORTS,
-      payload: res.data,
-    });
-  };
-
-  //delete report
-  const deleteReport = async (report) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const res = await axios.delete(
-      `/api/reports/${report._id}`,
-      report,
-      config
-    );
-
-    dispatch({
-      type: DELETE_REPORT,
-      payload: res.data,
-    });
-  };
 
   const setPeriod = () => {
     var now = new Date();
@@ -1356,20 +2793,7 @@ const StatState = (props) => {
   };
 
   //get report
-  const getReport = async (report) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
 
-    const res = await axios.get("/api/reports", report, config);
-
-    dispatch({
-      type: GET_REPORT,
-      payload: res.data,
-    });
-  };
   //generate csv
 
   const setTrackingPayment = (payment) => {
@@ -2600,7 +4024,7 @@ const StatState = (props) => {
           totalPay
             .filter((payment) => payment.paymentIndex === 1)
             .map((payment) => payment.paymentAmount)
-            .reduce((x, y) => x + y)
+            .reduce((x, y) => x + y, 0)
         );
 
       if (total > 0)
@@ -2688,7 +4112,7 @@ const StatState = (props) => {
         totalPay
           .filter((payment) => payment.paymentIndex === 1)
           .map((payment) => payment.paymentAmount)
-          .reduce((x, y) => x + y)
+          .reduce((x, y) => x + y, 0)
       );
 
     if (total > 0)
@@ -2699,10 +4123,10 @@ const StatState = (props) => {
 
     if (total > 0) percentPaid = total / gross;
 
-    const paycheck = user.payDay.reduce((x, y) => x + y);
+    //  const paycheck = user.payDay.reduce((x, y) => x + y, 0);
     const periodMoney = {
       total,
-      paycheck,
+      //  paycheck,
       gross,
       initial,
       redLine,
@@ -2724,27 +4148,27 @@ const StatState = (props) => {
 
     allPayments
       .map((prospect) => initial1.push(parseInt(prospect.initial)))
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
     allPayments
       .map((prospect) => total1.push(parseInt(prospect.total)))
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
     allPayments
       .map((prospect) => redline1.push(prospect.redLine))
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
     allPayments
       .map((prospect) => refunded1.push(prospect.refunded))
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
     allPayments
       .map((prospect) => quote1.push(prospect.quote))
       .reduce((a, b) => a + b, 0);
 
     const allTimeMoney = {
-      gross: gross1.reduce((a, b) => a + b),
-      initial: initial1.reduce((a, b) => a + b),
-      total: total1.reduce((a, b) => a + b),
-      redline: redline1.reduce((a, b) => a + b),
-      refunded: refunded1.reduce((a, b) => a + b),
-      quote: quote1.reduce((a, b) => a + b),
+      gross: gross1.reduce((a, b) => a + b, 0),
+      initial: initial1.reduce((a, b) => a + b, 0),
+      total: total1.reduce((a, b) => a + b, 0),
+      redline: redline1.reduce((a, b) => a + b, 0),
+      refunded: refunded1.reduce((a, b) => a + b, 0),
+      quote: quote1.reduce((a, b) => a + b, 0),
     };
 
     console.log(periodMoney, "11111111111111111111111111111111");
@@ -2808,6 +4232,11 @@ const StatState = (props) => {
         filterSelected: state.filterSelected,
         currentCampaign: state.currentCampaign,
         currentEmail: state.currentEmail,
+        periodPayments: state.periodPayments,
+        periodLeads: state.periodLeads,
+        periodProspects: state.periodProspects,
+        periodCalls: state.periodCalls,
+        periodPaymentSummary: state.periodPaymentSummary,
         idArray: state.idArray,
         period: state.period,
         getListLength,
@@ -2818,10 +4247,8 @@ const StatState = (props) => {
         getFilterSelected,
         getCurrentCampaign,
         getCurrentEmail,
-        makeReport,
         getIdArray,
-        updateReports,
-        getReport,
+        getRecurring,
         setTrackingPayment,
         commissionPayment,
         userMoney,
@@ -2830,10 +4257,13 @@ const StatState = (props) => {
         getTodaysPayments,
         getTodaysProspects,
         getTodaysLeads,
+        getPeriodPayments,
+        getPeriodProspects,
+        getPeriodLeads,
+        getPeriodCalls,
         filterPayments,
         clearFilter,
         searchPaymentDates,
-        deleteReport,
       }}>
       {props.children}
     </StatContext.Provider>

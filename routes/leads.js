@@ -12,12 +12,16 @@ const key = require("../config/key.json");
 const nodemailer = require("nodemailer");
 const Email = require("../models/Email");
 const hbs = require("nodemailer-express-handlebars");
+const moment = require("moment");
 
 //Add Leads to Mongo
 
 router.post("/", auth, async (req, res) => {
   try {
     const leads = await Lead.insertMany(req.body);
+
+    console.log(leads);
+
     res.json(leads);
   } catch (err) {
     console.error(err.message);
@@ -26,9 +30,41 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.get("/today", auth, async (req, res) => {
-  const leads = await Lead.find();
+  // console.log(req);
 
-  res.json(leads);
+  const today = moment().startOf("day");
+
+  const prospects = await Lead.find({
+    loadDate: {
+      $gte: today.toDate(),
+      $lte: moment(today).endOf("day").toDate(),
+    },
+  });
+
+  //console.log(prospects);
+  res.json(prospects);
+});
+
+router.get("/period", auth, async (req, res) => {
+  const reqbody = JSON.parse(req.query.q);
+
+  console.log(reqbody);
+
+  const { startDate, endDate } = reqbody;
+
+  const momentPeriodStart = new Date(startDate);
+  const momentPeriodEnd = new Date(endDate);
+
+  console.log(momentPeriodStart);
+
+  const prospects = await Lead.find({
+    loadDate: {
+      $gte: momentPeriodStart,
+      $lte: momentPeriodEnd,
+    },
+  });
+
+  res.json(prospects);
 });
 
 router.put("/:id/pdfs", auth, async (req, res) => {

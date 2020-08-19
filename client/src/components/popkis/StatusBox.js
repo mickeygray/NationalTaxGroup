@@ -26,7 +26,7 @@ const StatusBox = (props) => {
   const { notifyUser, getUserNames } = useContext(UserContext);
   const {
     putResoStatus,
-
+    setDocs,
     addLexisProspect,
     updateProspect,
     getResoStatus,
@@ -38,6 +38,11 @@ const StatusBox = (props) => {
 
   const { _id, status, caseWorkers, paymentStatus, originator } = prospect;
 
+  useEffect(() => {
+    if (prospect.resoStatus) {
+      setDocs(prospect);
+    }
+  }, [prospect]);
   const [reso, setReso] = useState({
     representation1: false,
     federalFile1: false,

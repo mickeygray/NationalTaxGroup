@@ -22,6 +22,8 @@ const DocItem = (props) => {
 
   console.log(doc);
 
+  const name = doc.name.slice(doc.name.lastIndexOf("/") + 1, doc.name.length);
+
   return (
     <Fragment>
       {modal ? <DocModal doc={doc} /> : ""}
@@ -41,7 +43,7 @@ const DocItem = (props) => {
             }}
             onClick={onClick}>
             {" "}
-            {doc.name}
+            {name}
           </button>
         ) : (
           <button
@@ -51,7 +53,7 @@ const DocItem = (props) => {
             }}
             onClick={() => setDocModalState((prevState) => !prevState)}>
             {" "}
-            {doc.name}
+            {name}
           </button>
         )}
         <button
@@ -59,7 +61,7 @@ const DocItem = (props) => {
             float: "right",
             width: "18px",
           }}
-          onClick={() => deleteDoc()}>
+          onClick={() => deleteDoc(prospect, doc)}>
           {" "}
           X
         </button>

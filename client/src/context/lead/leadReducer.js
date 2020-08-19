@@ -59,10 +59,23 @@ import {
   SEND_EMAIL,
   DELETE_DUPS,
   SET_FILTERS,
+  DELETE_DOC,
+  SET_DOCS,
 } from "../types";
 
 export default (state, action) => {
   switch (action.type) {
+    case DELETE_DOC:
+      return {
+        ...state,
+        docs: state.docs.filter((doc) => doc._id !== action.payload),
+      };
+    case SET_DOCS:
+      return {
+        ...state,
+        docs: action.payload,
+      };
+
     case DELETE_NOTE:
       return {
         ...state,

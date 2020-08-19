@@ -1,18 +1,22 @@
-Popkis: delete docs, pop phones and emailAddresses from popkis, generate invoice, delete all other prospects with lienid after accepted payment
+Popkis:pop phones, generate invoice, delete all other prospects with lienid after accepted payment delete tasks,
 
 Dangerzone: charts, add status fitler and useRef
 
-Eyore: get and process reports from sendgrid amazon and google. Email address cleaning Regex develop in depth piece libarary 
+Eyore: get and process reports from sendgrid amazon and google. Email address cleaning Regex develop in depth piece libarary , make csvs of lead groups.
 
 the big guns: sum  calls, prospects, clients, money per daily unique 800 number.
 
-PPs Palace Payment Splits to comission report csv
+PPs Palace comission report csv, today payments payment must have resoStatus
 
-INT. NTE - DAY - pitch tools that feed into popkis
+INT. NTE - DAY - pitch tools that feed into popkis, OIC calculator walk through
 
 stacks: 50 results per page 100 results per page     
 
+Clean up all deletes
 
+aggregate all tasks and reminders 
+
+generate invoice - forEach resoStatus.concat  sum callduration * origpct , * dppct *lppct / docs.length   representationMax = 5000, perFederalReturnMax = 1000, perStateReturnMax = 1000 must equal total fee render pdf   
 
 
 

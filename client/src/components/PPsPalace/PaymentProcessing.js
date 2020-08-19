@@ -7,14 +7,13 @@ const PaymentProcessing = () => {
   const statContext = useContext(StatContext);
   const { payments, today, getTodaysPayments, filtered } = statContext;
 
-  const { todaysPayments } = today;
+  const { todayPayments } = today;
 
   useEffect(() => {
     getTodaysPayments();
   }, []);
 
-  console.log(today);
-
+  console.log(todayPayments);
   return (
     <div className='grid-2'>
       <div>
@@ -28,9 +27,11 @@ const PaymentProcessing = () => {
       </div>
       <div>
         <h3>Process Today's Payments</h3>
-        {todaysPayments
-          ? todaysPayments
+        {todayPayments
+          ? todayPayments
               .filter((payment) => payment.paymentId === "")
+
+              .filter((payment) => payment.paymentMethod)
               .map((payment) => (
                 <PaymentProcessingItem key={payment._id} payment={payment} />
               ))

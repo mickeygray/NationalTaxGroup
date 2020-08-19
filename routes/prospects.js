@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
-const upload = require("../middleware/upload");
+
 const Call = require("../models/Call.js");
 const Prospect = require("../models/Prospect.js");
 const uuidv4 = require("uuid/v4");
@@ -17,19 +17,38 @@ const Grid = require("gridfs-stream");
 const multer = require("multer");
 const pdfFiller = require("pdffiller");
 const moment = require("moment");
-
+const GridFsStorage = require("multer-gridfs-storage");
 var hummus = require("hummus"),
   PDFDigitalForm = require("../middleware/PDFDigitalForm");
 let fs = require("fs");
 var util = require("util");
-
 const fileLoad = multer();
-
 const handlebars = require("handlebars");
 const key = require("../config/key.json");
 const nodemailer = require("nodemailer");
 const Email = require("../models/Email");
 const hbs = require("nodemailer-express-handlebars");
+
+const storage = new GridFsStorage({
+  url: db,
+  options: { useUnifiedTopology: true },
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = req.body.name;
+        const fileInfo = {
+          filename: filename,
+          bucketName: "fs",
+        };
+        resolve(fileInfo);
+      });
+    });
+  },
+});
+const upload = multer({ storage });
 
 router.put("/:id/pdfs", auth, async (req, res) => {
   const string = Object.keys(req.body).toString();
@@ -559,9 +578,62 @@ router.get("/calls", auth, async (req, res, next) => {
 });
 
 router.get("/calls/today/", auth, async (req, res) => {
-  const calls = await Call.find();
+  const today = moment().startOf("day");
+
+  const calls = await Call.find({
+    start_time: {
+      $gte: today.toDate(),
+      $lte: moment(today).endOf("day").toDate(),
+    },
+  });
 
   res.json(calls);
+});
+
+router.get("/calls/period", auth, async (req, res) => {
+  const reqbody = JSON.parse(req.query.q);
+
+  console.log(reqbody);
+
+  const { startDate, endDate } = reqbody;
+
+  const momentPeriodStart = new Date(startDate);
+  const momentPeriodEnd = new Date(endDate);
+
+  console.log(momentPeriodStart);
+
+  const prospects = await Call.find({
+    start_time: {
+      $gte: momentPeriodStart,
+      $lte: momentPeriodEnd,
+    },
+  });
+
+  console.log(prospects, "PROSPECTS");
+  res.json(prospects);
+});
+
+router.get("/period", auth, async (req, res) => {
+  const reqbody = JSON.parse(req.query.q);
+
+  console.log(reqbody);
+
+  const { startDate, endDate } = reqbody;
+
+  const momentPeriodStart = new Date(startDate);
+  const momentPeriodEnd = new Date(endDate);
+
+  console.log(momentPeriodStart);
+
+  const prospects = await Prospect.find({
+    createDate: {
+      $gte: momentPeriodStart,
+      $lte: momentPeriodEnd,
+    },
+  });
+
+  console.log(prospects, "PROSPECTS");
+  res.json(prospects);
 });
 
 router.get("/payments/searchDates", auth, async (req, res) => {
@@ -635,6 +707,106 @@ router.get("/payments/today/", auth, async (req, res) => {
     }
   }
 
+  paymentArray = paymentArray.filter(
+    (payment) =>
+      Intl.DateTimeFormat(
+        "fr-CA",
+        { timeZone: "America/Los_Angeles" },
+        {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        }
+      ).format(payment.paymentDate) ===
+      Intl.DateTimeFormat(
+        "fr-CA",
+        { timeZone: "America/Los_Angeles" },
+        {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        }
+      ).format(new Date(Date.now()))
+  );
+
+  res.json(paymentArray);
+});
+
+router.get("/payments/period/", auth, async (req, res) => {
+  console.log(req.query.q);
+
+  const reqbody = JSON.parse(req.query.q);
+  const { startDate, endDate } = reqbody;
+  const prospects = await Prospect.find({
+    "paymentSchedule.paymentDate": {
+      $gte: new Date(startDate),
+      $lte: new Date(endDate),
+    },
+  });
+
+  var payments = [];
+  function getPayments(prospects) {
+    for (var i = 0; i < prospects.length; i++) {
+      payments.push(prospects[i].paymentSchedule);
+    }
+    return payments;
+  }
+
+  getPayments(prospects);
+
+  let merged = [].concat.apply([], payments);
+
+  var filtered = merged.filter(function (el) {
+    return el != null;
+  });
+
+  let paymentArray = [];
+  for (var i = 0; i < filtered.length; i++) {
+    if (filtered[i].paymentAmount != null) {
+      paymentArray.push(filtered[i]);
+    }
+  }
+
+  paymentArray = paymentArray.filter(
+    (payment) =>
+      Intl.DateTimeFormat(
+        "fr-CA",
+        { timeZone: "America/Los_Angeles" },
+        {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        }
+      ).format(payment.paymentDate) >=
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(startDate)) &&
+      Intl.DateTimeFormat(
+        "fr-CA",
+        { timeZone: "America/Los_Angeles" },
+        {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        }
+      ).format(payment.paymentDate) <=
+        Intl.DateTimeFormat(
+          "fr-CA",
+          { timeZone: "America/Los_Angeles" },
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }
+        ).format(new Date(endDate))
+  );
+
   res.json(paymentArray);
 });
 
@@ -686,7 +858,45 @@ router.get("/today", auth, async (req, res) => {
     },
   });
 
+  // console.log(prospects);
+  res.json(prospects);
+});
+
+router.get("/period", auth, async (req, res) => {
+  const reqbody = JSON.parse(req.query.q);
+
+  console.log(reqbody);
+
+  const { startDate, endDate } = reqbody;
+
+  const momentPeriodStart = new Date(startDate);
+  const momentPeriodEnd = new Date(endDate);
+
+  console.log(momentPeriodStart);
+
+  const prospects = await Prospect.find({
+    createDate: {
+      $gte: momentPeriodStart,
+      $lte: momentPeriodEnd,
+    },
+  });
+
   console.log(prospects);
+  res.json(prospects);
+});
+
+router.get("/today/recurring", auth, async (req, res) => {
+  // console.log(req);
+
+  const today = moment().startOf("day");
+
+  const prospects = await Prospect.find({
+    "paymentSchedule.paymentDate": {
+      $gte: today.toDate(),
+      $lte: moment(today).endOf("day").toDate(),
+    },
+  });
+
   res.json(prospects);
 });
 
@@ -884,7 +1094,7 @@ router.get("/:_id/resoStatus", auth, async (req, res) => {
     annuity
   );
 
-  console.log(docs);
+  console.log(docs, "324324324");
 
   function search(nameKey, myArray) {
     for (var i = 0; i < myArray.length; i++) {
@@ -896,7 +1106,7 @@ router.get("/:_id/resoStatus", auth, async (req, res) => {
   var file = search(id, docs);
 
   console.log(file);
-  const fileName = file.document;
+  const fileName = file.name;
 
   gfs.files.find({ filename: fileName }).toArray(function (err, files) {
     if (err) {
@@ -1614,27 +1824,234 @@ router.get("/:id/paymentSchedule", auth, async (req, res) => {
   res.json(prospect2);
 });
 
+router.delete("/:id/resoStatus/representation/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.representation._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.representation._id": req.params.id },
+    { "$pull": { "resoStatus.representation": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: prospect.resoStatus.representation.document, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
+router.delete("/:id/resoStatus/federalFile/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.federalFile._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.federalFile._id": req.params.id },
+    { "$pull": { "resoStatus.federalFile": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: prospect.resoStatus.federalFile.document, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
+router.delete("/:id/resoStatus/stateFile/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.stateFile._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.stateFile._id": req.params.id },
+    { "$pull": { "resoStatus.stateFile": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: prospect.resoStatus.stateFile.document, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
+router.delete("/:id/resoStatus/paymentPlan/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.paymentPlan._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.paymentPlan._id": req.params.id },
+    { "$pull": { "resoStatus.federalFile": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: prospect.resoStatus.paymentPlan.document, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
+router.delete("/:id/resoStatus/hardship/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.hardship._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.hardship._id": req.params.id },
+    { "$pull": { "resoStatus.hardship": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: prospect.resoStatus.hardship.document, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
+router.delete("/:id/resoStatus/federalFile/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.offer._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.offer._id": req.params.id },
+    { "$pull": { "resoStatus.offer": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: `prospect.resoStatus.offer.$.document`, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
+router.delete("/:id/resoStatus/appeal/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.appeal._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.appeal._id": req.params.id },
+    { "$pull": { "resoStatus.appeal": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: `prospect.resoStatus.appeal.$.document`, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
+router.delete("/:id/resoStatus/corp/:id", async (req, res) => {
+  console.log("winkle dee");
+
+  const prospect = await Prospect.findOne({
+    "resoStatus.corp._id": req.params.id,
+  });
+
+  const placeCard = await Prospect.findOneAndUpdate(
+    { "resoStatus.corp._id": req.params.id },
+    { "$pull": { "resoStatus.corp": { _id: req.params.id } } }
+  );
+
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  gfs.remove(
+    { _id: `prospect.resoStatus.corp.$.document`, root: "fs" },
+    (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
+      }
+    }
+  );
+
+  res.json(placeCard);
+});
+
 router.put(
   "/:id/resoStatus/representation/:id",
-  upload,
+  upload.single("file"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
-      { "_id": req.body.prospectId },
+      { "resoStatus.representation._id": req.params.id },
       {
         "$set": {
-          "resoStatus.representation.$[].document": req.file.filename,
-          "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-          "resoStatus.representation.$[].id": req.body.id,
+          "resoStatus.representation.$.document": req.file.id,
+          "resoStatus.representation.$.updatedDate": req.file.uploadDate,
+          "resoStatus.representation.$.id": req.body.id,
         },
         new: true,
-        arrayFilters: [{ "_id": req.params.id }],
       },
       (err) => {
         if (err) res.status(400).json(err);
       }
     );
-
+    console.log(prospect.resoStatus.representation);
     res.status(200).json(prospect);
   }
 );
@@ -1667,19 +2084,18 @@ router.put("/:id/resoStatus/federalFile/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/federalFile/:id",
-  upload,
+  upload.single("file"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
-      { "_id": req.body.prospectId },
+      { "resoStatus.federalFile._id": req.params.id },
       {
         "$set": {
-          "resoStatus.representation.$[].document": req.file.filename,
-          "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-          "resoStatus.representation.$[].id": req.body.id,
+          "resoStatus.federalFile.$.document": req.file._id,
+          "resoStatus.federalFile.$.updatedDate": req.file.uploadDate,
+          "resoStatus.federalFile.$.id": req.body.id,
         },
         new: true,
-        arrayFilters: [{ "_id": req.params.id }],
       },
       (err) => {
         if (err) res.status(400).json(err);
@@ -1703,78 +2119,82 @@ router.put("/:id/resoStatus/stateFile/", auth, async (req, res) => {
   console.log(prospect);
 });
 
-router.put("/:id/resoStatus/stateFile/:id", upload, auth, async (req, res) => {
-  const prospect = await Prospect.findOneAndUpdate(
-    { "_id": req.body.prospectId },
-    {
-      "$set": {
-        "resoStatus.representation.$[].document": req.file.filename,
-        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-        "resoStatus.representation.$[].id": req.body.id,
+router.put(
+  "/:id/resoStatus/stateFile/:id",
+  upload.single("file"),
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "resoStatus.stateFile._id": req.params.id },
+      {
+        "$set": {
+          "resoStatus.stateFile.$.document": req.file._id,
+          "resoStatus.stateFile.$.updatedDate": req.file.uploadDate,
+          "resoStatus.stateFile.$.id": req.body.id,
+        },
+        new: true,
       },
-      new: true,
-      arrayFilters: [{ "_id": req.params.id }],
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+    console.log(prospect);
+  }
+);
+
+router.put("/:id/resoStatus/hardship/", auth, async (req, res) => {
+  const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
+    "$push": {
+      "resoStatus.hardship": {
+        "name": req.body.name,
+        "postedDate": req.body.postedDate,
+        "assigned": req.body.assigned._id,
+      },
     },
-    (err) => {
-      if (err) res.status(400).json(err);
-    }
-  );
+  });
   res.json(prospect);
   console.log(prospect);
 });
 
-router.put("/:id/resoStatus/hardship/:id", upload, auth, async (req, res) => {
-  const prospect = await Prospect.findOneAndUpdate(
-    { "_id": req.body.prospectId },
-    {
-      "$set": {
-        "resoStatus.representation.$[].document": req.file.filename,
-        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-        "resoStatus.representation.$[].id": req.body.id,
-      },
-      new: true,
-      arrayFilters: [{ "_id": req.params.id }],
-    },
-    (err) => {
-      if (err) res.status(400).json(err);
-    }
-  );
-  res.json(prospect);
-});
-router.put("/:id/resoStatus/hardship/", auth, async (req, res) => {
-  const prospect = await Prospect.findOneAndUpdate(
-    { "_id": req.body.prospectId },
-    {
-      "$set": {
-        "resoStatus.representation.$[].document": req.file.filename,
-        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-        "resoStatus.representation.$[].id": req.body.id,
-      },
-      new: true,
-      arrayFilters: [{ "_id": req.params.id }],
-    },
-    (err) => {
-      if (err) res.status(400).json(err);
-    }
-  );
-  res.json(prospect);
-});
-
 router.put(
-  "/:id/resoStatus/paymentPlan/:id",
-  upload,
+  "/:id/resoStatus/hardship/:id",
+  upload.single("file"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
-      { "_id": req.body.prospectId },
+      { "resoStatus.hardship._id": req.params.id },
       {
         "$set": {
-          "resoStatus.representation.$[].document": req.file.filename,
-          "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-          "resoStatus.representation.$[].id": req.body.id,
+          "resoStatus.hardship.$.document": req.file._id,
+          "resoStatus.hardship.$.updatedDate": req.file.uploadDate,
+          "resoStatus.hardship.$.id": req.body.id,
         },
         new: true,
         arrayFilters: [{ "_id": req.params.id }],
+      },
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+  }
+);
+
+router.put(
+  "/:id/resoStatus/paymentPlan/:id",
+  upload.single("file"),
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "resoStatus.paymentPlan._id": req.params.id },
+      {
+        "$set": {
+          "resoStatus.paymentPlan.$.document": req.file._id,
+          "resoStatus.paymentPlan.$.updatedDate": req.file.uploadDate,
+          "resoStatus.paymentPlan.$.id": req.body.id,
+        },
+        new: true,
       },
       (err) => {
         if (err) res.status(400).json(err);
@@ -1797,25 +2217,29 @@ router.put("/:id/resoStatus/paymentPlan/", auth, async (req, res) => {
   res.json(prospect);
 });
 
-router.put("/:id/resoStatus/offer/:id", upload, auth, async (req, res) => {
-  const prospect = await Prospect.findOneAndUpdate(
-    { "_id": req.body.prospectId },
-    {
-      "$set": {
-        "resoStatus.representation.$[].document": req.file.filename,
-        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-        "resoStatus.representation.$[].id": req.body.id,
+router.put(
+  "/:id/resoStatus/offer/:id",
+  upload.single("file"),
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "resoStatus.offer._id": req.params.id },
+      {
+        "$set": {
+          "resoStatus.offer.$.document": req.file._id,
+          "resoStatus.offer.$.updatedDate": req.file.uploadDate,
+          "resoStatus.offer.$.id": req.body.id,
+        },
+        new: true,
       },
-      new: true,
-      arrayFilters: [{ "_id": req.params.id }],
-    },
-    (err) => {
-      if (err) res.status(400).json(err);
-    }
-  );
-  res.json(prospect);
-  console.log(prospect);
-});
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+    console.log(prospect);
+  }
+);
 router.put("/:id/resoStatus/offer/", auth, async (req, res) => {
   const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
     "$push": {
@@ -1830,25 +2254,29 @@ router.put("/:id/resoStatus/offer/", auth, async (req, res) => {
   console.log(prospect);
 });
 
-router.put("/:id/resoStatus/appeal/:id", upload, auth, async (req, res) => {
-  const prospect = await Prospect.findOneAndUpdate(
-    { "_id": req.body.prospectId },
-    {
-      "$set": {
-        "resoStatus.representation.$[].document": req.file.filename,
-        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-        "resoStatus.representation.$[].id": req.body.id,
+router.put(
+  "/:id/resoStatus/appeal/:id",
+  upload.single("file"),
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "resoStatus.appeal._id": req.params.id },
+      {
+        "$set": {
+          "resoStatus.appeal.$.document": req.file._id,
+          "resoStatus.appeal.$.updatedDate": req.file.uploadDate,
+          "resoStatus.appeal.$.id": req.body.id,
+        },
+        new: true,
       },
-      new: true,
-      arrayFilters: [{ "_id": req.params.id }],
-    },
-    (err) => {
-      if (err) res.status(400).json(err);
-    }
-  );
-  res.json(prospect);
-  console.log(prospect);
-});
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+    console.log(prospect);
+  }
+);
 
 router.put("/:id/resoStatus/appeal/", auth, async (req, res) => {
   const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
@@ -1864,25 +2292,30 @@ router.put("/:id/resoStatus/appeal/", auth, async (req, res) => {
   console.log(prospect);
 });
 
-router.put("/:id/resoStatus/corp/:id", upload, auth, async (req, res) => {
-  const prospect = await Prospect.findOneAndUpdate(
-    { "_id": req.body.prospectId },
-    {
-      "$set": {
-        "resoStatus.representation.$[].document": req.file.filename,
-        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-        "resoStatus.representation.$[].id": req.body.id,
+router.put(
+  "/:id/resoStatus/corp/:id",
+  upload.single("file"),
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "resoStatus.corp._id": req.params.id },
+      {
+        "$set": {
+          "resoStatus.corp.$.document": req.file._id,
+          "resoStatus.corp.$.updatedDate": req.file.uploadDate,
+          "resoStatus.corp.$.id": req.body.id,
+        },
+        new: true,
+        arrayFilters: [{ "_id": req.params.id }],
       },
-      new: true,
-      arrayFilters: [{ "_id": req.params.id }],
-    },
-    (err) => {
-      if (err) res.status(400).json(err);
-    }
-  );
-  res.json(prospect);
-  console.log(prospect);
-});
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+    console.log(prospect);
+  }
+);
 
 router.put("/:id/resoStatus/corp/", auth, async (req, res) => {
   const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
@@ -1895,28 +2328,30 @@ router.put("/:id/resoStatus/corp/", auth, async (req, res) => {
     },
   });
   res.json(prospect);
-  console.log(prospect);
 });
 
-router.put("/:id/resoStatus/annuity/:id", upload, auth, async (req, res) => {
-  const prospect = await Prospect.findOneAndUpdate(
-    { "_id": req.body.prospectId },
-    {
-      "$set": {
-        "resoStatus.representation.$[].document": req.file.filename,
-        "resoStatus.representation.$[].updatedDate": req.file.uploadDate,
-        "resoStatus.representation.$[].id": req.body.id,
+router.put(
+  "/:id/resoStatus/annuity/:id",
+  upload.single("file"),
+  auth,
+  async (req, res) => {
+    const prospect = await Prospect.findOneAndUpdate(
+      { "resoStatus.annuity._id": req.params.id },
+      {
+        "$set": {
+          "resoStatus.annuity.$.document": req.file._id,
+          "resoStatus.annuity.$.updatedDate": req.file.uploadDate,
+          "resoStatus.annuity.$.id": req.body.id,
+        },
+        new: true,
       },
-      new: true,
-      arrayFilters: [{ "_id": req.params.id }],
-    },
-    (err) => {
-      if (err) res.status(400).json(err);
-    }
-  );
-  res.json(prospect);
-  console.log(prospect);
-});
+      (err) => {
+        if (err) res.status(400).json(err);
+      }
+    );
+    res.json(prospect);
+  }
+);
 router.put("/:id/resoStatus/annuity/", auth, async (req, res) => {
   const prospect = await Prospect.findByIdAndUpdate(req.params.id, {
     "$push": {
@@ -1928,6 +2363,5 @@ router.put("/:id/resoStatus/annuity/", auth, async (req, res) => {
     },
   });
   res.json(prospect);
-  console.log(prospect);
 });
 module.exports = router;

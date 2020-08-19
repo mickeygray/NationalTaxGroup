@@ -60,10 +60,12 @@ import {
   GET_FILE,
   POP_DOC,
   SET_DOC,
+  SET_DOCS,
   DELETE_DUPS,
   SET_WORKERS,
   SEND_EMAIL,
   SET_FILTERS,
+  DELETE_DOC,
 } from "../types";
 
 const LeadState = (props) => {
@@ -73,6 +75,7 @@ const LeadState = (props) => {
     loaded: null,
     currentNote: null,
     bcc: [],
+    docs: [],
     vars: [],
     doc: null,
     mailList: [],
@@ -268,7 +271,12 @@ const LeadState = (props) => {
 
     const res = await axios.get(`/api/prospects/${clientId}/fullName`);
 
-    const { fullName } = res.data;
+    let fullName = "";
+
+    if (res.data != null) {
+      fullName = res.data.fullName;
+    }
+
     dispatch({
       type: GET_NAME,
       payload: fullName,
@@ -730,6 +738,29 @@ const LeadState = (props) => {
     }
   };
 
+  const deleteDoc = async (prospect, doc) => {
+    console.log(prospect);
+
+    try {
+      const name = doc.name.slice(
+        doc.name.indexOf("/") + 1,
+        doc.name.lastIndexOf("/")
+      );
+
+      console.log(doc.name);
+      const res = await axios.delete(
+        `/api/prospects/${prospect._id}/resoStatus/${name}/${doc._id}`
+      );
+
+      dispatch({
+        type: DELETE_DOC,
+        payload: res.data,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const submitLead = async (form) => {
     const config = {
       headers: {
@@ -859,14 +890,14 @@ const LeadState = (props) => {
       type: PUT_RESO,
       payload: res.data,
     });
-
+    setDocs(prospect);
     getProspect(prospect._id);
   };
 
   const putResoStatus = async (prospect, formData, endpoint, config, doc) => {
     function search(nameKey, myArray) {
       for (var i = 0; i < myArray.length; i++) {
-        if (myArray[i].name === nameKey) {
+        if (myArray[i].name.includes(nameKey)) {
           return myArray[i];
         }
       }
@@ -886,7 +917,7 @@ const LeadState = (props) => {
       type: PUT_RESO,
       payload: res.data,
     });
-
+    setDocs(prospect);
     getProspect(prospect._id);
   };
 
@@ -917,6 +948,35 @@ const LeadState = (props) => {
 
   const setDoc = (document) => {
     dispatch({ type: SET_DOC, payload: document });
+  };
+
+  const setDocs = (prospect) => {
+    const { resoStatus } = prospect;
+
+    const {
+      representation,
+      federalFile,
+      stateFile,
+      paymentPlan,
+      appeal,
+      annuity,
+      corp,
+      offer,
+      hardship,
+    } = resoStatus;
+
+    const docs = representation.concat(
+      federalFile,
+      stateFile,
+      paymentPlan,
+      appeal,
+      annuity,
+      corp,
+      offer,
+      hardship
+    );
+
+    dispatch({ type: SET_DOCS, payload: docs });
   };
 
   const putPaymentMethod = async (state, prospect) => {
@@ -1185,6 +1245,7 @@ const LeadState = (props) => {
         prospectsRes: state.prospectsRes,
         mailObject: state.mailObject,
         doc: state.doc,
+        docs: state.docs,
         mailList: state.mailList,
         dncArray: state.dncArray,
         caseWorkers: state.caseWorkers,
@@ -1222,7 +1283,7 @@ const LeadState = (props) => {
         putResoStatus,
         clearLead,
         clearLeadFields,
-
+        setDocs,
         addLexisProspect,
         clearRecentLead,
         clearNumber,
@@ -1236,7 +1297,7 @@ const LeadState = (props) => {
         setRecentLead,
         postResoStatus,
         setCurrent,
-
+        deleteDoc,
         letCall,
         clearLiens,
         updateProspect,

@@ -70,12 +70,10 @@ const TodaysProspectItem = ({ prospect }) => {
         fontWeight: "bold",
         height: "66px",
       });
-    } else if (status === "refund") {
+    } else if (status === "refunded") {
       setColorStyle({
-        backgroundImage: `url(${refund})`,
-        backgroundRepeat: "norepeat",
+        backgroundColor: "red",
         backgroundSize: "cover",
-        fontWeight: "bold",
         height: "66px",
       });
     }
@@ -83,6 +81,7 @@ const TodaysProspectItem = ({ prospect }) => {
   return (
     <Link to={`/prospects/${_id}`} onClick={onClick} style={colorStyle}>
       <nav className='navbar'>
+        {status === "refunded" ? "REFUNDED" : ""}
         <ul>
           <li className='px-2'>
             {" "}

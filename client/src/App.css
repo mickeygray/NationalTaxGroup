@@ -184,6 +184,9 @@ img {
 .mx-3 {
   margin: 0 5rem;
 }
+.mx-2 {
+  margin: 0 2rem;
+}
 
 .map {
   overflow: hidden;

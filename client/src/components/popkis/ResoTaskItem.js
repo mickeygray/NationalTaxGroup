@@ -136,10 +136,7 @@ const ResoTaskItem = (props) => {
       },
     };
     const formData = new FormData();
-    formData.append(
-      "name",
-      prospect._id + "||" + doc.endpoint + "||" + doc.name
-    );
+    formData.append("name", prospect._id + "/" + doc.endpoint + "/" + doc.name);
     formData.append("file", file);
     formData.append("prospectId", prospect._id);
     formData.append("document", file.name);
@@ -169,7 +166,7 @@ const ResoTaskItem = (props) => {
   const onClick2 = (e) => {
     const formData = {
       assigned: reminded,
-      name: doc.name,
+      name: prospect._id + "/" + doc.endpoint + "/" + doc.name,
       postedDate: new Date(Date.now()),
     };
     const config = {
