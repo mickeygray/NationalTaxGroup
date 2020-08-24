@@ -51,6 +51,7 @@ const Navbar = () => {
         <Link to='/Eyore'>Eyore!</Link>
         <Link to='/thebigguns'>The Big Guns!</Link>
         <Link to='/PPsPalace'>PPs Palace!</Link>
+        <Link to='/Dunder'>Dunder!</Link>
         <a href='#!' onClick={onClick2}>
           {pop}
         </a>

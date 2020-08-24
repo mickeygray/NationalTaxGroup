@@ -101,8 +101,9 @@ export default (state, action) => {
     case DELETE_RECENTLEAD:
       return {
         ...state,
-        recentLeads: state.recentLeads.filter(
-          (recentLead) => recentLead._id !== action.payload
+        recentLeads: state.recentLeads.splice(
+          state.recentLeads.findIndex((p) => p.key == action.payload),
+          1
         ),
       };
     default:

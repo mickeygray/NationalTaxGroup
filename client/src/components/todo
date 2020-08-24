@@ -6,7 +6,7 @@ Eyore: get and process reports from sendgrid amazon and google. Email address cl
 
 the big guns: sum  calls, prospects, clients, money per daily unique 800 number.
 
-PPs Palace comission report csv, today payments payment must have resoStatus
+PPs Palace comission report csv, today payments payment must have payment method, user can save payment method and set schedule but only combine to make show
 
 INT. NTE - DAY - pitch tools that feed into popkis, OIC calculator walk through
 
@@ -18,7 +18,9 @@ aggregate all tasks and reminders
 
 generate invoice - forEach resoStatus.concat  sum callduration * origpct , * dppct *lppct / docs.length   representationMax = 5000, perFederalReturnMax = 1000, perStateReturnMax = 1000 must equal total fee render pdf   
 
+call statusing drop drop for Clickable tollfree Roi map items 
 
+Filter Leads to unique records if a match append source 
 
 
 

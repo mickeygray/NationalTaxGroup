@@ -16,6 +16,7 @@ const leadSchema = new Schema(
     ssn: String,
     fileType: String,
     amount: String,
+    source: String,
     email: String,
     filingDate: String,
     loadDate: Date,
@@ -44,6 +45,7 @@ const leadSchema = new Schema(
     email: String,
     emailAddress: String,
     pdfs: Array,
+    costs: [{ mailDate: Date, mailCosts: [Object] }],
     real: {
       name: String,
       address: String,

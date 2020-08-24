@@ -1,0 +1,92 @@
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  Fragment,
+} from "react";
+import Moment from "react-moment";
+import MailContext from "../../context/mail/mailContext";
+import DirectMailItem from "./DirectMailItem";
+
+const DirectMailEntry = () => {
+  const [entry, setEntry] = useState([]);
+
+  const mailContext = useContext(MailContext);
+
+  const { mailItem, createDirectMailSchedule } = mailContext;
+
+  const onClick2 = (e) => {
+    setEntry([...entry, mailItem]);
+  };
+
+  const removeItem = useCallback(() => {
+    setEntry(
+      entry.splice(
+        entry.findIndex((p) => p.key == entry.key),
+        1
+      )
+    );
+  }, []);
+
+  console.log(entry);
+
+  const [unit, setUnit] = useState({
+    amount: 0,
+    unitType: "",
+  });
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    createDirectMailSchedule(entry, unit);
+  };
+
+  return (
+    <Fragment>
+      <form onSubmit={onSubmit}>
+        <div className='grid-3'>
+          <div>
+            <button className='btn btn-block btn-dark' onClick={onClick2}>
+              Add a letter
+            </button>{" "}
+          </div>
+          <div>
+            <input
+              type='text'
+              placeholder={"Enter A Number"}
+              name='amount'
+              onChange={(e) =>
+                setUnit({ ...unit, [e.target.name]: e.target.value })
+              }
+            />{" "}
+          </div>
+          <div>
+            <select
+              style={{ marginTop: "7px" }}
+              name='unitType'
+              id=''
+              onChange={(e) =>
+                setUnit({ ...unit, [e.target.name]: e.target.value })
+              }>
+              <option value=''></option>
+              <option value='days'>Days</option>{" "}
+              <option value='weeks'>Weeks</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          {entry.map((entry) => (
+            <DirectMailItem
+              removeItem={removeItem}
+              key={entry.key}
+              entry={entry}
+            />
+          ))}{" "}
+        </div>
+        <input type='submit' value='Enter Schedule Item' />
+      </form>
+    </Fragment>
+  );
+};
+
+export default DirectMailEntry;

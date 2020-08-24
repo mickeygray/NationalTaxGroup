@@ -137,7 +137,7 @@ const ResoTaskItem = (props) => {
     };
     const formData = new FormData();
     formData.append("name", prospect._id + "/" + doc.endpoint + "/" + doc.name);
-    formData.append("file", file);
+    formData.append("fs", file);
     formData.append("prospectId", prospect._id);
     formData.append("document", file.name);
     formData.append("id", uuidv4());
@@ -207,7 +207,7 @@ const ResoTaskItem = (props) => {
       </button>
       <form action='post' className='card' onSubmit={onSubmit}>
         <label htmlFor='file'>Attach updated Tax Document</label>
-        <input type='file' name='file' id='doc' onChange={onUpload} />
+        <input type='file' name='fs' id='doc' onChange={onUpload} />
         <input
           type='submit'
           value='Update Doc'

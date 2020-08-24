@@ -79,11 +79,6 @@ const ReminderModal = (props) => {
     setModal(true);
   };
 
-  console.log(
-    reminder,
-    "ewkljrewkjr;welkj rkwj;ksdfj;ksdjf;sdkjf ;sdlkjfs; kREMINDER !!!!!!!!"
-  );
-
   return (
     <>
       <div className='card container'>

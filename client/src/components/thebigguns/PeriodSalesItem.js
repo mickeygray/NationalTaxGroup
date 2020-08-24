@@ -33,7 +33,6 @@ const PeriodSalesItem = ({ sales }) => {
             );
           })
         : ""}
-      ;
     </div>
   );
 };

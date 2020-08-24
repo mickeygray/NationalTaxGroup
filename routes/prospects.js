@@ -2034,7 +2034,7 @@ router.delete("/:id/resoStatus/corp/:id", async (req, res) => {
 
 router.put(
   "/:id/resoStatus/representation/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2084,7 +2084,7 @@ router.put("/:id/resoStatus/federalFile/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/federalFile/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2121,7 +2121,7 @@ router.put("/:id/resoStatus/stateFile/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/stateFile/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2159,7 +2159,7 @@ router.put("/:id/resoStatus/hardship/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/hardship/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2183,7 +2183,7 @@ router.put(
 
 router.put(
   "/:id/resoStatus/paymentPlan/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2219,7 +2219,7 @@ router.put("/:id/resoStatus/paymentPlan/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/offer/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2256,7 +2256,7 @@ router.put("/:id/resoStatus/offer/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/appeal/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2294,7 +2294,7 @@ router.put("/:id/resoStatus/appeal/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/corp/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
@@ -2332,7 +2332,7 @@ router.put("/:id/resoStatus/corp/", auth, async (req, res) => {
 
 router.put(
   "/:id/resoStatus/annuity/:id",
-  upload.single("file"),
+  upload.single("fs"),
   auth,
   async (req, res) => {
     const prospect = await Prospect.findOneAndUpdate(
