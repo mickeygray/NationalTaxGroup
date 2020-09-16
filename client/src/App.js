@@ -122,7 +122,7 @@ const App = () => {
                             path='/distraint'
                             component={Distraint}
                           />
-                          <Route exact path='/distraint' component={SSI} />
+                          <Route exact path='/ssi' component={SSI} />
                           <Route
                             exact
                             path='/fileacomplaint'
