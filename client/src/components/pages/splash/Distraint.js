@@ -81,29 +81,29 @@ const FileAComplaint = () => {
           <br />
 
           <h2 className='lead' style={{ color: "red" }}>
-            DISTRAINT WARRANT MAILER
+            DISTRAINT WARRANTED MAILER
           </h2>
+          <h3>
+            Pending Legal Action Against American Tax Solutions,
+            GetATaxLawyer.com and Tax Debt Resolution
+          </h3>
           <h4>
             <i>
               If you or a loved one has recieved a letter like this one, you may
               be entitled to compensation as an ongoing complaint filed against
-              the company American Tax Solutions and Disbarred Attorney Terrance
-              "Terry" Selb Aka Chris Baker.{" "}
+              the company American Tax and Disbarred Attorney Terrance "Terry"
+              Selb Aka Chris Baker.{" "}
             </i>
           </h4>
           <br />
-          <a
-            href='tel:+13106665997'
-            className='btn btn-block btn-primary all-center'>
-            Speak to a lawyer
-          </a>
+
           <br />
           <ul>
             <li>
               <h4>
                 Disbarred Attorney Terrance Selb sends fraudulent mailers to
-                people with expired tax liens impersonating the government and
-                threatening criminal charges.
+                people with the intent to decieve them into purchasing services
+                from his company.
               </h4>
             </li>
             <br />
@@ -122,8 +122,12 @@ const FileAComplaint = () => {
             compensation if you were directly impacted by this scam.
           </h5>
         </div>
-
-        <div className='card bg-light' style={{ margin: "auto" }}>
+      </div>
+      <div className='container'>
+        {" "}
+        <div
+          className='card bg-light container all-center'
+          style={{ margin: "auto" }}>
           <form onSubmit={onSubmit}>
             <input
               type='text'
@@ -184,7 +188,8 @@ const FileAComplaint = () => {
             </div>
             <br />
             <label htmlFor='company'>
-              Were you an American Tax Solutions Client?
+              Were you an American Tax Solutions (Or other listed subsidary)
+              Client?
             </label>
             <select
               name='client'
