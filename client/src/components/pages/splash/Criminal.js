@@ -101,9 +101,8 @@ const FileAComplaint = () => {
           <ul>
             <li>
               <h4>
-                Disbarred Attorney Terrance Selb sends fraudulent mailers to
-                people with the intent to decieve them into purchasing services
-                from his company.
+                Disbarred Attorney Terrance Selb sends these mailers to people
+                in an attempt to solicit services.
               </h4>
             </li>
             <br />

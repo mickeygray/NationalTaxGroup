@@ -12,8 +12,6 @@ INT. NTE - DAY - pitch tools that feed into popkis, OIC calculator walk through
 
 stacks: 50 results per page 100 results per page     
 
-Clean up all deletes
-
 aggregate all tasks and reminders 
 
 generate invoice - forEach resoStatus.concat  sum callduration * origpct , * dppct *lppct / docs.length   representationMax = 5000, perFederalReturnMax = 1000, perStateReturnMax = 1000 must equal total fee render pdf   
@@ -22,7 +20,9 @@ call statusing drop drop for Clickable tollfree Roi map items
 
 Filter Leads to unique records if a match append source 
 use fileType to set Style on lead items
+add age filter to mail list delivery (needs atype syntax)
 
 
+42 cents - get invoices from email display pdf  in loop call daily mailhouse  total estimate create form based on  individual piece costs filled with estimates, compare if the same insert uuid on  the job date.f
 
 
