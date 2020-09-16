@@ -203,8 +203,10 @@ router.delete("/:id/reminders", auth, async (req, res) => {
 router.delete("/:id/tasks", auth, async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, {
-      $pull: { "tasks": { "id": req.query.q } },
+      $pull: { "tasks": { "_id": req.query.q } },
     });
+
+    console.log(req.query);
 
     console.log(user);
     res.json(user);

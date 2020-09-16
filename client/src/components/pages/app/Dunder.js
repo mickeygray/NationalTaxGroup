@@ -17,6 +17,7 @@ const Dunder = () => {
     getDirectMailSchedule,
     mailLibrary,
     mailSchedule,
+    sendMail,
   } = mailContext;
   useEffect(() => {
     getDirectMailLibrary();
@@ -29,11 +30,14 @@ const Dunder = () => {
       <Fragment>
         <Navbar />
       </Fragment>
+
       <div className='grid-2'>
         <div>
           <DirectMailLibrary mailLibrary={mailLibrary} />
         </div>
+
         <div>
+          <button onClick={() => sendMail()}>SKEEWEEES</button>
           <DirectMailSchedule mailSchedule={mailSchedule} />
         </div>
       </div>

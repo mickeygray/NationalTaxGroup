@@ -16,6 +16,7 @@ const LeadItem = ({ lead }) => {
     source,
     emailAddress,
     plaintiff,
+    fileType,
     amount,
     phone,
     bankruptcy,
@@ -28,6 +29,7 @@ const LeadItem = ({ lead }) => {
 
   const lienid = _id.toString();
   const current = {
+    fileType,
     fullName,
     lienid,
     deliveryAddress,

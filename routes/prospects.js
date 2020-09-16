@@ -423,17 +423,6 @@ router.put("/:id/pdfs", auth, async (req, res) => {
   console.log(enriched);
 });
 
-router.post("/form", auth, async (req, res) => {
-  var pdfParser = hummus.createReader("/f1040");
-  var digitalForm = new PDFDigitalForm(pdfParser);
-  // save form values into fields.json
-  if (digitalForm.hasForm()) {
-    fs.writeFileSync(
-      "./fields.json",
-      JSON.stringify(digitalForm.fields, null, 4)
-    );
-  }
-});
 /*
 router.delete("/lienid", auth, async (req, res) => {
   const lienid = req.query.q;
@@ -602,15 +591,14 @@ router.get("/calls/period", auth, async (req, res) => {
 
   console.log(momentPeriodStart);
 
-  const prospects = await Call.find({
+  const calls = await Call.find({
     start_time: {
       $gte: momentPeriodStart,
       $lte: momentPeriodEnd,
     },
   });
 
-  console.log(prospects, "PROSPECTS");
-  res.json(prospects);
+  res.json(calls);
 });
 
 router.get("/period", auth, async (req, res) => {
@@ -960,6 +948,7 @@ router.post("/", auth, async (req, res) => {
     zip4,
     plaintiff,
     amount,
+    fileType,
     lienid,
     emailAddress,
     pinCode,
@@ -1046,6 +1035,7 @@ router.post("/", auth, async (req, res) => {
     filingStatus,
     cpa,
     ssn,
+    fileType,
     createDate,
     real,
     age,
@@ -2007,8 +1997,6 @@ router.delete("/:id/resoStatus/appeal/:id", async (req, res) => {
 });
 
 router.delete("/:id/resoStatus/corp/:id", async (req, res) => {
-  console.log("winkle dee");
-
   const prospect = await Prospect.findOne({
     "resoStatus.corp._id": req.params.id,
   });

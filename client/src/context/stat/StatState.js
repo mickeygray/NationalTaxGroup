@@ -10,6 +10,8 @@ import {
   GET_IDARRAY,
   GET_TODAYCALLS,
   GET_TODAYPROSPECTS,
+  GET_TODAYCOSTS,
+  GET_PERIODCOSTS,
   GET_TODAYLEADS,
   GET_PERIODCALLS,
   GET_PERIODPROSPECTS,
@@ -47,6 +49,8 @@ const StatState = (props) => {
     todayLeads: [],
     todayCalls: [],
     todayPayments: [],
+    todayCosts: [],
+    periodCosts: [],
     periodPaymentSummary: {},
     periodProspects: [],
     periodLeads: [],
@@ -87,6 +91,15 @@ const StatState = (props) => {
     });
 
     getTodays(res.data);
+  };
+
+  const getTodaysCosts = async () => {
+    const res = await axios.get(`/api/mail/costs/today`);
+
+    dispatch({
+      type: GET_TODAYCOSTS,
+      payload: res.data,
+    });
   };
 
   const getTodaysPayments = async () => {
@@ -911,6 +924,12 @@ const StatState = (props) => {
     });
   };
 
+  const getDailyCosts = async () => {};
+
+  const getPeriodCosts = async () => {};
+
+  const getRangeCosts = async () => {};
+
   const getPeriod = async (items) => {
     for (var i = 0; i < items.length; i++) {
       if (
@@ -1615,6 +1634,7 @@ const StatState = (props) => {
         let value = { [key]: payObj };
         periodSalesPayments.push(value);
       });
+
       const periodPaymentSummary = {
         periodPayments: state.periodPayments,
         periodPaymentAmount,
@@ -4232,6 +4252,8 @@ const StatState = (props) => {
         filterSelected: state.filterSelected,
         currentCampaign: state.currentCampaign,
         currentEmail: state.currentEmail,
+        todayCosts: state.todayCosts,
+        periodCosts: state.periodCosts,
         periodPayments: state.periodPayments,
         periodLeads: state.periodLeads,
         periodProspects: state.periodProspects,
@@ -4250,6 +4272,8 @@ const StatState = (props) => {
         getIdArray,
         getRecurring,
         setTrackingPayment,
+        getTodaysCosts,
+        getPeriodCosts,
         commissionPayment,
         userMoney,
         setPeriod,

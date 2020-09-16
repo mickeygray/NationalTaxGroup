@@ -29,6 +29,27 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+router.get("/costs", auth, async (req, res) => {
+  const reqbody = JSON.parse(req.query.q);
+
+  console.log(reqbody);
+  const prospects = await Lead.find();
+
+  let costs = prospects.map((prospect) => prospect.costs);
+
+  costs = costs.flat();
+
+  costs = costs.filter((item) => {
+    let date = new Date(item.date);
+    return (
+      date >= new Date(reqbody.startDate) && date <= new Date(reqbody.endDate)
+    );
+  });
+
+  console.log(costs);
+  res.json(costs);
+});
+
 router.get("/today", auth, async (req, res) => {
   // console.log(req);
 

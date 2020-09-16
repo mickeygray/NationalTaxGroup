@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useReducer } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/user/userContext";
@@ -6,24 +6,23 @@ import Moment from "react-moment";
 
 import AuthContext from "../../context/auth/authContext";
 
-const TaskItem = ({
-  task: {
+const TaskItem = (props) => {
+  const leadContext = useContext(LeadContext);
+  const userContext = useContext(UserContext);
+
+  const { task, updateState } = props;
+  const { user } = useContext(AuthContext);
+  const { deleteTask } = userContext;
+  const { getProspect } = leadContext;
+  const {
     clientName,
     clientId,
-    id,
+    _id,
     assignedDate,
     updatedDate,
     assigned,
     assignment,
-  },
-}) => {
-  const leadContext = useContext(LeadContext);
-  const userContext = useContext(UserContext);
-
-  const { user } = useContext(AuthContext);
-  const { deleteTask } = userContext;
-  const { getProspect } = leadContext;
-
+  } = task;
   console.log(assigned);
   const duration = parseInt(<Moment fromNow></Moment>);
 
@@ -57,6 +56,12 @@ const TaskItem = ({
     color: "white",
   });
 
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  const onClick = (e) => {
+    deleteTask(user, _id);
+    forceUpdate();
+  };
+
   return (
     <div className='card' style={colorStyle}>
       Assigned <Moment fromNow>{assignedDate}</Moment>
@@ -68,7 +73,7 @@ const TaskItem = ({
         {clientName ? clientName : ""}
       </Link>{" "}
       <span style={{ float: "right", height: "1rem", fontSize: ".7rem" }}>
-        <button onClick={() => deleteTask(user, id)}>X</button>
+        <button onClick={onClick}>X</button>
       </span>
       <p>Document Required: {assignment}</p>
       <p>Assigned On : {formattedReminderDate}</p>

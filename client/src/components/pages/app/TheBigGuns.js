@@ -18,7 +18,9 @@ const TheBigGuns = () => {
     getTodaysLeads,
     getTodaysCalls,
     getTodaysPayments,
+    getTodaysCosts,
     today,
+    getPeriodCosts,
     getPeriodProspects,
     getPeriodLeads,
     getPeriodCalls,
@@ -31,6 +33,9 @@ const TheBigGuns = () => {
     getTodaysLeads();
     getTodaysCalls();
     getTodaysPayments();
+    getTodaysCosts();
+    getPeriodCosts();
+
     getPeriodProspects();
     getPeriodLeads();
     getPeriodCalls();

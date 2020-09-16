@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import LeadContext from "../../context/lead/leadContext";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/user/userContext";
 import userContext from "../../context/user/userContext";
 
-const ReminderItem = ({
-  reminder: {
+const ReminderItem = (props) => {
+  const { reminder, updateState } = props;
+  const {
     text,
     user,
     userReminded,
@@ -16,23 +17,13 @@ const ReminderItem = ({
     clientId,
     id,
     _id,
-  },
-}) => {
+  } = reminder;
+
   const leadContext = useContext(LeadContext);
   const userContext = useContext(UserContext);
   const { getProspect, getProspectName, fullName } = leadContext;
   const { deleteReminder, getUserName, name } = userContext;
-  const reminder = {
-    text,
-    _id,
-    userReminded,
-    reminderDate,
-    reminderDueDate,
-    status,
-    daysTilDue,
-    clientId,
-    id,
-  };
+
   useEffect(() => {
     getProspectName(clientId);
     getUserName(_id);
@@ -100,6 +91,11 @@ const ReminderItem = ({
     color: "white",
   });
 
+  const onClick = (e) => {
+    deleteReminder(userReminded, reminder);
+    updateState();
+  };
+
   console.log(assignedBy);
 
   return (
@@ -112,9 +108,7 @@ const ReminderItem = ({
         {clientName ? clientName : ""}
       </Link>{" "}
       <span style={{ float: "right", height: "1rem", fontSize: ".7rem" }}>
-        <button onClick={() => deleteReminder(userReminded, reminder)}>
-          X
-        </button>
+        <button onClick={onClick}>X</button>
       </span>
       <p>Assigned By : {assignedBy.name ? assignedBy.name : ""}</p>
       <p>Due On : {formattedReminderDueDate}</p>

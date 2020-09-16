@@ -11,6 +11,7 @@ const PDFViewer = () => {
   const [file, setFile] = useState(null);
   useEffect(() => {
     if (letter != null) {
+      console.log(letter);
       setFile(
         URL.createObjectURL(new Blob([letter], { type: "application/pdf" }))
       );

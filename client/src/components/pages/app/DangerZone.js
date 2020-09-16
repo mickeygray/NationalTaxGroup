@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, Fragment, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  Fragment,
+  useState,
+  useCallback,
+} from "react";
 import AuthContext from "../../../context/auth/authContext";
 import UserContext from "../../../context/user/userContext";
 import LeadContext from "../../../context/lead/leadContext";
@@ -15,26 +21,30 @@ const DangerZone = () => {
   const userContext = useContext(UserContext);
   const statContext = useContext(StatContext);
 
-  const { getPeriodPay } = userContext;
+  const { getPeriodPay, getUser } = userContext;
   const { setPeriod } = statContext;
 
   const { user } = authContext;
 
-  useEffect(() => {
-    setPeriod();
+  const [updateView, setUpdateView] = useState(0);
+
+  const updateState = useCallback(() => {
+    setUpdateView((updateView) => ++updateView);
   }, []);
+
   return (
     <Fragment>
       <Fragment>
         <Navbar />
       </Fragment>
       <div>
+        <span style={{ display: "none" }}>{updateView}</span>
         <h1 className='text-danger'>Danger Zone!</h1>
         <div className='grid-3'>
           <div
             className='sidebar'
             style={{ marginLeft: "150px", width: "15rem" }}>
-            <Reminders user={user} />
+            <Reminders updateState={updateState} user={user} />
           </div>
 
           <div>
@@ -45,7 +55,7 @@ const DangerZone = () => {
             <MyMoney />
           </div>
           <div className='sidebar' style={{ width: "15rem" }}>
-            <Tasks user={user} />
+            <Tasks updateState={updateState} user={user} />
           </div>
         </div>
       </div>

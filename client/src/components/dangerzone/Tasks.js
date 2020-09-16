@@ -4,7 +4,7 @@ import UserContext from "../../context/user/userContext";
 import LeadContext from "../../context/lead/leadContext";
 import AuthContext from "../../context/auth/authContext";
 
-const Tasks = () => {
+const Tasks = (props) => {
   const userContext = useContext(UserContext);
   const leadContext = useContext(LeadContext);
   const authContext = useContext(AuthContext);
@@ -27,7 +27,13 @@ const Tasks = () => {
           <h2 className='text-danger all-center'> My Tasks</h2>
 
           {user
-            ? user.tasks.map((task) => <TaskItem key={task.id} task={task} />)
+            ? user.tasks.map((task) => (
+                <TaskItem
+                  updateState={props.updateState}
+                  key={task.id}
+                  task={task}
+                />
+              ))
             : ""}
         </div>
       </div>

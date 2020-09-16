@@ -4,7 +4,7 @@ import UserContext from "../../context/user/userContext";
 import LeadContext from "../../context/lead/leadContext";
 import AuthContext from "../../context/auth/authContext";
 
-const Reminders = () => {
+const Reminders = (props) => {
   const userContext = useContext(UserContext);
   const leadContext = useContext(LeadContext);
   const authContext = useContext(AuthContext);
@@ -30,7 +30,11 @@ const Reminders = () => {
 
           {user
             ? user.reminders.map((reminder) => (
-                <ReminderItem key={reminder.id} reminder={reminder} />
+                <ReminderItem
+                  updateState={props.updateState}
+                  key={reminder.id}
+                  reminder={reminder}
+                />
               ))
             : ""}
         </div>

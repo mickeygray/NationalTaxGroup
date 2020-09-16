@@ -21,6 +21,7 @@ const DirectMailCreator = () => {
       zipCodeSuppress: "",
       postageCeiling: "",
       unitCost: "",
+      theme: "",
       tracking: "",
       startDate: Date.now(),
     });
@@ -42,6 +43,7 @@ const DirectMailCreator = () => {
     postageCeiling: "",
     unitCost: "",
     tracking: "",
+    theme: "",
     startDate: Date.now(),
   });
 
@@ -103,6 +105,7 @@ const DirectMailCreator = () => {
       lienType: "",
       lienAmount: "",
       zipCodeSuppress: "",
+      theme: "",
       postageCeiling: "",
       unitCost: "",
       tracking: "",
@@ -138,10 +141,6 @@ const DirectMailCreator = () => {
     clearAll();
   };
 
-  console.log(letter);
-  console.log(zipCode);
-  console.log(file);
-
   return (
     <div className='card'>
       <form action='post' onSubmit={onSubmit}>
@@ -164,10 +163,7 @@ const DirectMailCreator = () => {
             <label htmlFor='title'>Data Vendor</label>
             <select onChange={onChange} name='vendor' id='vendor'>
               <option value=''></option>
-              <option value='risk'>Lexis Nexis Risk</option>
-              <option value='advance'>Lexis Nexis Advance (Scrape)</option>
-              <option value='ftls'>Federal Tax Lien Search</option>
-              <option value='atype'>A Type</option>
+
               <option value='enverus'>
                 I bet you let this contact die you apes
               </option>
@@ -213,7 +209,7 @@ const DirectMailCreator = () => {
               <option value='notaxchart'>Does Not Use Lien Info Chart</option>
             </select>
             <label htmlFor='title'>Marketing Theme</label>
-            <select onChange={onChange} name='type' id='type'>
+            <select onChange={onChange} name='theme' id='theme'>
               <option value=''></option>
               <option value='offer'>Offer / Benefit Appeal</option>
               <option value='response'>Response / Urgency Appeal</option>
@@ -257,13 +253,19 @@ const DirectMailCreator = () => {
               onChange={onChange}
             />
             <label htmlFor='title'>Unit Cost</label>
-            <input type='text' name='unitCost' id='unitCost' />
+            <input
+              type='text'
+              name='unitCost'
+              id='unitCost'
+              onChange={onChange}
+            />
             <br />
             <label htmlFor='title'>Postage Ceiling</label>
             <select
               onChange={onChange}
               name='postageCeiling'
               id='postageCeiling'>
+              <option value=''></option>
               <option value='.439'>42.9 Cents</option>
 
               <option value='.276'>27.6 Cents</option>

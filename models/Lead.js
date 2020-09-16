@@ -45,7 +45,13 @@ const leadSchema = new Schema(
     email: String,
     emailAddress: String,
     pdfs: Array,
-    costs: [{ mailDate: Date, mailCosts: [Object] }],
+    costs: [
+      {
+        mailer: String,
+        unitCost: Number,
+        date: Date,
+      },
+    ],
     real: {
       name: String,
       address: String,

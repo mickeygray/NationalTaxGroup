@@ -461,6 +461,10 @@ const ProspectSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  fileType: {
+    type: String,
+    default: "",
+  },
   totalCredit: {
     type: String,
     default: "",

@@ -43,15 +43,14 @@ const Navbar = () => {
       <li>
         <Link to='/'>Danger Zone!</Link>
         <Link to='/ShipEm'>Ship Em!</Link>
-        <Link to='/Stacks'>
-          <a href='#!' onClick={onClick}>
-            {text}
-          </a>
+        <Link to='/Stacks' onClick={onClick}>
+          Stacks!
         </Link>
         <Link to='/Eyore'>Eyore!</Link>
         <Link to='/thebigguns'>The Big Guns!</Link>
         <Link to='/PPsPalace'>PPs Palace!</Link>
         <Link to='/Dunder'>Dunder!</Link>
+        <Link to='/FordeTwoCents'>FordeTwo Cents!</Link>
         <a href='#!' onClick={onClick2}>
           {pop}
         </a>

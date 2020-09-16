@@ -21,6 +21,8 @@ import Popkis from "./components/pages/app/Popkis";
 import Dunder from "./components/pages/app/Dunder";
 import Eyore from "./components/pages/app/Eyore";
 import TheBigGuns from "./components/pages/app/TheBigGuns";
+
+import FordeTwoCents from "./components/pages/app/FordeTwoCents";
 import DangerZone from "./components/pages/app/DangerZone";
 import LeadState from "./context/lead/LeadState";
 import EmailState from "./context/email/EmailState";
@@ -83,6 +85,12 @@ const App = () => {
                             exact
                             path='/PPsPalace'
                             component={PPsPalace}
+                          />
+
+                          <PrivateRoute
+                            exact
+                            path='/FordeTwoCents'
+                            component={FordeTwoCents}
                           />
                         </Switch>
                       </Fragment>

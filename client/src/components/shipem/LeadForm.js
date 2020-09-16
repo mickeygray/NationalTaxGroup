@@ -42,6 +42,7 @@ const LeadForm = () => {
         zip4: "",
         plaintiff: "",
         amount: "",
+        fileType: "",
         real: {},
         bankruptcy: {},
         ssn: "",
@@ -82,6 +83,7 @@ const LeadForm = () => {
     plaintiff: "",
     dob: "",
     age: "",
+    fileType: "",
     real: {},
     bankruptcy: {},
     amount: "",
@@ -142,6 +144,7 @@ const LeadForm = () => {
     plaintiff,
     ssn,
     amount,
+    fileType,
     pinCode,
   } = record;
   const { phone, callid, tracking, source } = call;
@@ -208,6 +211,7 @@ const LeadForm = () => {
       city: "",
       state: "",
       emailAddresses: [],
+      fileType: "",
       bankruptcy: {},
       real: {},
       phones: [],
