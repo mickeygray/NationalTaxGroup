@@ -71,6 +71,7 @@ const FileAComplaint = () => {
   const onSubmit = (e) => {
     e.preventDefault();
   };
+
   return (
     <div className='container '>
       <div className='grid-2'>
@@ -81,7 +82,7 @@ const FileAComplaint = () => {
           <br />
 
           <h2 className='lead' style={{ color: "red" }}>
-            SOCIAL SECURITY BENEFITS LEVY LETTER
+            Social Security Benefits Levy
           </h2>
           <h3>
             Pending Legal Action Against American Tax Solutions,
@@ -101,9 +102,8 @@ const FileAComplaint = () => {
           <ul>
             <li>
               <h4>
-                Disbarred Attorney Terrance Selb sends fraudulent mailers to
-                people with the intent to decieve them into purchasing services
-                from his company.
+                Disbarred Attorney Terrance Selb sends these mailers to people
+                in an attempt to solicit services.
               </h4>
             </li>
             <br />
@@ -213,5 +213,4 @@ const FileAComplaint = () => {
     </div>
   );
 };
-
 export default FileAComplaint;
