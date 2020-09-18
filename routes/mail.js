@@ -776,7 +776,14 @@ router.post("/schedule", auth, async (req, res) => {
 router.put("/costs", auth, async (req, res) => {
   console.log(req.body);
 
-  const payobj = { total: req.body.total, date: new Date(Date.now()) };
+  let tot;
+
+  const payobj = {
+    costs: parseFloat(req.body.total),
+    date: new Date(Date.now()),
+  };
+
+  console.log(payobj);
 
   const mailer = await Mail.findOneAndUpdate(
     { "title": req.body.mailer },
@@ -787,28 +794,20 @@ router.put("/costs", auth, async (req, res) => {
     }
   );
 
-  console.log(mailer);
   res.json(mailer);
+  console.log(mailer);
 });
 
 router.get("/costs/today", auth, async (req, res) => {
   const today = moment().startOf("day");
-  const mailers = await Mail.find();
-
-  let costs = mailers.map((mailer) => {
-    mailer.costs, mailer.title;
+  const mailers = await Mail.find({
+    "costs.date": {
+      $gte: today.toDate(),
+      $lte: moment(today).endOf("day").toDate(),
+    },
   });
 
-  console.log(costs);
-
-  costs = costs.filter(
-    (cost) =>
-      new Date(cost.costs.date) >= today.toDate() &&
-      new Date(cost.costs.date) <= moment(today).endOf("day").toDate()
-  );
-
-  console.log(costs);
-  res.json(costs);
+  console.log(mailers);
 });
 
 router.get("/costs/period", auth, async (req, res) => {});

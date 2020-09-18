@@ -31,6 +31,7 @@ const CostItem = (props) => {
   const onClick = (e) => {
     setInvoiceState((prevState) => !prevState);
     submitCosts(total, props.mailCost.mailer);
+    setValidState(true);
   };
 
   useEffect(() => {
@@ -41,14 +42,39 @@ const CostItem = (props) => {
     }
   }, [invoiceState, invoiceTotal, total]);
 
+  const [validState, setValidState] = useState(false);
+  const [style, setStyle] = useState({
+    backgroundColor: "white",
+  });
+  useEffect(() => {
+    if (validState === true) {
+      setStyle({
+        backgroundColor: "green",
+      });
+    } else {
+      setStyle({
+        backgroundColor: "white",
+      });
+    }
+  }, [validState, setStyle]);
+
+  const onChange = (e) => {
+    setInvoiceTotal(e.target.value);
+  };
+
+  const onClick2 = (e) => {
+    submitCosts(total, props.mailCost.mailer);
+    setValidState(true);
+  };
   return (
-    <div className='card bg=dark'>
+    <div className='card' style={style}>
       <ul>
         <li>Mailer Name : {props.mailCost.mailer}</li>
 
         {invoiceState ? (
           <li>
             <input
+              onChange={onChange}
               type='text'
               placeholder='Invoice Total...'
               name='invoiceTotal'
@@ -64,9 +90,7 @@ const CostItem = (props) => {
       {invoiceState ? (
         ""
       ) : (
-        <button onClick={() => submitCosts(total, props.mailCost.mailer)}>
-          Invoice Matches Estimate
-        </button>
+        <button onClick={onClick2}>Invoice Matches Estimate</button>
       )}
 
       {invoiceState ? (

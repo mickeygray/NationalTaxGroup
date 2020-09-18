@@ -76,17 +76,6 @@ const FordeTwoCents = () => {
 
   const [file, setFile] = useState(null);
   const [files, setFiles] = useState([]);
-  useEffect(() => {
-    if (invoices != null) {
-      console.log(invoices);
-
-      setFile(
-        URL.createObjectURL(
-          new Blob([invoices[1]], { type: "application/pdf" })
-        )
-      );
-    }
-  }, [invoices, mailContext]);
 
   console.log(invoices);
 
@@ -96,25 +85,54 @@ const FordeTwoCents = () => {
       <Fragment>
         <Navbar />
       </Fragment>
-      <div>
-        <button onClick={onClick}>FETCHEROONI</button>
+      <div className='container'>
+        <div>
+          <button className='btn btn-dark p-1' onClick={onClick}>
+            Check for new invoices
+          </button>
+          <button className='btn btn-dark p-1' onClick={onClick2}>
+            Pull invoices
+          </button>
+        </div>
 
-        <DateRange
-          editableDateInputs={true}
-          onChange={(item) => setRanges([item.selection])}
-          moveRangeOnFirstSelection={false}
-          ranges={ranges}
-        />
-
-        <button onClick={onClick2}>SKETCHAROONI</button>
-        {file ? <iframe src={file} type='application/pdf' title='title' /> : ""}
+        <div>
+          Select a date or date range to view invoices and cost estimates <br />
+          <DateRange
+            editableDateInputs={true}
+            onChange={(item) => setRanges([item.selection])}
+            moveRangeOnFirstSelection={false}
+            ranges={ranges}
+          />
+        </div>
       </div>
-      <div>
-        {mailCosts.length > 0
-          ? mailCosts.map((mailCost) => (
-              <CostItem key={mailCost.mailer} mailCost={mailCost} />
-            ))
-          : ""}
+      <div className='grid-2 container'>
+        <div>
+          {invoices
+            ? invoices.map((invoice) => (
+                <div>
+                  <p>Invoices</p>
+                  <iframe
+                    style={{ width: "400px", height: "600px" }}
+                    src={URL.createObjectURL(
+                      new Blob([invoice], { type: "application/pdf" })
+                    )}
+                    type='application/pdf'
+                    title='title'
+                  />
+                </div>
+              ))
+            : ""}
+        </div>
+        <div className='container'>
+          {mailCosts.length > 0
+            ? mailCosts.map((mailCost) => (
+                <div>
+                  <p>Cost Estimates</p>
+                  <CostItem key={mailCost.mailer} mailCost={mailCost} />
+                </div>
+              ))
+            : ""}
+        </div>
       </div>
     </Fragment>
   );

@@ -17,7 +17,7 @@ const MailSchema = new Schema({
   fileid: String,
   zipCodeSuppress: String,
   zipCode: [String],
-  costs: [{ date: Date, cost: Number }],
+  costs: [{ date: Date, costs: Number }],
   postageCeiling: String,
   unitCost: String,
   tracking: String,
