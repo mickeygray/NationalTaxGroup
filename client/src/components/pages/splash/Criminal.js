@@ -153,7 +153,7 @@ const FileAComplaint = () => {
               <div>
                 <h3>Which Letters Did you Receive</h3>
 
-                <label htmlFor='years'>Notice of Criminal Investigation</label>
+                <label htmlFor='years'>Notice of Distraint Warrant</label>
                 <input
                   type='checkbox'
                   name='letters'

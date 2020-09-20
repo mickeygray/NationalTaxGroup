@@ -807,7 +807,9 @@ router.get("/costs/today", auth, async (req, res) => {
     },
   });
 
-  console.log(mailers);
+  const payments = mailers.map((mailer) => mailer.costs);
+
+  console.log(payments);
 });
 
 router.get("/costs/period", auth, async (req, res) => {});
