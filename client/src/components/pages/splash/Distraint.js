@@ -4,7 +4,7 @@ import LeadContext from "../../../context/lead/leadContext";
 import Footer from "../website/layout/Footer";
 import { Link } from "react-router-dom";
 import StickyNavbar from "../../layout/StickyNavbar";
-import distraint from "../../../images/img.png";
+import distraint from "../../../images/distraint.png";
 
 const FileAComplaint = () => {
   const leadContext = useContext(LeadContext);
