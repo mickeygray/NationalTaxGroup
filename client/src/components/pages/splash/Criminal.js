@@ -4,7 +4,7 @@ import LeadContext from "../../../context/lead/leadContext";
 import Footer from "../website/layout/Footer";
 import { Link } from "react-router-dom";
 import StickyNavbar from "../../layout/StickyNavbar";
-import criminal from "../../../images/criminal.jpg";
+import finaldemand from "../../../images/finaldemand.png";
 
 const FileAComplaint = () => {
   const leadContext = useContext(LeadContext);
@@ -75,13 +75,13 @@ const FileAComplaint = () => {
     <div className='container '>
       <div className='grid-2'>
         <div>
-          <img src={criminal} />
+          <img src={finaldemand} />
         </div>
         <div>
           <br />
 
           <h2 className='lead' style={{ color: "red" }}>
-            NOTICE OF CRIMINAL INVESTIGATION MAILER
+            FINAL DEMAND FOR PAYMENT LETTER
           </h2>
           <h3>
             Pending Legal Action Against American Tax Solutions,
