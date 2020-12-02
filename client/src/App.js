@@ -27,14 +27,7 @@ import LienViewer from "./components/pages/website/pages/LienViewer";
 
 const App = () => {
   return (
-    <AuthState>
-      <UserState>
-        <MailState>
           <LeadState>
-            <EmailState>
-              <CallState>
-                <StatState>
-                  <AlertState>
                     <Router>
                       <Fragment>
                         <Switch>
@@ -57,14 +50,8 @@ const App = () => {
                         </Switch>
                       </Fragment>
                     </Router>
-                  </AlertState>
-                </StatState>
-              </CallState>
-            </EmailState>
           </LeadState>
-        </MailState>
-      </UserState>
-    </AuthState>
+
   );
 };
 
