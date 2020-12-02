@@ -121,6 +121,8 @@ const StatState = (props) => {
       payload: res.data,
     });
 
+    console.log(res.data)
+
     getTodays(res.data);
   };
 
@@ -697,6 +699,8 @@ const StatState = (props) => {
       });
 
       let todayNewSales = [];
+
+      console.log(state.todayProspects)
       state.todayProspects.map((prospect, i) =>
         todayNewSales[i]
           ? ((todayNewSales[i].sales = prospect.caseWorkers.originators.concat(
@@ -781,6 +785,8 @@ const StatState = (props) => {
           }
         });
       });
+
+      console.log(todayNewSalesPayments)
 
       Object.entries(todayNewSalesPayments).forEach((sales) => {
         sales[1].forEach((payment) => {
@@ -873,6 +879,8 @@ const StatState = (props) => {
         salesGrossPay
       );
 
+
+      console.log(salesTotalPay)
       salesPayments = salesPayments.reduce((acc, i) => {
         Object.keys(i).forEach((key) =>
           acc.hasOwnProperty(key)
@@ -888,6 +896,10 @@ const StatState = (props) => {
         let value = { [key]: payObj };
         todaySalesPayments.push(value);
       });
+
+      console.log(salesPayments)
+
+      console.log(todaySalesPayments)
       const today = {
         todayPayments: state.todayPayments,
         todayPaymentAmount,

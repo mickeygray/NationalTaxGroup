@@ -11,7 +11,7 @@ const UserItem = ({ user }) => {
 
   return (
     <div>
-      <button onClick={() => setUser(reminded)}>{user.name}</button>
+      <button s onClick={() => setUser(reminded)}>{user.name}</button>
     </div>
   );
 };

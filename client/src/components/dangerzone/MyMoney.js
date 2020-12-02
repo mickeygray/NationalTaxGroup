@@ -5,7 +5,7 @@ import AuthContext from "../../context/auth/authContext";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import MoneyChart from "./MoneyChart";
+
 //view today
 //view period
 //view month
@@ -59,9 +59,7 @@ const MyMoney = () => {
   console.log(ranges);
   return (
     <div>
-      <div>
-        <MoneyChart />
-      </div>
+
 
       <div>
         <DateRange

@@ -1,9 +1,6 @@
 Popkis:pop phones, generate invoice, delete all other prospects with lienid after accepted payment delete tasks,
-
 Dangerzone: charts, add status fitler and useRef
-
 Eyore: get and process reports from sendgrid amazon and google. Email address cleaning Regex develop in depth piece libarary , make csvs of lead groups.
-
 the big guns: sum  calls, prospects, clients, money per daily unique 800 number.
 
 PPs Palace comission report csv, today payments payment must have payment method, user can save payment method and set schedule but only combine to make show
@@ -11,7 +8,6 @@ PPs Palace comission report csv, today payments payment must have payment method
 INT. NTE - DAY - pitch tools that feed into popkis, OIC calculator walk through
 
 stacks: 50 results per page 100 results per page     
-
 aggregate all tasks and reminders 
 
 generate invoice - forEach resoStatus.concat  sum callduration * origpct , * dppct *lppct / docs.length   representationMax = 5000, perFederalReturnMax = 1000, perStateReturnMax = 1000 must equal total fee render pdf   
@@ -23,6 +19,7 @@ use fileType to set Style on lead items
 add age filter to mail list delivery (needs atype syntax)
 
 
-42 cents - get invoices from email display pdf  in loop call daily mailhouse  total estimate create form based on  individual piece costs filled with estimates, compare if the same insert uuid on  the job date.f
 
 
+
+8004224234

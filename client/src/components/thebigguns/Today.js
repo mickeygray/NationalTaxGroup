@@ -34,6 +34,10 @@ const Today = (props) => {
     todayProspects,
     todayLeads,
   } = today;
+
+
+
+  console.log(todaySalesPayments)
   return (
     <div>
       <h3 className='text-center'>TODAY</h3>

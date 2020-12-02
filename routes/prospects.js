@@ -839,6 +839,9 @@ router.get("/today", auth, async (req, res) => {
 
   const today = moment().startOf("day");
 
+  console.log(today)
+  console.log(moment(today).endOf("day").toDate())
+
   const prospects = await Prospect.find({
     createDate: {
       $gte: today.toDate(),
@@ -846,7 +849,7 @@ router.get("/today", auth, async (req, res) => {
     },
   });
 
-  // console.log(prospects);
+  console.log(prospects,'111111111111');
   res.json(prospects);
 });
 

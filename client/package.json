@@ -68,6 +68,9 @@
       "last 1 safari version"
     ]
   },
+  "runtimeArgs": [
+            "--max-old-space-size=8192"
+        ],
   "proxy": "http://localhost:5000",
   "devDependencies": {
     "@babel/plugin-syntax-class-properties": "^7.10.1"

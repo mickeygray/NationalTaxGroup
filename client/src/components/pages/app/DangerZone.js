@@ -32,6 +32,10 @@ const DangerZone = () => {
     setUpdateView((updateView) => ++updateView);
   }, []);
 
+  useEffect(()=>{
+    setPeriod()
+  },[])
+
   return (
     <Fragment>
       <Fragment>
@@ -51,8 +55,6 @@ const DangerZone = () => {
             <h3 className='text-danger'>My Prospects And Clients</h3>
 
             <MyLeads user={user} />
-
-            <MyMoney />
           </div>
           <div className='sidebar' style={{ width: "15rem" }}>
             <Tasks updateState={updateState} user={user} />

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import StickyNavbar from "../../layout/StickyNavbar";
 import ssi from "../../../images/ssi.png";
 
-const FileAComplaint = () => {
+const SSI = () => {
   const leadContext = useContext(LeadContext);
 
   const { submitLead } = leadContext;
@@ -41,6 +41,14 @@ const FileAComplaint = () => {
     });
     setLetters([...letters, e.target.value]);
   };
+
+  const [urls, setUrls] = useState("");
+
+  useEffect(() => {
+    if (window.location.href.length > 0) {
+      setUrls(window.location.href);
+    }
+  }, []);
 
   useEffect(() => {
     if (letters.length > 0 && new Set(letters).size !== letters.length) {
@@ -150,6 +158,12 @@ const FileAComplaint = () => {
               onChange={onChange}
               value={phone}
             />
+            <input
+              type='text'
+              name='url'
+              style={{ display: "none" }}
+              value={urls}
+            />
             <div className='grid-2'>
               <div>
                 <h3>Which Letters Did you Receive</h3>
@@ -213,4 +227,4 @@ const FileAComplaint = () => {
     </div>
   );
 };
-export default FileAComplaint;
+export default SSI;

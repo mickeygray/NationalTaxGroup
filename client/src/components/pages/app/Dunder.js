@@ -8,7 +8,7 @@ import React, {
 import DirectMailLibrary from "../../dunder/DirectMailLibrary";
 import DirectMailSchedule from "../../dunder/DirectMailSchedule";
 import MailContext from "../../../context/mail/mailContext";
-import Navbar from "../../layout/Navbar";
+
 const Dunder = () => {
   const mailContext = useContext(MailContext);
 
@@ -26,10 +26,6 @@ const Dunder = () => {
 
   // <DirectMailSchedule mailSchedule={mailSchedule} />
   return (
-    <Fragment>
-      <Fragment>
-        <Navbar />
-      </Fragment>
 
       <div className='grid-2'>
         <div>
