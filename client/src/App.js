@@ -5,20 +5,13 @@ import {
   Switch,
   useLocation,
 } from "react-router-dom";
-
-import AuthState from "./context/auth/AuthState";
-import AlertState from "./context/alert/AlertState";
-import StatState from "./context/stat/StatState";
-import CallState from "./context/call/CallState";
-import UserState from "./context/user/UserState";
 import "./App.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 
 
 import LeadState from "./context/lead/LeadState";
-import EmailState from "./context/email/EmailState";
-import MailState from "./context/mail/MailState";
+
 import TakeMeOffTheList from "./components/pages/splash/TakeMeOffTheList";
 import FreshStart from "./components/pages/splash/FreshStart";
 import TaxGroup from "./components/pages/website/pages/TaxGroup";
