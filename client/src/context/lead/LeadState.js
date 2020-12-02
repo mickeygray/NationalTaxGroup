@@ -1,11 +1,10 @@
 import React, { useReducer, useContext } from "react";
 import LeadContext from "./leadContext";
 
-import AuthContext from "../auth/authContext";
+
 import LeadReducer from "./leadReducer";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
-
 import {
   UPLOAD_FILE,
   SET_FILE,
