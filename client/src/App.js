@@ -51,51 +51,6 @@ const App = () => {
                     <Router>
                       <Fragment>
                         <Switch>
-                          <Route exact path='/register' component={Register} />
-                          <Route exact path='/login' component={Login} />
-
-                          <PrivateRoute
-                            exact
-                            path='/prospects/:id'
-                            component={Popkis}
-                          />
-                          <PrivateRoute
-                            exact
-                            path='/stacks'
-                            component={Stacks}
-                          />
-                          <PrivateRoute exact path='/' component={DangerZone} />
-                          <PrivateRoute exact path='/eyore' component={Eyore} />
-                          <PrivateRoute
-                            exact
-                            path='/shipem'
-                            component={ShipEm}
-                          />
-                          <PrivateRoute
-                            exact
-                            path='/thebigguns'
-                            component={TheBigGuns}
-                          />
-                          <PrivateRoute
-                            exact
-                            path='/dunder'
-                            component={Dunder}
-                          />
-                          <PrivateRoute
-                            exact
-                            path='/PPsPalace'
-                            component={PPsPalace}
-                          />
-
-                          <PrivateRoute
-                            exact
-                            path='/FordeTwoCents'
-                            component={FordeTwoCents}
-                          />
-                        </Switch>
-                      </Fragment>
-                      <Fragment>
-                        <Switch>
                           <Route exact path='/taxgroup' component={TaxGroup} />
                           <Route
                             exact
@@ -109,31 +64,9 @@ const App = () => {
                           />
                           <Route
                             exact
-                            path='/free1040filler'
-                            component={Free1040Filler}
-                          />
-                          <Route
-                            exact
-                            path='/igetyourmoneyback'
-                            component={IGetYourMoneyBack}
-                          />
-                          <Route
-                            exact
-                            path='/distraint'
-                            component={Distraint}
-                          />
-                          <Route exact path='/ssi' component={SSI} />
-                          <Route
-                            exact
-                            path='/fileacomplaint'
-                            component={FileAComplaint}
-                          />
-                          <Route
-                            exact
                             path='/takemeoffthelist'
                             component={TakeMeOffTheList}
                           />
-                          <Route exact path='/criminal' component={Criminal} />
                         </Switch>
                       </Fragment>
                     </Router>
