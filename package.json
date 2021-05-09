@@ -41,7 +41,7 @@
     "express-zip": "^3.0.0",
     "fast-csv": "^4.3.0",
     "gridfs-stream": "^1.1.1",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "hummus": "^1.0.108",
     "imap": "^0.8.19",
     "imap-simple": "^5.0.0",
