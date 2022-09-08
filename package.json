@@ -48,7 +48,7 @@
     "json2csv": "^5.0.1",
     "jsontocsv": "^0.3.0",
     "jsonwebtoken": "^8.5.1",
-    "jszip": "^3.5.0",
+    "jszip": "^3.7.0",
     "lodash": "^4.17.20",
     "lodash.merge": "^4.6.2",
     "lodash.mergewith": "^4.6.2",
