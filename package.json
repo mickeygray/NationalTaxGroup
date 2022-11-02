@@ -42,7 +42,7 @@
     "fast-csv": "^4.3.0",
     "gridfs-stream": "^1.1.1",
     "handlebars": "^4.7.6",
-    "hummus": "^1.0.108",
+    "hummus": "^1.0.111",
     "imap": "^0.8.19",
     "imap-simple": "^5.0.0",
     "json2csv": "^5.0.1",
